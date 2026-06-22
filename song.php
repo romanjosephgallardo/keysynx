@@ -182,23 +182,40 @@ $thumbGradients = [
 
     <div class="section-block">
       <div class="section-label">Contributor feedback (<?= count($song['comments']) ?>)</div>
+      <?php if (!empty($_GET['error'])): ?>
+        <p style="font-size:0.82rem; color:var(--rejected); margin-bottom:10px;"><?= htmlspecialchars($_GET['error']) ?></p>
+      <?php endif; ?>
       <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:14px;">
         <?php if (empty($song['comments'])): ?>
           <p class="more-line">No feedback yet — be the first to weigh in.</p>
         <?php else: foreach ($song['comments'] as $c):
           $hue = array_sum(array_map('ord', str_split($c['username']))) % 360;
+          $canDelete = $currentUserId && ((int) $c['user_id'] === (int) $currentUserId || $isAdmin);
         ?>
           <div style="display:flex; gap:10px; background:var(--surface-2); border-radius:10px; padding:10px 12px;">
-            <div style="width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;background:hsl(<?= $hue ?>,55%,42%);">
-              <?= htmlspecialchars(mb_strtoupper(mb_substr($c['username'], 0, 2))) ?>
-            </div>
+            <a href="profile.php?user_id=<?= (int) $c['user_id'] ?>" style="width:28px;height:28px;border-radius:50%;flex-shrink:0;overflow:hidden;display:block;">
+              <?php if (!empty($c['avatar_path'])): ?>
+                <img src="<?= htmlspecialchars($c['avatar_path']) ?>" alt="" style="width:100%;height:100%;object-fit:cover;display:block;">
+              <?php else: ?>
+                <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;background:hsl(<?= $hue ?>,55%,42%);">
+                  <?= htmlspecialchars(mb_strtoupper(mb_substr($c['username'], 0, 2))) ?>
+                </div>
+              <?php endif; ?>
+            </a>
             <div style="flex:1; min-width:0;">
-              <a href="profile.html?user_id=<?= (int) $c['user_id'] ?>" style="text-decoration:none;">
+              <a href="profile.php?user_id=<?= (int) $c['user_id'] ?>" style="text-decoration:none;">
                 <span style="color:var(--text); font-weight:600;"><?= htmlspecialchars($c['username']) ?></span>
               </a>
               <span style="color:var(--text-dim); font-size:0.75rem;"> · <?= (int) $c['reputation_points'] ?> rep</span>
               <div style="margin-top:4px; color:var(--text-muted); font-size:0.88rem;"><?= htmlspecialchars($c['comment']) ?></div>
             </div>
+            <?php if ($canDelete): ?>
+              <form method="post" action="api/delete_comment_handler.php" style="margin:0;" onsubmit="return confirm('Delete this comment?');">
+                <input type="hidden" name="comment_id" value="<?= $c['id'] ?>">
+                <input type="hidden" name="redirect" value="<?= htmlspecialchars($currentUrl) ?>">
+                <button type="submit" class="icon-btn" title="Delete" style="width:28px; height:28px; font-size:0.95rem; color:var(--text-dim);">×</button>
+              </form>
+            <?php endif; ?>
           </div>
         <?php endforeach; endif; ?>
       </div>

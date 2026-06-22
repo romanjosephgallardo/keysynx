@@ -16,7 +16,7 @@ $__topbarDb = getDb();
 
 $currentUser = null;
 if (!empty($_SESSION['user_id'])) {
-    $stmt = $__topbarDb->prepare('SELECT id, username, role, reputation_points FROM users WHERE id = ?');
+    $stmt = $__topbarDb->prepare('SELECT id, username, role, reputation_points, avatar_path FROM users WHERE id = ?');
     $stmt->bind_param('i', $_SESSION['user_id']);
     $stmt->execute();
     $currentUser = $stmt->get_result()->fetch_assoc();
@@ -28,7 +28,6 @@ $currentUrl = $_SERVER['REQUEST_URI'];
 $authError = $_GET['auth_error'] ?? '';
 
 function navClass($page, $current) { return $page === $current ? 'active' : ''; }
-function avatarHue($username) { return array_sum(array_map('ord', str_split($username))) % 360; }
 ?>
 <header class="topbar">
   <div class="shell topbar-inner">
@@ -42,10 +41,16 @@ function avatarHue($username) { return array_sum(array_map('ord', str_split($use
 
     <?php if ($currentUser): ?>
       <div style="margin-left:auto; display:flex; align-items:center; gap:10px;">
-        <a href="profile.html?user_id=<?= (int) $currentUser['id'] ?>"
+        <a href="profile.php?user_id=<?= (int) $currentUser['id'] ?>"
            title="<?= htmlspecialchars($currentUser['username'] . ' · ' . $currentUser['reputation_tier']) ?>"
-           style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;text-decoration:none;background:hsl(<?= avatarHue($currentUser['username']) ?>,55%,42%);">
-          <?= htmlspecialchars(mb_strtoupper(mb_substr($currentUser['username'], 0, 2))) ?>
+           style="width:32px;height:32px;border-radius:50%;display:block;overflow:hidden;text-decoration:none;">
+          <?php if (!empty($currentUser['avatar_path'])): ?>
+            <img src="<?= htmlspecialchars($currentUser['avatar_path']) ?>" alt="" style="width:100%;height:100%;object-fit:cover;display:block;">
+          <?php else: ?>
+            <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;background:hsl(<?= avatarHue($currentUser['username']) ?>,55%,42%);">
+              <?= htmlspecialchars(mb_strtoupper(mb_substr($currentUser['username'], 0, 2))) ?>
+            </div>
+          <?php endif; ?>
         </a>
         <form method="post" action="api/logout_handler.php" style="display:inline; margin:0;">
           <input type="hidden" name="redirect" value="<?= htmlspecialchars($currentUrl) ?>">

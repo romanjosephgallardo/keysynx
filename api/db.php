@@ -36,6 +36,17 @@ function reputationTier(int $points): string {
     return 'New Contributor';
 }
 
+/**
+ * Shared avatar-color helper — used by partials/topbar.php, profile.php,
+ * and song.php. Defined once here (guarded) since several included files
+ * need it and PHP fatally errors on redeclaring a function.
+ */
+if (!function_exists('avatarHue')) {
+    function avatarHue(string $username): int {
+        return array_sum(array_map('ord', str_split($username))) % 360;
+    }
+}
+
 function jsonResponse($data, int $status = 200): void {
     http_response_code($status);
     header('Content-Type: application/json');

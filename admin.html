@@ -37,7 +37,7 @@
       <a href="submit.html">Submit</a>
       <a href="admin.html" class="active">Admin</a>
     </nav>
-    <div x-data="{ open:false, mode:'login', u:'', e:'', p:'' }" class="relative" style="margin-left:auto;">
+    <div x-data="{ open:false, mode:'login', u:'', e:'', p:'' }" class="relative" style="margin-left:12px;">
       <template x-if="$store.auth.loading">
         <span style="font-size:0.78rem; color:var(--text-dim);">···</span>
       </template>
@@ -46,7 +46,7 @@
       </template>
       <template x-if="!$store.auth.loading && $store.auth.user">
         <div style="display:flex; align-items:center; gap:10px;">
-          <a href="profile.html"
+          <a href="profile.php"
              :title="$store.auth.user.username + ' · ' + $store.auth.user.reputation_tier"
              :style="'width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;text-decoration:none;background:hsl(' + ($store.auth.user.username.split('').reduce((h,c)=>h+c.charCodeAt(0),0)%360) + ',55%,42%)'"
              x-text="$store.auth.user.username.slice(0,2).toUpperCase()"></a>

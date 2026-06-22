@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KeySynx — Music Key &amp; BPM Database</title>
+<link rel="stylesheet" href="css/style.css">
+
+<!-- Tailwind CSS (Play CDN — no build step, fits XAMPP/Apache setup) -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ksbg: '#14141A', kssurface: '#1E1E27', kssurface2: '#25252F',
+          ksborder: '#32323E', kstext: '#EDEDF2', ksmuted: '#8A8A99',
+          ksviolet: '#B9A3FF', ksverified: '#5EE6A8', kspending: '#F2B84B', ksrejected: '#EF5C6E'
+        },
+        fontFamily: { display: ['Space Grotesk','sans-serif'], body: ['Inter','sans-serif'] }
+      }
+    }
+  }
+</script>
+<!-- Alpine.js (CDN — handles new interactive widgets: comments, compat filter, reputation badges) -->
+<script src="js/auth.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a href="index.html" class="logo"><span class="dot"></span> KeySynx</a>
+    <nav class="nav-links">
+      <a href="index.html" class="active">Browse</a>
+      <a href="wheel.html">Wheel</a>
+      <a href="submit.html">Submit</a>
+      <a href="admin.html">Admin</a>
+    </nav>
+    <div class="search-wrap">
+      <input type="text" id="searchInput" class="search-input" placeholder="Search title or artist...">
+    </div>
+    <a href="submit.html" class="btn btn-primary">+ Add Song</a>
+    <div x-data="{ open:false, mode:'login', u:'', e:'', p:'' }" class="relative" style="margin-left:12px;">
+      <template x-if="$store.auth.loading">
+        <span style="font-size:0.78rem; color:var(--text-dim);">···</span>
+      </template>
+      <template x-if="!$store.auth.loading && !$store.auth.user">
+        <button @click="open = true" class="btn btn-sm">Log in</button>
+      </template>
+      <template x-if="!$store.auth.loading && $store.auth.user">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:0.78rem; color:var(--text-muted);" x-text="$store.auth.user.username + ' · ' + $store.auth.user.reputation_tier"></span>
+          <button @click="$store.auth.logout()" class="btn btn-sm btn-ghost">Log out</button>
+        </div>
+      </template>
+
+      <div x-show="open" @click.outside="open=false" x-cloak
+           style="position:absolute; right:0; margin-top:8px; width:280px; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px; z-index:30; box-shadow:0 12px 30px rgba(0,0,0,0.4);">
+        <div style="display:flex; gap:14px; margin-bottom:12px; font-size:0.88rem;">
+          <button @click="mode='login'" :style="mode==='login' ? 'color:var(--text); font-weight:600;' : 'color:var(--text-muted);'">Log in</button>
+          <button @click="mode='register'" :style="mode==='register' ? 'color:var(--text); font-weight:600;' : 'color:var(--text-muted);'">Register</button>
+        </div>
+        <input x-show="mode==='register'" x-model="e" type="email" placeholder="Email" class="search-input" style="width:100%; margin-bottom:8px;">
+        <input x-model="u" type="text" placeholder="Username" class="search-input" style="width:100%; margin-bottom:8px;">
+        <input x-model="p" type="password" placeholder="Password" class="search-input" style="width:100%; margin-bottom:8px;">
+        <p x-show="$store.auth.error" x-text="$store.auth.error" style="font-size:0.75rem; color:var(--rejected); margin-bottom:8px;"></p>
+        <button
+          @click="(async () => { const ok = mode==='login' ? await $store.auth.login(u,p) : await $store.auth.register(u,e,p); if(ok) open = false; })()"
+          class="btn btn-primary btn-sm" style="width:100%; justify-content:center;">
+          <span x-text="mode==='login' ? 'Log in' : 'Create account'"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="shell">
+  <!-- Hero / stats section (Tailwind) -->
+  <div class="relative overflow-hidden rounded-3xl border border-ksborder p-8 md:p-10 my-8"
+       style="background: linear-gradient(135deg, #15182B 0%, #1A1230 100%);">
+    <div class="grid md:grid-cols-[1fr_300px] gap-8 items-start">
+      <div>
+        <span class="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full border border-ksviolet/40 text-ksviolet">
+          ✦ Community-Verified Music Intelligence
+        </span>
+        <h1 class="font-display text-3xl md:text-5xl font-bold text-kstext mt-5 leading-tight">
+          Find transitions that<br>actually sound right.
+        </h1>
+        <p class="text-ksmuted mt-4 max-w-md">
+          KeySynx gives DJs, producers, and students a community-verified view of key, BPM, and harmonic compatibility — so you can search, mix, and study with confidence.
+        </p>
+        <div class="flex flex-wrap gap-2 mt-5">
+          <span class="text-xs px-3 py-1.5 rounded-full border border-ksborder text-ksmuted">🎚️ BPM intelligence</span>
+          <span class="text-xs px-3 py-1.5 rounded-full border border-ksborder text-ksmuted">🎹 Camelot-aware keys</span>
+          <span class="text-xs px-3 py-1.5 rounded-full border border-ksborder text-ksmuted">⚡ Fast filtering</span>
+        </div>
+        <div class="flex gap-3 mt-6">
+          <a href="wheel.html" class="btn btn-primary">✦ Start Matching →</a>
+          <a href="#libraryAnchor" class="btn btn-ghost">📚 Explore Library</a>
+        </div>
+      </div>
+
+      <div id="heroStats" class="flex flex-col gap-3">
+        <div class="bg-kssurface/60 border border-ksborder rounded-2xl p-4">
+          <div class="text-xs text-ksmuted uppercase tracking-wide">Library</div>
+          <div class="font-display text-2xl font-bold text-kstext mt-1" id="statSongs">···</div>
+          <div class="text-xs text-ksmuted mt-1">Tracks ready for discovery</div>
+        </div>
+        <div class="bg-kssurface/60 border border-ksborder rounded-2xl p-4">
+          <div class="text-xs text-ksmuted uppercase tracking-wide">Contributors</div>
+          <div class="font-display text-2xl font-bold text-kstext mt-1" id="statUsers">···</div>
+          <div class="text-xs text-ksmuted mt-1">Community members</div>
+        </div>
+        <div class="bg-kssurface/60 border border-ksborder rounded-2xl p-4">
+          <div class="text-xs text-ksmuted uppercase tracking-wide">Coverage</div>
+          <div class="font-display text-2xl font-bold text-kstext mt-1" id="statArtists">···</div>
+          <div class="text-xs text-ksmuted mt-1">Artists indexed</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-head" id="libraryAnchor">
+    <div class="eyebrow">Browse the database</div>
+    <h1 class="page-title">Search by title, artist, key, or BPM</h1>
+    <p class="page-sub">Community-analyzed key, BPM, and section breakdowns for harmonic mixing and study.</p>
+  </div>
+
+  <div class="filterbar">
+    <select id="keyFilter">
+      <option value="">All Keys</option>
+    </select>
+    <input type="number" id="bpmMin" placeholder="Min BPM" style="width:100px">
+    <input type="number" id="bpmMax" placeholder="Max BPM" style="width:100px">
+    <select id="compatibleWith">
+      <option value="">Compatible with... (any track)</option>
+    </select>
+    <label class="checkpill">
+      <input type="checkbox" id="verifiedOnly"> Verified only
+    </label>
+    <button class="btn btn-ghost btn-sm" id="resetFilters">Reset</button>
+  </div>
+
+  <div class="song-grid" id="songGrid">
+    <!-- cards injected by main.js -->
+  </div>
+</main>
+
+<footer>KeySynx · Final Project Prototype · Key &amp; BPM Analysis Platform</footer>
+
+<script src="js/data.js"></script>
+<script src="js/camelot.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

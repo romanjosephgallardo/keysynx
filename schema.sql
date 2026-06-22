@@ -1,606 +1,247 @@
--- KeySynx — Full catalog seed (all 5 artists, all albums incl. Ariana extras beyond Eternal Sunshine)
+-- ============================================
+-- KeySynx Database Schema (v2)
+-- Web-Based Music Analysis Platform — Key & BPM
+-- Now includes: section-based BPM/key timelines,
+-- contributor reputation, confidence score support,
+-- and contributor feedback (comments).
+-- Run this in phpMyAdmin (XAMPP) or via:
+--   mysql -u root -p < schema.sql
+-- ============================================
+
+CREATE DATABASE IF NOT EXISTS keysynx CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE keysynx;
 
--- ---------- Ariana Grande — Dangerous Woman ----------
-INSERT INTO albums (title, artist) VALUES ('Dangerous Woman', 'Ariana Grande');
-SET @album_id = LAST_INSERT_ID();
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Moonlight', 'Ariana Grande', 102, 'A Major', '11B', '12/8', 0, NULL, 'Uses some 7th chords', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Dangerous Woman', 'Ariana Grande', 134, 'G Major', '9B', '6/8', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Be Alright', 'Ariana Grande', 109, 'C# Minor', '12A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Into You', 'Ariana Grande', 108, 'F# Minor', '11A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Side To Side', 'Ariana Grande', 159, 'F# Minor', '11A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Let Me Love You', 'Ariana Grande', 139, 'E Minor', '9A', NULL, 0, NULL, 'Works well as harmonic minor', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Greedy', 'Ariana Grande', 110, 'F# Major', '2B', NULL, 1, '[{"section": "0:00-2:36", "key": "F# Major"}, {"section": "2:37-end", "key": "G# Major"}]', NULL, 'verified', NULL);
-SET @song_id = LAST_INSERT_ID();
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '0:00-2:36', 1, NULL, 'F# Major', '2B');
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '2:37-end', 2, NULL, 'G# Major', '4B');
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Leave Me Lonely', 'Ariana Grande', 91, 'G# Minor', '1A', '6/8', 0, NULL, 'Harmonic minor variant', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Everyday', 'Ariana Grande', 131, 'A# Major', '6B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Sometimes', 'Ariana Grande', 80, 'E Major', '12B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'I Don''t Care', 'Ariana Grande', 112, 'C Major', '8B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Bad Decisions', 'Ariana Grande', 132, 'G Major', '9B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Touch It', 'Ariana Grande', 101, 'G Minor', '6A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Knew Better / Forever Boy', 'Ariana Grande', 107, 'C# Major', '3B', NULL, 0, NULL, 'BPM shifts to 108 near the end', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Thinking Bout You', 'Ariana Grande', 103, 'B Major', '1B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Step On Up', 'Ariana Grande', 111, 'G Minor', '6A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Jason''s Song (Gave It Away)', 'Ariana Grande', 106, 'G Minor', '6A', NULL, 0, NULL, NULL, 'verified', NULL);
+-- ---------- USERS ----------
+-- reputation_points drives the Contributor Reputation System.
+-- role_tier is NOT stored — it's derived from reputation_points
+-- at read time (see api/db.php::reputationTier()), so thresholds
+-- can change without a data migration.
+CREATE TABLE users (
+    id                INT AUTO_INCREMENT PRIMARY KEY,
+    username          VARCHAR(50)  NOT NULL UNIQUE,
+    email             VARCHAR(120) NOT NULL UNIQUE,
+    password_hash     VARCHAR(255) NOT NULL,
+    role              ENUM('user', 'admin') NOT NULL DEFAULT 'user',
+    reputation_points INT NOT NULL DEFAULT 0,
+    avatar_initials   VARCHAR(4)   DEFAULT NULL,
+    created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
 
--- ---------- Ariana Grande — Sweetener ----------
-INSERT INTO albums (title, artist) VALUES ('Sweetener', 'Ariana Grande');
-SET @album_id = LAST_INSERT_ID();
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'raindrops (an angel cried)', 'Ariana Grande', NULL, 'F# Major', '2B', NULL, 0, NULL, 'Unfixed tempo (rubato)', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'blazed', 'Ariana Grande', 110, 'B Mixolydian', NULL, NULL, 0, NULL, 'Instrumental verse works as F# root', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'the light is coming', 'Ariana Grande', 99, 'C# Minor', '12A', NULL, 1, '[{"section": "Intro/Outro", "key": "Keyless (A root)"}, {"section": "Verse", "key": "C# Minor"}]', 'Alternates between keyless sections and C# Minor', 'verified', NULL);
-SET @song_id = LAST_INSERT_ID();
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, 'Intro/Outro', 1, NULL, 'Keyless (A root)', NULL);
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, 'Verse', 2, NULL, 'C# Minor', '12A');
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'R.E.M', 'Ariana Grande', 80, 'G# Mixolydian', NULL, NULL, 0, NULL, 'May work best with F# root', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'God is a woman', 'Ariana Grande', 145, 'D# Minor', '2A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'sweetener', 'Ariana Grande', 120, 'E Major', '12B', NULL, 0, NULL, 'Vocals lean Mixolydian in places', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'successful', 'Ariana Grande', 114, 'C Major', '8B', NULL, 1, '[{"section": "Verses (vocals)", "key": "D Minor"}, {"section": "Verses (inst)", "key": "G Mixolydian"}, {"section": "Chorus", "key": "C Major"}]', 'Verses: vocals D Minor over G Mixolydian instrumental', 'verified', NULL);
-SET @song_id = LAST_INSERT_ID();
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, 'Verses (vocals)', 1, NULL, 'D Minor', '7A');
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, 'Verses (inst)', 2, NULL, 'G Mixolydian', NULL);
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, 'Chorus', 3, NULL, 'C Major', '8B');
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'everytime', 'Ariana Grande', 148, 'A# Minor', '3A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'breathin', 'Ariana Grande', 100, 'F Minor', '4A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'no tears left to cry', 'Ariana Grande', 122, 'A Minor', '8A', NULL, 1, '[{"section": "Intro", "key": "C Major"}, {"section": "Verses/Postchorus", "key": "A Melodic Major"}, {"section": "Chorus/Bridge", "key": "A Minor"}]', 'Intro is rubato (~100-126 BPM)', 'verified', NULL);
-SET @song_id = LAST_INSERT_ID();
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, 'Intro', 1, 101, 'C Major', '8B');
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, 'Verses/Postchorus', 2, 122, 'A Melodic Major', NULL);
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, 'Chorus/Bridge', 3, 122, 'A Minor', '8A');
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'borderline', 'Ariana Grande', 111, 'D Minor', '7A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'better off', 'Ariana Grande', 92, 'B Major', '1B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'goodnight n go', 'Ariana Grande', 111, 'C# Major', '3B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'pete davidson', 'Ariana Grande', 120, 'B Mixolydian', NULL, NULL, 0, NULL, 'Uses triplets throughout (still 4/4)', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'get well soon', 'Ariana Grande', 100, 'G Mixolydian', NULL, NULL, 0, NULL, 'Borrows Cm from G Minor', 'verified', NULL);
+-- ---------- ALBUMS ----------
+CREATE TABLE albums (
+    id           INT AUTO_INCREMENT PRIMARY KEY,
+    title        VARCHAR(150) NOT NULL,
+    artist       VARCHAR(150) NOT NULL,
+    release_year INT DEFAULT NULL
+) ENGINE=InnoDB;
 
--- ---------- Ariana Grande — thank u, next ----------
-INSERT INTO albums (title, artist) VALUES ('thank u, next', 'Ariana Grande');
-SET @album_id = LAST_INSERT_ID();
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'imagine', 'Ariana Grande', 125, 'Ab Major', '4B', '3/4', 0, NULL, 'Verses borrow Ebm7 & Ab7', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'needy', 'Ariana Grande', 87, 'Eb Major', '5B', NULL, 0, NULL, 'Borrows Amø, AbΔ(b5), Eb7', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'NASA', 'Ariana Grande', 150, 'F# Major', '2B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'bloodline', 'Ariana Grande', 152, 'D Minor', '7A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'fake smile', 'Ariana Grande', 85, 'B Minor', '10A', NULL, 1, '[{"section": "Verses & Bridge", "key": "B Minor"}, {"section": "Rest", "key": "D Major"}]', NULL, 'verified', NULL);
-SET @song_id = LAST_INSERT_ID();
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, 'Verses & Bridge', 1, NULL, 'B Minor', '10A');
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, 'Rest', 2, NULL, 'D Major', '10B');
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'bad idea', 'Ariana Grande', 138, 'D# Minor', '2A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'make up', 'Ariana Grande', 140, 'D Mixolydian', NULL, NULL, 0, NULL, 'Vocals use triplets in verses', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'ghostin', 'Ariana Grande', 104, 'A Major', '11B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'in my head', 'Ariana Grande', 135, 'E Minor', '9A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, '7 rings', 'Ariana Grande', 140, 'C# Minor', '12A', '12/8', 0, NULL, 'Borrows G#maj; better as harmonic minor', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'thank u, next', 'Ariana Grande', 107, 'Db Major', '3B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'break up with your girlfriend, i''m bored', 'Ariana Grande', 170, 'C Minor', '5A', NULL, 1, '[{"section": "Pre-chorus", "key": "C Dorian"}, {"section": "Rest", "key": "C Minor"}]', NULL, 'verified', NULL);
-SET @song_id = LAST_INSERT_ID();
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, 'Pre-chorus', 1, NULL, 'C Dorian', NULL);
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, 'Rest', 2, NULL, 'C Minor', '5A');
+-- ---------- SONGS ----------
+CREATE TABLE songs (
+    id               INT AUTO_INCREMENT PRIMARY KEY,
+    album_id         INT DEFAULT NULL,
+    title            VARCHAR(150) NOT NULL,
+    artist           VARCHAR(150) NOT NULL,
+    bpm              DECIMAL(6,2) DEFAULT NULL,      -- NULL allowed: a few tracks are rubato/unsteady with no fixed tempo
+    musical_key      VARCHAR(30)  NOT NULL,
+    camelot_code     VARCHAR(3)   DEFAULT NULL,      -- derived from musical_key, see api/camelot.php
+    time_signature   VARCHAR(10)  DEFAULT NULL,
+    has_variation    BOOLEAN      NOT NULL DEFAULT 0,
+    section_keys     JSON         DEFAULT NULL,       -- legacy quick-view, e.g. [{"section":"Rest","key":"Bb Minor"}]
+    footnote         VARCHAR(255) DEFAULT NULL,
+    youtube_url      VARCHAR(255) DEFAULT NULL,       -- official YouTube link only — no audio file storage (proposal limitation #2)
+    tags             VARCHAR(255) DEFAULT NULL,
+    submitted_by     INT DEFAULT NULL,
+    status           ENUM('pending','verified','rejected') NOT NULL DEFAULT 'pending',
+    upvotes          INT NOT NULL DEFAULT 0,
+    downvotes        INT NOT NULL DEFAULT 0,
+    verified_at      TIMESTAMP NULL DEFAULT NULL,
+    created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (album_id) REFERENCES albums(id) ON DELETE SET NULL,
+    FOREIGN KEY (submitted_by) REFERENCES users(id) ON DELETE SET NULL,
+    INDEX idx_search (title, artist),
+    INDEX idx_bpm (bpm),
+    INDEX idx_key (musical_key),
+    INDEX idx_camelot (camelot_code)
+) ENGINE=InnoDB;
 
--- ---------- Ariana Grande — Positions ----------
-INSERT INTO albums (title, artist) VALUES ('Positions', 'Ariana Grande');
-SET @album_id = LAST_INSERT_ID();
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'shut up', 'Ariana Grande', 128, 'C Major', '8B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, '34+35', 'Ariana Grande', 110, 'F Major', '7B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'motive (ft. doja cat)', 'Ariana Grande', 117, 'A# Minor', '3A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'just like magic', 'Ariana Grande', 128, 'G# Major', '4B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'off the table (ft. the weeknd)', 'Ariana Grande', 101, 'C Major', '8B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'six thirty', 'Ariana Grande', 120, 'C Major', '8B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'safety net (ft. ty dolla $ign)', 'Ariana Grande', 81, 'C# Minor', '12A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'my hair', 'Ariana Grande', 92, 'A Minor', '8A', NULL, 0, NULL, '"A root" — major/minor ambiguous in source', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'nasty', 'Ariana Grande', 128, 'A Major', '11B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'west side', 'Ariana Grande', 88, 'B Minor', '10A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'love language', 'Ariana Grande', 110, 'C Major', '8B', NULL, 0, NULL, 'Melodic major; borrows minor coloring', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'positions', 'Ariana Grande', 72, 'D Minor', '7A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'obvious', 'Ariana Grande', 80, 'C Major', '8B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'pov', 'Ariana Grande', 132, 'Eb Major', '5B', NULL, 0, NULL, NULL, 'verified', NULL);
+-- ---------- SONG SECTIONS ----------
+-- Powers "Section-Based Key/BPM Transitions" (Core Feature #3).
+-- bpm/musical_key are NULLABLE — leave NULL when a section doesn't
+-- deviate from the song's overall bpm/key (saves re-typing repeats).
+CREATE TABLE song_sections (
+    id           INT AUTO_INCREMENT PRIMARY KEY,
+    song_id      INT NOT NULL,
+    section_name VARCHAR(60) NOT NULL,      -- e.g. 'Intro', 'Verse & Bridge', 'Rest'
+    order_index  INT NOT NULL DEFAULT 0,
+    bpm          DECIMAL(6,2) DEFAULT NULL,
+    musical_key  VARCHAR(30)  DEFAULT NULL,
+    camelot_code VARCHAR(3)   DEFAULT NULL,
+    FOREIGN KEY (song_id) REFERENCES songs(id) ON DELETE CASCADE,
+    INDEX idx_song (song_id, order_index)
+) ENGINE=InnoDB;
 
--- ---------- Ariana Grande — Positions (Deluxe) ----------
-INSERT INTO albums (title, artist) VALUES ('Positions (Deluxe)', 'Ariana Grande');
-SET @album_id = LAST_INSERT_ID();
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Someone Like You', 'Ariana Grande', 118, 'A# Major', '6B', NULL, 0, NULL, 'Borrows Bmaj7/C#maj7 throughout', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Test Drive', 'Ariana Grande', 115, 'A Minor', '8A', NULL, 0, NULL, 'Borrows harmonic minor and Gm7', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Worst Behavior', 'Ariana Grande', 100, 'C Minor', '5A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Main Thing', 'Ariana Grande', 134, 'E Mixolydian', NULL, NULL, 0, NULL, NULL, 'verified', NULL);
+-- ---------- VOTES ----------
+CREATE TABLE votes (
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    song_id     INT NOT NULL,
+    user_id     INT NOT NULL,
+    vote_type   ENUM('up','down') NOT NULL,
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (song_id) REFERENCES songs(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_vote (song_id, user_id)
+) ENGINE=InnoDB;
 
--- ---------- Ariana Grande — My Everything ----------
-INSERT INTO albums (title, artist) VALUES ('My Everything', 'Ariana Grande');
-SET @album_id = LAST_INSERT_ID();
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Intro', 'Ariana Grande', NULL, 'F# Major', '2B', NULL, 0, NULL, 'Tempo unsteady', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Problem', 'Ariana Grande', 103, 'G# Minor', '1A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'One Last Time', 'Ariana Grande', 125, 'Ab Major', '4B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Why Try', 'Ariana Grande', 160, 'B Major', '1B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Break Free', 'Ariana Grande', 130, 'G Minor', '6A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Best Mistake', 'Ariana Grande', 144, 'Bb Minor', '3A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Be My Baby', 'Ariana Grande', 145, 'D# Minor', '2A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Break Your Heart Right Back', 'Ariana Grande', 94, 'D# Minor', '2A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Love Me Harder', 'Ariana Grande', 99, 'C# Minor', '12A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Just a Little Bit of Your Heart', 'Ariana Grande', 78, 'A Major', '11B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Hands on Me', 'Ariana Grande', 97.98, 'B Minor', '10A', NULL, 0, NULL, 'Verses/outro lean Phrygian Dominant', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'My Everything', 'Ariana Grande', 62, 'F# Major', '2B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Bang Bang', 'Ariana Grande', 150, 'C Minor', '5A', NULL, 0, NULL, 'Chorus is C Mixolydian', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Only 1', 'Ariana Grande', 101.5, 'A Minor', '8A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'You Don''t Know Me', 'Ariana Grande', 170, 'D Minor', '7A', NULL, 0, NULL, NULL, 'verified', NULL);
+-- ---------- CONTRIBUTOR FEEDBACK (comments) ----------
+-- Powers the "contributor feedback" part of Community Validation (Core Feature #4).
+CREATE TABLE song_comments (
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    song_id     INT NOT NULL,
+    user_id     INT NOT NULL,
+    comment     TEXT NOT NULL,
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (song_id) REFERENCES songs(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
 
--- ---------- Ariana Grande — Yours Truly ----------
-INSERT INTO albums (title, artist) VALUES ('Yours Truly', 'Ariana Grande');
-SET @album_id = LAST_INSERT_ID();
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Honeymoon Avenue', 'Ariana Grande', 125, 'F# Mixolydian', NULL, NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Baby I', 'Ariana Grande', 102, 'Db Major', '3B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Right There', 'Ariana Grande', 156, 'G Major', '9B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Tattooed Heart', 'Ariana Grande', 108, 'G Major', '9B', '6/8', 1, '[{"section": "0:00-2:13", "key": "G Major"}, {"section": "2:13-end", "key": "Ab Major"}]', NULL, 'verified', NULL);
-SET @song_id = LAST_INSERT_ID();
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '0:00-2:13', 1, NULL, 'G Major', '9B');
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '2:13-end', 2, NULL, 'Ab Major', '4B');
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Lovin'' It', 'Ariana Grande', 94, 'E Major', '12B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Piano', 'Ariana Grande', 120, 'E Major', '12B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Daydreamin''', 'Ariana Grande', 114, 'G Major', '9B', '6/8', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'The Way', 'Ariana Grande', 82.5, 'Ab Major', '4B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'You''ll Never Know', 'Ariana Grande', 105, 'F# Major', '2B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Almost Is Never Enough', 'Ariana Grande', 122.5, 'D Major', '10B', '3/4', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Popular Song', 'Ariana Grande', 99, 'Eb Major', '5B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Better Left Unsaid', 'Ariana Grande', 130, 'A Major', '11B', NULL, 0, NULL, NULL, 'verified', NULL);
+-- ---------- REPUTATION LOG ----------
+-- Audit trail for the Contributor Reputation System's point events:
+--   Correct submission  +10  (awarded when a new analysis is submitted)
+--   Verified analysis   +15  (awarded when status flips to 'verified')
+--   Rejected analysis    -5  (awarded when status flips to 'rejected')
+CREATE TABLE reputation_log (
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    user_id     INT NOT NULL,
+    song_id     INT DEFAULT NULL,
+    points      INT NOT NULL,
+    reason      VARCHAR(100) NOT NULL,
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (song_id) REFERENCES songs(id) ON DELETE SET NULL
+) ENGINE=InnoDB;
 
--- ---------- Ariana Grande — Christmas & Chill ----------
-INSERT INTO albums (title, artist) VALUES ('Christmas & Chill', 'Ariana Grande');
-SET @album_id = LAST_INSERT_ID();
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'December', 'Ariana Grande', NULL, 'F# Minor', '11A', NULL, 0, NULL, 'BPM not specified in source', 'verified', NULL);
+-- ---------- ADMIN MODERATION LOG ----------
+CREATE TABLE moderation_log (
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    song_id     INT NOT NULL,
+    admin_id    INT NOT NULL,
+    action      ENUM('approved','rejected','edited','deleted','role_changed') NOT NULL,
+    notes       VARCHAR(255) DEFAULT NULL,
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (song_id) REFERENCES songs(id) ON DELETE CASCADE,
+    FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
 
--- ---------- Ariana Grande — Singles & Features ----------
-INSERT INTO albums (title, artist) VALUES ('Singles & Features', 'Ariana Grande');
-SET @album_id = LAST_INSERT_ID();
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'I Don''t Do Drugs', 'Ariana Grande', 77, 'F Major', '7B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Met Him Last Night', 'Ariana Grande', 145, 'E Minor', '9A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Die For You (Remix)', 'Ariana Grande', 134, 'Db Minor', '12A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Save Your Tears (Remix)', 'Ariana Grande', 118, 'C Major', '8B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Rain On Me', 'Ariana Grande', 123, 'C# Minor', '12A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Bed', 'Ariana Grande', 90, 'E Minor', '9A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Rule The World', 'Ariana Grande', 88, 'Eb Minor', '2A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Focus', 'Ariana Grande', 100, 'B Major', '1B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Don''t Call Me Angel', 'Ariana Grande', NULL, 'C Minor', '5A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Bad To You', 'Ariana Grande', 148, 'D Minor', '7A', NULL, 0, NULL, 'Vocals borrow raised 7th/3rd', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'How I Look On You', 'Ariana Grande', NULL, 'E Minor', '9A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Got Her Own', 'Ariana Grande', NULL, 'F# Minor', '11A', NULL, 0, NULL, 'Section between chorus/drop is neapolitan minor', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Santa Tell Me', 'Ariana Grande', 96, 'G Major', '9B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Stuck With You', 'Ariana Grande', 179, 'G# Major', '4B', '6/8', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Just Look Up', 'Ariana Grande', 130, 'A Major', '11B', NULL, 0, NULL, 'Two-stage tempo ramp near the start', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'MONOPOLY', 'Ariana Grande', 72, 'A Minor', '8A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'boyfriend', 'Ariana Grande', 95, 'A# Minor', '3A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Heatstroke', 'Ariana Grande', 110, 'Eb Major', '5B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Quit', 'Ariana Grande', 135, 'C Minor', '5A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Put Your Hearts Up', 'Ariana Grande', 81, 'A Major', '11B', NULL, 0, NULL, NULL, 'verified', NULL);
+-- ============================================
+-- TRIGGERS
+-- ============================================
+DELIMITER //
 
--- ---------- Ariana Grande — Unreleased ----------
-INSERT INTO albums (title, artist) VALUES ('Unreleased', 'Ariana Grande');
-SET @album_id = LAST_INSERT_ID();
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Like That (Jada)', 'Ariana Grande', 86.5, 'C# Phrygian Dominant', NULL, NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Juice', 'Ariana Grande', 150, 'C Major', '8B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Ridiculous', 'Ariana Grande', 97.5, 'C Minor', '5A', '6/8', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Esta Noche', 'Ariana Grande', 107, 'Eb Minor', '2A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'In The Moment', 'Ariana Grande', 138, 'G Minor', '6A', NULL, 0, NULL, 'Borrows C# note', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Fuckin'' With You', 'Ariana Grande', 125, 'D Minor', '7A', NULL, 0, NULL, 'Last chorus is E Minor', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'My Way', 'Ariana Grande', 140, 'C# Minor', '12A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'That Bitch Is Mine', 'Ariana Grande', 134, 'C# Minor', '12A', NULL, 0, NULL, 'Vocals lean natural minor', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Not Ok', 'Ariana Grande', 110, 'G Major', '9B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Remember', 'Ariana Grande', 128, 'A# Major', '6B', NULL, 0, NULL, 'Borrows Fm7 & Bmaj7', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Sex', 'Ariana Grande', 115, 'Eb Major', '5B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Outgrown', 'Ariana Grande', 94, 'Eb Major', '5B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Real', 'Ariana Grande', 156, 'C Minor', '5A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Dream', 'Ariana Grande', 158, 'G Minor', '6A', NULL, 0, NULL, 'Borrows F#maj throughout', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'White Tee / Wifey', 'Ariana Grande', 138.7, 'E Minor', '9A', NULL, 0, NULL, 'Detuned by -50 cents', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Fantasize', 'Ariana Grande', 94, 'A Minor', '8A', NULL, 0, NULL, 'Harmonic minor', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Sweet Dreams', 'Ariana Grande', 145, 'F Major', '7B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Cocoon', 'Ariana Grande', 140, 'G Major', '9B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'First Time', 'Ariana Grande', 122, 'B Minor', '10A', NULL, 0, NULL, 'Borrows Emaj throughout', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'No Free Promo', 'Ariana Grande', 110, 'B Minor', '10A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'My Fault', 'Ariana Grande', 85, 'Ab Major', '4B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Y Is Everyone So In Love With Me', 'Ariana Grande', 83.5, 'B Minor', '10A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Hi', 'Ariana Grande', 86, 'C Major', '8B', NULL, 0, NULL, 'Borrows Amaj throughout', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Don''t Talk To My Man', 'Ariana Grande', 84, 'E Minor', '9A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'He Had It Comin', 'Ariana Grande', 125, 'F Minor', '4A', NULL, 0, NULL, 'Harmonic minor; borrows Fmaj in chorus', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Young Love', 'Ariana Grande', 97, 'E Major', '12B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'True Story (Unreleased)', 'Ariana Grande', 138, 'A Minor', '8A', NULL, 0, NULL, 'Harmonic minor', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'All That', 'Ariana Grande', 104, 'C Minor', '5A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Human', 'Ariana Grande', 120, 'Bb Minor', '3A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Still On Your Mind', 'Ariana Grande', 144, 'Ab Major', '4B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Hate That You Made Me Love You', 'Ariana Grande', 93.5, 'G Minor', '6A', '6/8', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'What Would You', 'Ariana Grande', 85, 'A Minor', '8A', NULL, 0, NULL, 'Harmonic minor', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Gloss', 'Ariana Grande', 90, 'A Minor', '8A', NULL, 0, NULL, 'Borrows Emaj', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Soul Idea', 'Ariana Grande', 98, 'G Major', '9B', NULL, 0, NULL, NULL, 'verified', NULL);
+-- +10 reputation the moment a submission is created.
+CREATE TRIGGER trg_submission_reward
+AFTER INSERT ON songs
+FOR EACH ROW
+BEGIN
+    IF NEW.submitted_by IS NOT NULL THEN
+        UPDATE users SET reputation_points = reputation_points + 10 WHERE id = NEW.submitted_by;
+        INSERT INTO reputation_log (user_id, song_id, points, reason)
+        VALUES (NEW.submitted_by, NEW.id, 10, 'Correct submission');
+    END IF;
+END//
 
--- ---------- Britney Spears — Glory ----------
-INSERT INTO albums (title, artist) VALUES ('Glory', 'Britney Spears');
-SET @album_id = LAST_INSERT_ID();
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Invitation', 'Britney Spears', 114, 'C# Major', '3B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Make Me...', 'Britney Spears', 123, 'Bb Major', '6B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Private Show', 'Britney Spears', 112.5, 'D Major', '10B', '12/8', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Man On The Moon', 'Britney Spears', 110, 'Bb Major', '6B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Just Luv Me', 'Britney Spears', 92, 'A Minor', '8A', NULL, 0, NULL, 'Possibly F Lydian or a mix — needs confirmation', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Clumsy', 'Britney Spears', 104, 'F Minor', '4A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Do You Wanna Come Over?', 'Britney Spears', 121, 'E Major', '12B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Slumber Party', 'Britney Spears', 135, 'C Major', '8B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Just Like Me', 'Britney Spears', 102, 'A Minor', '8A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Love Me Down', 'Britney Spears', 99, 'D Minor', '7A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Hard To Forget Ya', 'Britney Spears', 115, 'A Major', '11B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'What You Need', 'Britney Spears', 77, 'A Minor', '8A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Better', 'Britney Spears', 97, 'Bb Minor', '3A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Change Your Mind', 'Britney Spears', 118, 'B Minor', '10A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Liar', 'Britney Spears', 80, 'F# Minor', '11A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'If I''m Dancing', 'Britney Spears', 124, 'Ab Major', '4B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Coupure Eléctrique', 'Britney Spears', 110, 'C Minor', '5A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Mood Ring', 'Britney Spears', 105, 'Ab Minor', '1A', NULL, 0, NULL, NULL, 'verified', NULL);
+-- Auto-verify at net upvotes >= 5, and award/deduct reputation on any
+-- status transition (this fires again, once, for the nested UPDATE
+-- below — that second pass is what actually grants the +15).
+CREATE TRIGGER trg_song_status_change
+AFTER UPDATE ON songs
+FOR EACH ROW
+BEGIN
+    IF (NEW.upvotes - NEW.downvotes) >= 5 AND NEW.status = 'pending' THEN
+        UPDATE songs SET status = 'verified', verified_at = NOW() WHERE id = NEW.id;
+    END IF;
 
--- ---------- Britney Spears — Femme Fatale ----------
-INSERT INTO albums (title, artist) VALUES ('Femme Fatale', 'Britney Spears');
-SET @album_id = LAST_INSERT_ID();
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Till The World Ends', 'Britney Spears', 132, 'C Minor', '5A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Gasoline', 'Britney Spears', NULL, 'B Minor', '10A', NULL, 0, NULL, NULL, 'verified', NULL);
+    IF NEW.status = 'verified' AND OLD.status <> 'verified' AND NEW.submitted_by IS NOT NULL THEN
+        UPDATE users SET reputation_points = reputation_points + 15 WHERE id = NEW.submitted_by;
+        INSERT INTO reputation_log (user_id, song_id, points, reason)
+        VALUES (NEW.submitted_by, NEW.id, 15, 'Verified analysis');
+    END IF;
 
--- ---------- Britney Spears — Circus ----------
-INSERT INTO albums (title, artist) VALUES ('Circus', 'Britney Spears');
-SET @album_id = LAST_INSERT_ID();
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Womanizer', 'Britney Spears', NULL, 'C# Phrygian', NULL, '12/8', 0, NULL, NULL, 'verified', NULL);
+    IF NEW.status = 'rejected' AND OLD.status <> 'rejected' AND NEW.submitted_by IS NOT NULL THEN
+        UPDATE users SET reputation_points = reputation_points - 5 WHERE id = NEW.submitted_by;
+        INSERT INTO reputation_log (user_id, song_id, points, reason)
+        VALUES (NEW.submitted_by, NEW.id, -5, 'Rejected analysis');
+    END IF;
+END//
 
--- ---------- Britney Spears — Blackout ----------
-INSERT INTO albums (title, artist) VALUES ('Blackout', 'Britney Spears');
-SET @album_id = LAST_INSERT_ID();
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Gimme More', 'Britney Spears', 113.33, 'G Minor', '6A', NULL, 0, NULL, 'Detuned by -25 cents', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Perfect Lover', 'Britney Spears', 117, 'F# Minor', '11A', NULL, 0, NULL, NULL, 'verified', NULL);
+DELIMITER ;
 
--- ---------- Britney Spears — Singles & Features ----------
-INSERT INTO albums (title, artist) VALUES ('Singles & Features', 'Britney Spears');
-SET @album_id = LAST_INSERT_ID();
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Hold Me Closer', 'Britney Spears', 126, 'A Minor', '8A', NULL, 0, NULL, NULL, 'verified', NULL);
+-- ============================================
+-- SEED DATA
+-- ============================================
+INSERT INTO users (username, email, password_hash, role, reputation_points, avatar_initials) VALUES
+('admin',     'admin@keysynx.com',     '$2y$10$examplehashadmin', 'admin', 0,   'AD'),
+('djkurt',    'kurt@keysynx.com',      '$2y$10$examplehashuser1', 'user',  35,  'DK'),
+('romanmix',  'roman@keysynx.com',     '$2y$10$examplehashuser2', 'user',  62,  'RM'),
+('community', 'community@keysynx.com', '$2y$10$examplehashcomm',  'user',  120, 'CM'),
+('julianav',  'juliana@keysynx.com',   '$2y$10$examplehashuser4', 'user',  48,  'JV'),
+('keannahmh', 'keannah@keysynx.com',   '$2y$10$examplehashuser5', 'user',  27,  'KM'),
+('mixmaster', 'mixmaster@keysynx.com', '$2y$10$examplehashuser6', 'user',  91,  'MM'),
+('djsynx',    'djsynx@keysynx.com',    '$2y$10$examplehashuser7', 'user',  15,  'DS'),
+('harmonyfan','harmony@keysynx.com',   '$2y$10$examplehashuser8', 'user',  8,   'HF'),
+('beatlab',   'beatlab@keysynx.com',   '$2y$10$examplehashuser9', 'user',  56,  'BL');
 
--- ---------- Harry Styles — Harry's House ----------
-INSERT INTO albums (title, artist) VALUES ('Harry''s House', 'Harry Styles');
-SET @album_id = LAST_INSERT_ID();
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Music For A Sushi Restaurant', 'Harry Styles', 107, 'F# Mixolydian', NULL, '4/4', 1, '[{"section": "Intro", "key": "F# Minor"}, {"section": "Rest", "key": "F# Mixolydian"}]', 'Borrows D#maj & Dmaj in chorus, A note in horns', 'verified', NULL);
-SET @song_id = LAST_INSERT_ID();
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, 'Intro', 1, NULL, 'F# Minor', '11A');
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, 'Rest', 2, NULL, 'F# Mixolydian', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Late Night Talking', 'Harry Styles', 115, 'Bb Major', '6B', '4/4', 0, NULL, 'Borrows D7 throughout, Ebm in chorus', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Grapejuice', 'Harry Styles', 91.5, 'F Major', '7B', '4/4', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'As It Was', 'Harry Styles', 174, 'A Major', '11B', '4/4', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Daylight', 'Harry Styles', 97, 'C Major', '8B', '4/4', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Little Freak', 'Harry Styles', 142, 'Eb Major', '5B', '4/4', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Matilda', 'Harry Styles', 114, 'D Major', '10B', '4/4', 0, NULL, 'Borrows F#7 & E7 in bridge', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Cinema', 'Harry Styles', 106, 'A Minor', '8A', '4/4', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Daydreaming', 'Harry Styles', 114, 'E Minor', '9A', '4/4', 0, NULL, 'Bass borrows Eb note', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Keep Driving', 'Harry Styles', 165, 'A Major', '11B', '12/8', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Satellite', 'Harry Styles', 139, 'A Minor', '8A', '4/4', 0, NULL, 'May also work well as C Major', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Boyfriends', 'Harry Styles', 88.5, 'C Major', '8B', '12/8', 0, NULL, 'Briefly borrows D7 in bridge', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Love Of My Life', 'Harry Styles', 118, 'G Major', '9B', '4/4', 0, NULL, 'Borrows Bmaj throughout, Dm in post-chorus', 'verified', NULL);
+INSERT INTO albums (title, artist, release_year) VALUES
+('Eternal Sunshine', 'Ariana Grande', 2024);
 
--- ---------- Harry Styles — Fine Line ----------
-INSERT INTO albums (title, artist) VALUES ('Fine Line', 'Harry Styles');
-SET @album_id = LAST_INSERT_ID();
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Golden', 'Harry Styles', 140, 'E Minor', '9A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Watermelon Sugar', 'Harry Styles', 95, 'D Dorian', NULL, NULL, 0, NULL, 'BPM steps from 95 to 95.5 partway through', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Adore You', 'Harry Styles', 99, 'C Minor', '5A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Lights Up', 'Harry Styles', 102, 'Bb Minor', '3A', NULL, 1, '[{"section": "0:00-2:24", "key": "Bb Minor"}, {"section": "2:24-2:34", "key": "Bb Minor"}, {"section": "2:34-end", "key": "Bb Minor"}]', 'Borrows Bb major chord; tempo eases later', 'verified', NULL);
-SET @song_id = LAST_INSERT_ID();
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '0:00-2:24', 1, 102, 'Bb Minor', '3A');
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '2:24-2:34', 2, 94, 'Bb Minor', '3A');
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '2:34-end', 3, 88, 'Bb Minor', '3A');
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Cherry', 'Harry Styles', 96, 'G Major', '9B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Falling', 'Harry Styles', 110, 'E Major', '12B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'To Be So Lonely', 'Harry Styles', 105, 'C Major', '8B', '12/8', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'She', 'Harry Styles', 93.33, 'E Minor', '9A', '3/4', 0, NULL, 'Borrows Dm chord from phrygian; B7#5(#9) as a color chord', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Sunflower, Vol. 6', 'Harry Styles', 160, 'F Major', '7B', NULL, 0, NULL, 'Chorus is 158 BPM', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Canyon Moon', 'Harry Styles', 94, 'D Major', '10B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Treat People With Kindness', 'Harry Styles', 122, 'C Mixolydian', NULL, NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Fine Line', 'Harry Styles', 121, 'D Major', '10B', NULL, 0, NULL, NULL, 'verified', NULL);
+-- NOTE: inserting these rows fires trg_submission_reward (+10 each to user id 4 "community").
+INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, submitted_by, status, upvotes, downvotes) VALUES
+(1, 'intro (end of the world)', 'Ariana Grande', 85.00, 'Bb Major', '6B', NULL, 0, NULL,
+ 'Borrows Gmaj & Dmaj throughout', 4, 'verified', 12, 0),
 
--- ---------- Harry Styles — Self Titled (Harry Styles) ----------
-INSERT INTO albums (title, artist) VALUES ('Self Titled (Harry Styles)', 'Harry Styles');
-SET @album_id = LAST_INSERT_ID();
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Meet Me In The Hallway', 'Harry Styles', 103, 'G Major', '9B', '4/4', 0, NULL, 'Tempo unsteady', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Sign Of The Times', 'Harry Styles', 120, 'F Major', '7B', '4/4', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Carolina', 'Harry Styles', 122, 'E Mixolydian', NULL, '4/4', 0, NULL, 'Shifts to parallel E Minor in choruses', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Two Ghosts', 'Harry Styles', 70, 'E Major', '12B', '4/4', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Sweet Creature', 'Harry Styles', 106, 'G Major', '9B', '4/4', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Only Angel', 'Harry Styles', 114, 'E Major', '12B', '4/4', 0, NULL, 'Intro is F#; recommend starting with C# Minor', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Kiwi', 'Harry Styles', 147, 'E Major', '12B', '12/8', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Ever Since New York', 'Harry Styles', 96, 'F Major', '7B', '4/4', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Woman', 'Harry Styles', 147, 'F# Major', '2B', '12/8', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'From The Dining Table', 'Harry Styles', 147, 'Eb Major', '5B', '4/4', 0, NULL, 'Structure/time signature uncertain in places', 'verified', NULL);
+(1, 'bye', 'Ariana Grande', 110.00, 'D Minor', '7A', NULL, 1,
+ '[{"section":"Bridge","key":"F Minor"},{"section":"Rest","key":"D Minor"}]',
+ NULL, 4, 'verified', 10, 0),
 
--- ---------- Taylor Swift — Midnights (3am Edition) ----------
-INSERT INTO albums (title, artist) VALUES ('Midnights (3am Edition)', 'Taylor Swift');
-SET @album_id = LAST_INSERT_ID();
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Lavender Haze', 'Taylor Swift', 97, 'Bb Major', '6B', '4/4', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Maroon', 'Taylor Swift', 108, 'G Major', '9B', '4/4', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Anti-Hero', 'Taylor Swift', 96.94, 'E Major', '12B', '4/4', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Snow On The Beach (feat. Lana Del Rey)', 'Taylor Swift', 110, 'A Major', '11B', '4/4', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'You''re On Your Own, Kid', 'Taylor Swift', 120, 'D Major', '10B', '4/4', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Midnight Rain', 'Taylor Swift', 140, 'C Major', '8B', '4/4', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Question...?', 'Taylor Swift', 109, 'C Major', '8B', '4/4', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Vigilante Shit', 'Taylor Swift', 80, 'A Minor', '8A', '4/4', 0, NULL, 'Borrows G# from harmonic minor in bridge', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Bejeweled', 'Taylor Swift', 82, 'C Major', '8B', '4/4', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Labyrinth', 'Taylor Swift', 110, 'C Major', '8B', '4/4', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Karma', 'Taylor Swift', 90, 'Eb Mixolydian', NULL, '4/4', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Sweet Nothing', 'Taylor Swift', 112, 'C Major', '8B', '12/8', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Mastermind', 'Taylor Swift', 126, 'E Major', '12B', '4/4', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'The Great War', 'Taylor Swift', 96, 'Bb Major', '6B', '4/4', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Bigger Than The Whole Sky', 'Taylor Swift', 84, 'F# Major', '2B', '4/4', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Paris', 'Taylor Swift', 111, 'G Major', '9B', '4/4', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'High Infidelity', 'Taylor Swift', 88, 'Bb Major', '6B', '4/4', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Glitch', 'Taylor Swift', 70, 'A Major', '11B', '4/4', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Would''ve, Could''ve, Should''ve', 'Taylor Swift', 79, 'G Major', '9B', '4/4', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Dear Reader', 'Taylor Swift', 54, 'C Major', '8B', '4/4', 0, NULL, NULL, 'verified', NULL);
+(1, "don't wanna break up again", 'Ariana Grande', 97.00, 'F Major', '7B', NULL, 0, NULL,
+ 'Borrows B7 throughout; bridge borrows Abmaj & F#maj', 4, 'verified', 8, 0),
 
--- ---------- Taylor Swift — Self Titled (Taylor Swift) ----------
-INSERT INTO albums (title, artist) VALUES ('Self Titled (Taylor Swift)', 'Taylor Swift');
-SET @album_id = LAST_INSERT_ID();
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Tim McGraw', 'Taylor Swift', 152, 'C Major', '8B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Picture To Burn', 'Taylor Swift', 106, 'G Major', '9B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Teardrops On My Guitar', 'Taylor Swift', 100, 'A# Major', '6B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'A Place In This World', 'Taylor Swift', 115, 'A Major', '11B', NULL, 0, NULL, 'Borrows G at end of each chorus', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Cold As You', 'Taylor Swift', 88, 'F Major', '7B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'The Outside', 'Taylor Swift', 113, 'F Major', '7B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Tied Together With A Smile', 'Taylor Swift', 146, 'D Major', '10B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Stay Beautiful', 'Taylor Swift', 132, 'G# Major', '4B', NULL, 0, NULL, 'Swing 4/4; borrows A#, bridge Fm', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Should''ve Said No', 'Taylor Swift', 84, 'G Major', '9B', NULL, 0, NULL, 'Intro/chorus Em, borrows A', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Mary''s Song (Oh My My My)', 'Taylor Swift', 151, 'D Major', '10B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Our Song', 'Taylor Swift', 89, 'D Major', '10B', NULL, 0, NULL, 'Swing 4/4', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'I''m Only Me When I''m With You', 'Taylor Swift', 144, 'G# Major', '4B', NULL, 0, NULL, 'Bridge Fm, borrows A#', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Invisible', 'Taylor Swift', 96, 'G Major', '9B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'A Perfectly Good Heart', 'Taylor Swift', 156, 'E Major', '12B', NULL, 0, NULL, NULL, 'verified', NULL);
+(1, 'eternal sunshine', 'Ariana Grande', 80.00, 'A Major', '11B', NULL, 0, NULL,
+ 'Instrumental subtly borrows Dbmaj throughout', 4, 'verified', 15, 0),
 
--- ---------- Taylor Swift — Fearless (Taylor's Version) ----------
-INSERT INTO albums (title, artist) VALUES ('Fearless (Taylor''s Version)', 'Taylor Swift');
-SET @album_id = LAST_INSERT_ID();
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Fearless (Taylor''s Version)', 'Taylor Swift', 100, 'F Major', '7B', NULL, 0, NULL, 'Bridge borrows Eb', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Fifteen (Taylor''s Version)', 'Taylor Swift', 95, 'G Major', '9B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Love Story (Taylor''s Version)', 'Taylor Swift', 119, 'D Major', '10B', NULL, 1, '[{"section": "3:18-end", "key": "E Major"}]', NULL, 'verified', NULL);
-SET @song_id = LAST_INSERT_ID();
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '3:18-end', 1, NULL, 'E Major', '12B');
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Hey Stephen (Taylor''s Version)', 'Taylor Swift', 116, 'F# Major', '2B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'White Horse (Taylor''s Version)', 'Taylor Swift', 92, 'C Major', '8B', NULL, 0, NULL, 'End of bridge borrows Bb', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'You Belong With Me (Taylor''s Version)', 'Taylor Swift', 130, 'F# Major', '2B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Breathe (feat. Colbie Caillat) (Taylor''s Version)', 'Taylor Swift', 148, 'C# Major', '3B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Tell Me Why (Taylor''s Version)', 'Taylor Swift', 100, 'G Major', '9B', NULL, 0, NULL, 'Bridge Em, borrows A', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'You''re Not Sorry (Taylor''s Version)', 'Taylor Swift', 134, 'F# Major', '2B', NULL, 0, NULL, 'Chorus borrows Ddim, swing 4/4', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'The Way I Loved You (Taylor''s Version)', 'Taylor Swift', 80.5, 'F Major', '7B', NULL, 0, NULL, 'Borrows Bbm at several points', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Forever & Always (Taylor''s Version)', 'Taylor Swift', 128, 'Bb Major', '6B', NULL, 0, NULL, 'Bridge/outro Gm', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'The Best Day (Taylor''s Version)', 'Taylor Swift', 126, 'C# Major', '3B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Change (Taylor''s Version)', 'Taylor Swift', 96, 'F Major', '7B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Jump Then Fall (Taylor''s Version)', 'Taylor Swift', 80, 'D Major', '10B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Untouchable (Taylor''s Version)', 'Taylor Swift', 100, 'F Major', '7B', NULL, 0, NULL, 'Ritardando in outro', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Forever & Always (Piano Version) (Taylor''s Version)', 'Taylor Swift', 118.6, 'A Major', '11B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Come In With The Rain (Taylor''s Version)', 'Taylor Swift', 144, 'D Major', '10B', NULL, 0, NULL, 'Chorus borrows Amaj', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Superstar (Taylor''s Version)', 'Taylor Swift', 86, 'D Major', '10B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'The Other Side Of The Door (Taylor''s Version)', 'Taylor Swift', 82, 'E Major', '12B', NULL, 0, NULL, 'Borrows Dmaj in prechorus/bridge', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Today Was A Fairytale (Taylor''s Version)', 'Taylor Swift', 79, 'G Major', '9B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'You All Over Me (feat. Maren Morris) (Taylor''s Version) (From The Vault)', 'Taylor Swift', 143, 'D Major', '10B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Mr. Perfectly Fine (From The Vault)', 'Taylor Swift', 136, 'D Major', '10B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'We Were Happy (From The Vault)', 'Taylor Swift', 106, 'C Major', '8B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'That''s When (feat. Keith Urban) (From The Vault)', 'Taylor Swift', 90, 'F Major', '7B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Don''t You (From The Vault)', 'Taylor Swift', 102, 'D# Major', '5B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Bye Bye Baby (From The Vault)', 'Taylor Swift', 80, 'F Major', '7B', NULL, 0, NULL, 'Borrows Gmaj in choruses', 'verified', NULL);
+(1, 'supernatural', 'Ariana Grande', 153.00, 'Ab Major', '4B', NULL, 0, NULL,
+ NULL, 4, 'verified', 11, 0),
 
--- ---------- Taylor Swift — Speak Now ----------
-INSERT INTO albums (title, artist) VALUES ('Speak Now', 'Taylor Swift');
-SET @album_id = LAST_INSERT_ID();
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Mine', 'Taylor Swift', 121, 'G Major', '9B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Sparks Fly', 'Taylor Swift', 115, 'F Major', '7B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Back to December', 'Taylor Swift', 142, 'D Major', '10B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Speak Now', 'Taylor Swift', 118.96, 'G Major', '9B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Dear John', 'Taylor Swift', 119.5, 'E Major', '12B', '3/4', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Mean', 'Taylor Swift', 163.96, 'E Major', '12B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'The Story of Us', 'Taylor Swift', 140, 'E Major', '12B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Never Grow Up', 'Taylor Swift', 125, 'D Major', '10B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Enchanted', 'Taylor Swift', 164, 'Ab Major', '4B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Better Than Revenge', 'Taylor Swift', 145.5, 'B Minor', '10A', NULL, 0, NULL, 'Unfixed tempo', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Innocent', 'Taylor Swift', 134, 'C# Minor', '12A', NULL, 1, '[{"section": "0:00-1:11", "key": "C# Minor"}, {"section": "1:11-1:26", "key": "E Major"}, {"section": "1:26-2:37", "key": "C# Minor"}, {"section": "2:37-3:06", "key": "E Major"}]', 'Alternates between C# Minor and E Major across the song', 'verified', NULL);
-SET @song_id = LAST_INSERT_ID();
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '0:00-1:11', 1, NULL, 'C# Minor', '12A');
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '1:11-1:26', 2, NULL, 'E Major', '12B');
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '1:26-2:37', 3, NULL, 'C# Minor', '12A');
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '2:37-3:06', 4, NULL, 'E Major', '12B');
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Haunted', 'Taylor Swift', 162.5, 'D Minor', '7A', NULL, 0, NULL, 'Unfixed tempo', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Last Kiss', 'Taylor Swift', 158.93, 'Bb Major', '6B', '3/4', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Long Live', 'Taylor Swift', 102, 'G Major', '9B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Ours', 'Taylor Swift', 160, 'C Major', '8B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'If This Was a Movie', 'Taylor Swift', 148, 'E Major', '12B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Superman', 'Taylor Swift', 132, 'G Major', '9B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Back to December (Acoustic)', 'Taylor Swift', 141.9, 'D Major', '10B', NULL, 0, NULL, 'Unfixed tempo', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Haunted (Acoustic)', 'Taylor Swift', 162, 'D Minor', '7A', NULL, 0, NULL, 'Unfixed tempo', 'verified', NULL);
+(1, 'true story', 'Ariana Grande', 138.00, 'A Minor', '8A', NULL, 0, NULL,
+ 'Borrows Emaj throughout; would work well as harmonic minor', 4, 'pending', 4, 1),
 
--- ---------- Taylor Swift — Red ----------
-INSERT INTO albums (title, artist) VALUES ('Red', 'Taylor Swift');
-SET @album_id = LAST_INSERT_ID();
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'State Of Grace', 'Taylor Swift', 130, 'E Major', '12B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Red', 'Taylor Swift', 125, 'E Major', '12B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Treacherous', 'Taylor Swift', 110, 'D Major', '10B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'I Knew You Were Trouble', 'Taylor Swift', 154, 'Eb Minor', '2A', NULL, 1, '[{"section": "0:00-0:40", "key": "Gb Major"}, {"section": "0:40-1:18", "key": "Eb Minor"}, {"section": "1:18-1:55", "key": "Gb Major"}, {"section": "1:55-end", "key": "Eb Minor"}]', NULL, 'verified', NULL);
-SET @song_id = LAST_INSERT_ID();
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '0:00-0:40', 1, NULL, 'Gb Major', '2B');
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '0:40-1:18', 2, NULL, 'Eb Minor', '2A');
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '1:18-1:55', 3, NULL, 'Gb Major', '2B');
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '1:55-end', 4, NULL, 'Eb Minor', '2A');
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'All Too Well', 'Taylor Swift', 93, 'C Major', '8B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, '22', 'Taylor Swift', 104, 'G Major', '9B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'I Almost Do', 'Taylor Swift', 146, 'E Major', '12B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'We Are Never Ever Getting Back Together', 'Taylor Swift', 86, 'G Major', '9B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Stay Stay Stay', 'Taylor Swift', 100, 'C Major', '8B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'The Last Time (feat. Gary Lightbody)', 'Taylor Swift', 94, 'D Major', '10B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Holy Ground', 'Taylor Swift', 157, 'E Major', '12B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Sad Beautiful Tragic', 'Taylor Swift', 131.65, 'G Major', '9B', '3/4', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'The Lucky One', 'Taylor Swift', 118, 'E Major', '12B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Everything Has Changed', 'Taylor Swift', 80, 'Gb Major', '2B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Starlight', 'Taylor Swift', 126, 'E Major', '12B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Begin Again', 'Taylor Swift', 158, 'G Major', '9B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'The Moment I Knew', 'Taylor Swift', 126, 'G Major', '9B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Come Back… Be Here', 'Taylor Swift', 80, 'E Major', '12B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Girl At Home', 'Taylor Swift', 125, 'F Major', '7B', NULL, 0, NULL, NULL, 'verified', NULL);
+(1, 'the boy is mine', 'Ariana Grande', 98.00, 'G Minor', '6A', NULL, 0, NULL,
+ 'Quick ritard before the chorus; borrows Dmaj at end of bridge', 4, 'verified', 9, 0),
 
--- ---------- Taylor Swift — 1989 ----------
-INSERT INTO albums (title, artist) VALUES ('1989', 'Taylor Swift');
-SET @album_id = LAST_INSERT_ID();
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Welcome to New York', 'Taylor Swift', 117, 'G Major', '9B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Blank Space', 'Taylor Swift', 96, 'F Major', '7B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Style', 'Taylor Swift', 95, 'D Major', '10B', NULL, 0, NULL, 'Verses are B Minor, choruses are D Major', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Out Of The Woods', 'Taylor Swift', 92, 'C Major', '8B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'All You Had To Do Was Stay', 'Taylor Swift', 97, 'F Major', '7B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Shake It Off', 'Taylor Swift', 80, 'G Mixolydian', NULL, NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'I Wish You Would', 'Taylor Swift', 118, 'C Major', '8B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Bad Blood', 'Taylor Swift', 85, 'G Major', '9B', NULL, 0, NULL, 'Kendrick Lamar remix version is mostly E Minor', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Wildest Dreams', 'Taylor Swift', 140, 'Ab Major', '4B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'How You Get The Girl', 'Taylor Swift', 120, 'F Major', '7B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'This Love', 'Taylor Swift', 72, 'E Major', '12B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'I Know Places', 'Taylor Swift', 80, 'A Minor', '8A', NULL, 0, NULL, 'Ambiguous between A Minor (verses) and C Major (choruses)', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Clean', 'Taylor Swift', 104, 'E Major', '12B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Wonderland', 'Taylor Swift', 92, 'Eb Major', '5B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'You Are In Love', 'Taylor Swift', 85, 'A Major', '11B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'New Romantics', 'Taylor Swift', 122, 'F Major', '7B', NULL, 0, NULL, NULL, 'verified', NULL);
+(1, 'yes, and?', 'Ariana Grande', 119.00, 'Bb Minor', '3A', NULL, 1,
+ '[{"section":"Verse & Bridge","key":"Bb Mixolydian"},{"section":"Rest","key":"Bb Minor"}]',
+ NULL, 4, 'verified', 18, 0),
 
--- ---------- Taylor Swift — Reputation ----------
-INSERT INTO albums (title, artist) VALUES ('Reputation', 'Taylor Swift');
-SET @album_id = LAST_INSERT_ID();
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, '...Ready For It?', 'Taylor Swift', 80, 'E Minor', '9A', NULL, 0, NULL, 'Chorus is G Major', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'End Game', 'Taylor Swift', 79.5, 'A Minor', '8A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'I Did Something Bad', 'Taylor Swift', 83, 'G Minor', '6A', NULL, 0, NULL, 'Vocals borrow raised 4th stylistically', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Don''t Blame Me', 'Taylor Swift', 135.5, 'A Minor', '8A', '12/8', 0, NULL, 'BPM shifts to 136 outside the intro', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Delicate', 'Taylor Swift', 95, 'C Major', '8B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Look What You Made Me Do', 'Taylor Swift', 128, 'A Minor', '8A', NULL, 0, NULL, 'Borrows E major chord from harmonic minor', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'So It Goes', 'Taylor Swift', 150, 'D Major', '10B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Gorgeous', 'Taylor Swift', 92, 'C Major', '8B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Getaway Car', 'Taylor Swift', 86, 'C Major', '8B', NULL, 1, '[{"section": "0:00-2:17", "key": "C Major"}, {"section": "2:17-end", "key": "D Major"}]', NULL, 'verified', NULL);
-SET @song_id = LAST_INSERT_ID();
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '0:00-2:17', 1, NULL, 'C Major', '8B');
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '2:17-end', 2, NULL, 'D Major', '10B');
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'King Of My Heart', 'Taylor Swift', 110, 'C Major', '8B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Dancing With Our Hands Tied', 'Taylor Swift', 80, 'C Minor', '5A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Dress', 'Taylor Swift', 120, 'C Major', '8B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'This Is Why We Can''t Have Nice Things', 'Taylor Swift', 82, 'F Mixolydian', NULL, NULL, 0, NULL, 'Verses F Mixolydian, rest F Major; lots of triplets', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Call It What You Want', 'Taylor Swift', 82, 'A Major', '11B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'New Year''s Day', 'Taylor Swift', 94, 'C Major', '8B', NULL, 0, NULL, 'Unfixed tempo', 'verified', NULL);
+(1, "we can't be friends (wait for your love)", 'Ariana Grande', 116.00, 'F Major', '7B', NULL, 0, NULL,
+ NULL, 4, 'verified', 21, 0),
 
--- ---------- Taylor Swift — Lover ----------
-INSERT INTO albums (title, artist) VALUES ('Lover', 'Taylor Swift');
-SET @album_id = LAST_INSERT_ID();
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'I Forgot That You Existed', 'Taylor Swift', 95, 'F Major', '7B', NULL, 0, NULL, 'Bridge is D Minor', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Cruel Summer', 'Taylor Swift', 85, 'A Major', '11B', NULL, 0, NULL, 'Verses are F# Minor', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Lover', 'Taylor Swift', 102.75, 'G Major', '9B', '6/8', 0, NULL, 'Bridge borrows F from mixolydian', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'The Man', 'Taylor Swift', 110, 'A Minor', '8A', NULL, 0, NULL, 'Works equally well as C Major', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'The Archer', 'Taylor Swift', 125, 'C Major', '8B', NULL, 0, NULL, 'Verses are A Minor', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'I Think He Knows', 'Taylor Swift', 100, 'Bb Major', '6B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Miss Americana & The Heartbreak Prince', 'Taylor Swift', 75, 'B Minor', '10A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Paper Rings', 'Taylor Swift', 104, 'D Major', '10B', NULL, 1, '[{"section": "0:00-1:55", "key": "D Major"}, {"section": "1:55-end", "key": "E Major"}]', NULL, 'verified', NULL);
-SET @song_id = LAST_INSERT_ID();
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '0:00-1:55', 1, NULL, 'D Major', '10B');
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '1:55-end', 2, NULL, 'E Major', '12B');
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Cornelia Street', 'Taylor Swift', 102, 'C Major', '8B', NULL, 0, NULL, 'Prechorus and bridge are A Minor', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Death By A Thousand Cuts', 'Taylor Swift', 94, 'E Major', '12B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'London Boy', 'Taylor Swift', 79, 'F# Major', '2B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Soon You''ll Get Better', 'Taylor Swift', 104, 'C Major', '8B', NULL, 0, NULL, 'Borrows Fm near the end of the bridge', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'False God', 'Taylor Swift', 80, 'B Minor', '10A', NULL, 0, NULL, 'Chorus and intro are D Major', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'You Need To Calm Down', 'Taylor Swift', 85, 'D Major', '10B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Afterglow', 'Taylor Swift', 111, 'A Major', '11B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'ME! (feat. Brendon Urie)', 'Taylor Swift', NULL, 'C Major', '8B', NULL, 0, NULL, 'Detuned +18 cents approximately', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'It''s Nice To Have A Friend', 'Taylor Swift', 140, 'Bb Major', '6B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Daylight (Lover)', 'Taylor Swift', 75, 'C Major', '8B', NULL, 0, NULL, NULL, 'verified', NULL);
+(1, 'i wish i hated you', 'Ariana Grande', 98.25, 'G Major', '9B', '6/8', 0, NULL,
+ NULL, 4, 'pending', 5, 0),
 
--- ---------- Taylor Swift — folklore ----------
-INSERT INTO albums (title, artist) VALUES ('folklore', 'Taylor Swift');
-SET @album_id = LAST_INSERT_ID();
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'the 1', 'Taylor Swift', 140, 'C Major', '8B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'cardigan', 'Taylor Swift', 130, 'Eb Major', '5B', '12/8', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'the last great american dynasty', 'Taylor Swift', 148, 'G Major', '9B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'exile', 'Taylor Swift', 152, 'F# Major', '2B', NULL, 0, NULL, 'Tempo drifts gradually across the song (roughly 143-153 BPM)', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'my tears ricochet', 'Taylor Swift', 130, 'A Minor', '8A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'mirrorball', 'Taylor Swift', 110, 'D Major', '10B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'seven', 'Taylor Swift', 95, 'B Mixolydian', NULL, NULL, 1, '[{"section": "0:00-1:22", "key": "B Mixolydian"}, {"section": "1:22-1:53", "key": "C# Minor"}, {"section": "1:53-2:44", "key": "B Mixolydian"}, {"section": "2:44-end", "key": "C# Minor"}]', NULL, 'verified', NULL);
-SET @song_id = LAST_INSERT_ID();
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '0:00-1:22', 1, NULL, 'B Mixolydian', NULL);
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '1:22-1:53', 2, NULL, 'C# Minor', '12A');
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '1:53-2:44', 3, NULL, 'B Mixolydian', NULL);
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '2:44-end', 4, NULL, 'C# Minor', '12A');
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'august', 'Taylor Swift', 90, 'F Major', '7B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'this is me trying', 'Taylor Swift', 136, 'A Major', '11B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'illicit affairs', 'Taylor Swift', 120, 'Bb Major', '6B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'invisible string', 'Taylor Swift', 83.5, 'D Major', '10B', NULL, 0, NULL, 'Borrows chords from D Mixolydian', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'mad woman', 'Taylor Swift', 142, 'C Minor', '5A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'epiphany', 'Taylor Swift', 93, 'Db Major', '3B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'betty', 'Taylor Swift', 96, 'C Major', '8B', NULL, 1, '[{"section": "Chorus & Verses", "key": "C Major"}, {"section": "Prechorus & Bridge", "key": "A Minor"}, {"section": "Last Chorus", "key": "D Major"}]', NULL, 'verified', NULL);
-SET @song_id = LAST_INSERT_ID();
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, 'Chorus & Verses', 1, NULL, 'C Major', '8B');
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, 'Prechorus & Bridge', 2, NULL, 'A Minor', '8A');
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, 'Last Chorus', 3, NULL, 'D Major', '10B');
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'peace', 'Taylor Swift', 150, 'F Major', '7B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'hoax', 'Taylor Swift', 119, 'Ab Major', '4B', '12/8', 0, NULL, 'Unfixed tempo', 'verified', NULL);
+(1, 'imperfect for you', 'Ariana Grande', 75.00, 'E Major', '12B', '6/8', 0, NULL,
+ 'Borrows Fmaj, Bbm, F#maj', 4, 'pending', 3, 0),
 
--- ---------- Taylor Swift — evermore ----------
-INSERT INTO albums (title, artist) VALUES ('evermore', 'Taylor Swift');
-SET @album_id = LAST_INSERT_ID();
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'willow', 'Taylor Swift', 84, 'E Minor', '9A', NULL, 0, NULL, 'Chorus is G Major', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'champagne problems', 'Taylor Swift', 86, 'C Major', '8B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'gold rush', 'Taylor Swift', 112, 'A Major', '11B', NULL, 0, NULL, 'Chorus is A Mixolydian', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, '''tis the damn season', 'Taylor Swift', 146, 'F Major', '7B', NULL, 0, NULL, 'Works equally well as D Minor', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'tolerate it', 'Taylor Swift', 75, 'A Major', '11B', '5/4', 0, NULL, 'Bridge is F# Minor', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'no body, no crime', 'Taylor Swift', 79, 'G Minor', '6A', NULL, 0, NULL, 'Bridge borrows D from harmonic minor', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'happiness', 'Taylor Swift', 122, 'B Major', '1B', NULL, 0, NULL, 'Bridge moves through B Mixolydian/E Major into C# Minor', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'dorothea', 'Taylor Swift', 120, 'E Major', '12B', '12/8', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'coney island', 'Taylor Swift', 108, 'Ab Major', '4B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'ivy', 'Taylor Swift', 89, 'D Major', '10B', NULL, 0, NULL, '1:51-2:12 is B Minor', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'cowboy like me', 'Taylor Swift', 128, 'C Major', '8B', NULL, 0, NULL, 'Bridge is A Dorian', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'long story short', 'Taylor Swift', 158, 'C Major', '8B', NULL, 0, NULL, 'Bridge is A Minor', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'marjorie', 'Taylor Swift', 96, 'F Major', '7B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'closure', 'Taylor Swift', 152, 'A Major', '11B', '5/4', 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'evermore', 'Taylor Swift', 100, 'C# Major', '3B', NULL, 1, '[{"section": "0:00-2:37", "key": "C# Major"}, {"section": "2:37-3:42", "key": "C# Major"}, {"section": "3:42-end", "key": "C# Major"}]', 'Tempo steps up to 121 then settles around 104', 'verified', NULL);
-SET @song_id = LAST_INSERT_ID();
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '0:00-2:37', 1, 100, 'C# Major', '3B');
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '2:37-3:42', 2, 121, 'C# Major', '3B');
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '3:42-end', 3, 104, 'C# Major', '3B');
+(1, 'ordinary things', 'Ariana Grande', 115.00, 'Db Major', '3B', NULL, 0, NULL,
+ 'Borrows G#m throughout', 4, 'verified', 13, 0);
 
--- ---------- Bruno Mars — Unorthodox Jukebox ----------
-INSERT INTO albums (title, artist) VALUES ('Unorthodox Jukebox', 'Bruno Mars');
-SET @album_id = LAST_INSERT_ID();
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Young Girls', 'Bruno Mars', 126, 'A Major', '11B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Locked Out of Heaven', 'Bruno Mars', 144, 'D Minor', '7A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Gorilla', 'Bruno Mars', 140, 'B Minor', '10A', NULL, 0, NULL, 'Verses B Minor, choruses D Mixolydian, bridge B Minor', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Treasure', 'Bruno Mars', 116, 'C Minor', '5A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Moonshine', 'Bruno Mars', 105, 'A Minor', '8A', NULL, 0, NULL, 'Borrows dorian/harmonic minor/phrygian throughout', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'When I Was Your Man', 'Bruno Mars', 146, 'A Minor', '8A', NULL, 0, NULL, 'Prechorus borrows Bb; bridge borrows D dorian', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Natalie', 'Bruno Mars', 112, 'D Minor', '7A', NULL, 0, NULL, 'Bridge borrows Bø', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Show Me', 'Bruno Mars', 156, 'C Mixolydian', NULL, NULL, 0, NULL, 'Intro (first 2 seconds) is rubato', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Money Make Her Smile', 'Bruno Mars', 93, 'E Minor', '9A', NULL, 0, NULL, 'Bridge is E Phrygian', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'If I Knew', 'Bruno Mars', 88, 'Eb Major', '5B', '6/8', 0, NULL, 'BPM shifts to ~82 around 1:56; bridge is C Minor', 'verified', NULL);
+-- Section timelines for the two tracks that actually have section-specific data
+INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES
+(2, 'Bridge', 1, NULL, 'F Minor', '4A'),
+(2, 'Rest', 2, NULL, 'D Minor', '7A'),
+(8, 'Verse & Bridge', 1, NULL, 'Bb Mixolydian', NULL),
+(8, 'Rest', 2, NULL, 'Bb Minor', '3A');
 
--- ---------- Bruno Mars — Doo-Wops & Hooligans ----------
-INSERT INTO albums (title, artist) VALUES ('Doo-Wops & Hooligans', 'Bruno Mars');
-SET @album_id = LAST_INSERT_ID();
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Grenade', 'Bruno Mars', 110.5, 'D Minor', '7A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Just The Way You Are', 'Bruno Mars', 109, 'F Major', '7B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Our First Time', 'Bruno Mars', 156, 'D Dorian', NULL, NULL, 0, NULL, 'Borrows D harmonic minor throughout', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Runaway Baby', 'Bruno Mars', 82, 'D# Minor', '2A', NULL, 0, NULL, 'Actual BPM is 164, halved here; chorus borrows harmonic minor', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'The Lazy Song', 'Bruno Mars', 87.5, 'B Major', '1B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Marry You', 'Bruno Mars', 145, 'F Major', '7B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Talking To The Moon', 'Bruno Mars', 146, 'C# Minor', '12A', NULL, 0, NULL, 'Works equally well as E Major', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Liquor Store Blues (feat. Damian Marley)', 'Bruno Mars', 151, 'C# Minor', '12A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Count on Me', 'Bruno Mars', 89, 'C Major', '8B', NULL, 0, NULL, 'Bridge instrumental is relative minor (A Minor)', 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'The Other Side (feat. CeeLo Green & B.o.B.)', 'Bruno Mars', 140, 'F Minor', '4A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Somewhere in Brooklyn', 'Bruno Mars', 130, 'Bb Major', '6B', NULL, 0, NULL, 'Intro tempo is unstable/rubato', 'verified', NULL);
-
--- ---------- Bruno Mars — 24K Magic ----------
-INSERT INTO albums (title, artist) VALUES ('24K Magic', 'Bruno Mars');
-SET @album_id = LAST_INSERT_ID();
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, '24K Magic', 'Bruno Mars', 107, 'F Minor', '4A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Versace On The Floor', 'Bruno Mars', 174, 'D Major', '10B', NULL, 1, '[{"section": "0:00-3:17", "key": "D Major"}, {"section": "3:17-4:02", "key": "Eb Major"}, {"section": "4:02-end", "key": "E Major"}]', NULL, 'verified', NULL);
-SET @song_id = LAST_INSERT_ID();
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '0:00-3:17', 1, NULL, 'D Major', '10B');
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '3:17-4:02', 2, NULL, 'Eb Major', '5B');
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '4:02-end', 3, NULL, 'E Major', '12B');
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'That''s What I Like', 'Bruno Mars', 134, 'Bb Minor', '3A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Chunky', 'Bruno Mars', 101, 'C Minor', '5A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Calling All My Lovelies', 'Bruno Mars', 160, 'E Major', '12B', NULL, 1, '[{"section": "0:00-2:36", "key": "E Major"}, {"section": "2:36-2:48", "key": "G Major"}, {"section": "2:48-end", "key": "E Major"}]', 'Sometimes uses C major chords; intro/outro lean A Mixolydian', 'verified', NULL);
-SET @song_id = LAST_INSERT_ID();
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '0:00-2:36', 1, NULL, 'E Major', '12B');
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '2:36-2:48', 2, NULL, 'G Major', '9B');
-INSERT INTO song_sections (song_id, section_name, order_index, bpm, musical_key, camelot_code) VALUES (@song_id, '2:48-end', 3, NULL, 'E Major', '12B');
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Too Good To Say Goodbye', 'Bruno Mars', 154, 'A Major', '11B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Finesse', 'Bruno Mars', 105, 'F Minor', '4A', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Straight Up & Down', 'Bruno Mars', 144, 'Db Major', '3B', NULL, 0, NULL, NULL, 'verified', NULL);
-INSERT INTO songs (album_id, title, artist, bpm, musical_key, camelot_code, time_signature, has_variation, section_keys, footnote, status, submitted_by) VALUES (@album_id, 'Perm', 'Bruno Mars', 124, 'G Minor', '6A', NULL, 0, NULL, NULL, 'verified', NULL);
+-- Sample contributor feedback
+INSERT INTO song_comments (song_id, user_id, comment) VALUES
+(8, 2, 'Can confirm the Bb Mixolydian shift in the verse — the bassline gives it away.'),
+(6, 3, 'I hear this more as harmonic minor in the bridge, matches the footnote.');

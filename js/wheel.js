@@ -124,6 +124,7 @@ function renderTrackMode(){
     <div class="track-title" style="font-size:1.1rem;">${current.title}</div>
     <div class="track-artist">${current.artist} · <span class="num">${current.bpm ?? 'unfixed tempo'}</span>${current.bpm !== null ? ' BPM' : ''} · ${current.musicalKey}${currentCode ? ` (${currentCode})` : ' — not mappable'}</div>
   `;
+  document.getElementById('keySearchInput').value = current.musicalKey;
 
   const list = document.getElementById('recList');
   if(!recs.length){
@@ -208,17 +209,41 @@ document.getElementById('backToTrackBtn').addEventListener('click', () => {
   renderTrackMode();
 });
 
-// ---------------- Event wiring ----------------
-document.getElementById('trackSelect').addEventListener('change', (e) => {
-  currentId = Number(e.target.value);
-  renderTrackMode();
+// ---------------- Key search input ----------------
+// Case-insensitive lookup so "b major", "B Major", or a raw Camelot
+// code like "1b" all resolve correctly.
+const KEY_NAME_LOOKUP = {};
+Object.keys(CAMELOT_MAP).forEach(k => { KEY_NAME_LOOKUP[k.toLowerCase()] = CAMELOT_MAP[k]; });
+
+function resolveKeyQuery(raw){
+  const q = raw.trim();
+  if(!q) return null;
+  if(KEY_NAME_LOOKUP[q.toLowerCase()]) return KEY_NAME_LOOKUP[q.toLowerCase()];
+  const codeMatch = q.match(/^(\d{1,2})\s*([ab])$/i);
+  if(codeMatch){
+    const code = `${codeMatch[1]}${codeMatch[2].toUpperCase()}`;
+    if(REVERSE_CAMELOT[code]) return code;
+  }
+  return null;
+}
+
+function populateKeyDatalist(){
+  const list = document.getElementById('keyOptions');
+  const names = Object.keys(CAMELOT_MAP).sort();
+  const codes = Object.keys(REVERSE_CAMELOT).sort();
+  list.innerHTML = [...names, ...codes].map(v => `<option value="${v}"></option>`).join('');
+}
+
+document.getElementById('keySearchInput').addEventListener('input', (e) => {
+  const code = resolveKeyQuery(e.target.value);
+  if(code) renderKeyMode(code);
 });
 
+// ---------------- Event wiring ----------------
 document.getElementById('wheelSvg').addEventListener('click', (e) => {
   const dot = e.target.closest('.track-dot');
   if(dot){
     currentId = Number(dot.dataset.id);
-    document.getElementById('trackSelect').value = currentId;
     renderTrackMode();
     return;
   }
@@ -231,7 +256,6 @@ document.getElementById('wheelSvg').addEventListener('click', (e) => {
 document.getElementById('recList').addEventListener('click', (e) => {
   if(e.target.classList.contains('rec-select')){
     currentId = Number(e.target.closest('.rec-row').dataset.id);
-    document.getElementById('trackSelect').value = currentId;
     renderTrackMode();
   }
 });
@@ -239,6 +263,7 @@ document.getElementById('recList').addEventListener('click', (e) => {
 // ---------------- Boot ----------------
 async function boot(){
   document.getElementById('wheelGroup').insertAdjacentHTML('beforeend', buildWheelSkeleton());
+  populateKeyDatalist();
 
   try {
     const res = await fetch('api/songs.php?per_page=500&verified_only=0');
@@ -255,15 +280,17 @@ async function boot(){
     allSongs = await fetchSongs();
   }
 
-  const select = document.getElementById('trackSelect');
-  select.innerHTML = allSongs.map(s => `<option value="${s.id}">${s.title} — ${s.artist}</option>`).join('');
-
   const params = new URLSearchParams(window.location.search);
   const requestedId = Number(params.get('id'));
-  currentId = allSongs.find(s => s.id === requestedId) ? requestedId : allSongs[0].id;
-  select.value = currentId;
 
-  renderTrackMode();
+  if(allSongs.find(s => s.id === requestedId)){
+    currentId = requestedId;
+    renderTrackMode();
+  } else {
+    // No specific track requested — default into key mode so the
+    // search box is the natural starting point, per the new flow.
+    renderKeyMode('8B'); // C Major — a neutral, common default
+  }
 }
 
 boot();

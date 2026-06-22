@@ -37,10 +37,7 @@
       <a href="submit.html">Submit</a>
       <a href="admin.html">Admin</a>
     </nav>
-    <div class="search-wrap">
-      <input type="text" id="searchInput" class="search-input" placeholder="Search title or artist...">
-    </div>
-    <a href="submit.html" class="btn btn-primary">+ Add Song</a>
+    <a href="submit.html" class="btn btn-primary" style="margin-left:auto;">+ Add Song</a>
     <div x-data="{ open:false, mode:'login', u:'', e:'', p:'' }" class="relative" style="margin-left:12px;">
       <template x-if="$store.auth.loading">
         <span style="font-size:0.78rem; color:var(--text-dim);">···</span>
@@ -50,7 +47,7 @@
       </template>
       <template x-if="!$store.auth.loading && $store.auth.user">
         <div style="display:flex; align-items:center; gap:8px;">
-          <span style="font-size:0.78rem; color:var(--text-muted);" x-text="$store.auth.user.username + ' · ' + $store.auth.user.reputation_tier"></span>
+          <a href="profile.html" style="font-size:0.78rem; color:var(--text-muted); text-decoration:none;" x-text="$store.auth.user.username + ' · ' + $store.auth.user.reputation_tier"></a>
           <button @click="$store.auth.logout()" class="btn btn-sm btn-ghost">Log out</button>
         </div>
       </template>
@@ -128,14 +125,12 @@
   </div>
 
   <div class="filterbar">
+    <input type="text" id="searchInput" class="search-input" placeholder="Search title or artist..." style="flex:1; min-width:220px;">
     <select id="keyFilter">
       <option value="">All Keys</option>
     </select>
     <input type="number" id="bpmMin" placeholder="Min BPM" style="width:100px">
     <input type="number" id="bpmMax" placeholder="Max BPM" style="width:100px">
-    <select id="compatibleWith">
-      <option value="">Compatible with... (any track)</option>
-    </select>
     <label class="checkpill">
       <input type="checkbox" id="verifiedOnly"> Verified only
     </label>

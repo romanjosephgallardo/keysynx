@@ -14,7 +14,7 @@ let state = {
   perPage: 25,
   sort: null,      // null = default (id) order
   dir: 'asc',
-  q: '', key: '', bpmMin: '', bpmMax: '', verifiedOnly: false, compatibleWith: '',
+  q: '', key: '', bpmMin: '', bpmMax: '', verifiedOnly: false,
   camelotCode: new URLSearchParams(window.location.search).get('camelot_code') || ''
 };
 
@@ -139,17 +139,11 @@ let lastTotalPages = 1;
 // ---------------- Filters ----------------
 function populateFilterOptions(songs){
   const keySel = document.getElementById('keyFilter');
-  const compatSel = document.getElementById('compatibleWith');
   const keys = [...new Set(songs.map(s => s.musicalKey))].sort();
   keys.forEach(k => {
     const opt = document.createElement('option');
     opt.value = k; opt.textContent = k;
     keySel.appendChild(opt);
-  });
-  songs.slice(0, 200).forEach(s => { // cap dropdown size for sanity
-    const opt = document.createElement('option');
-    opt.value = s.id; opt.textContent = `${s.title} — ${s.artist}`;
-    compatSel.appendChild(opt);
   });
 }
 
@@ -159,10 +153,9 @@ function readFilters(){
   state.bpmMin = document.getElementById('bpmMin').value;
   state.bpmMax = document.getElementById('bpmMax').value;
   state.verifiedOnly = document.getElementById('verifiedOnly').checked;
-  state.compatibleWith = document.getElementById('compatibleWith').value;
 }
 
-['searchInput','keyFilter','bpmMin','bpmMax','verifiedOnly','compatibleWith'].forEach(id => {
+['searchInput','keyFilter','bpmMin','bpmMax','verifiedOnly'].forEach(id => {
   document.getElementById(id).addEventListener('input', () => { state.page = 1; readFilters(); load(); });
   document.getElementById(id).addEventListener('change', () => { state.page = 1; readFilters(); load(); });
 });
@@ -173,8 +166,7 @@ document.getElementById('resetFilters').addEventListener('click', () => {
   document.getElementById('bpmMin').value = '';
   document.getElementById('bpmMax').value = '';
   document.getElementById('verifiedOnly').checked = false;
-  document.getElementById('compatibleWith').value = '';
-  state = { ...state, page: 1, q:'', key:'', bpmMin:'', bpmMax:'', verifiedOnly:false, compatibleWith:'' };
+  state = { ...state, page: 1, q:'', key:'', bpmMin:'', bpmMax:'', verifiedOnly:false };
   load();
 });
 
@@ -187,7 +179,6 @@ async function load(){
     if(state.bpmMin) params.set('bpm_min', state.bpmMin);
     if(state.bpmMax) params.set('bpm_max', state.bpmMax);
     if(state.verifiedOnly) params.set('verified_only', '1');
-    if(state.compatibleWith) params.set('compatible_with', state.compatibleWith);
     if(state.camelotCode) params.set('camelot_code', state.camelotCode);
     params.set('page', state.page);
     params.set('per_page', state.perPage);

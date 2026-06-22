@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Camelot Wheel — KeySynx</title>
+<title>My Profile — KeySynx</title>
 <link rel="stylesheet" href="css/style.css">
 
 <!-- Tailwind CSS (Play CDN — no build step, fits XAMPP/Apache setup) -->
@@ -22,7 +22,6 @@
     }
   }
 </script>
-<!-- Alpine.js (CDN — handles new interactive widgets: comments, compat filter, reputation badges) -->
 <script src="js/auth.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
@@ -33,11 +32,11 @@
     <a href="index.html" class="logo"><span class="dot"></span> KeySynx</a>
     <nav class="nav-links">
       <a href="index.html">Browse</a>
-      <a href="wheel.html" class="active">Wheel</a>
+      <a href="wheel.html">Wheel</a>
       <a href="submit.html">Submit</a>
       <a href="admin.html">Admin</a>
     </nav>
-    <div x-data="{ open:false, mode:'login', u:'', e:'', p:'' }" class="relative" style="margin-left:12px;">
+    <div x-data="{ open:false, mode:'login', u:'', e:'', p:'' }" class="relative" style="margin-left:auto;">
       <template x-if="$store.auth.loading">
         <span style="font-size:0.78rem; color:var(--text-dim);">···</span>
       </template>
@@ -73,41 +72,75 @@
 
 <main class="shell">
   <div class="page-head">
-    <div class="eyebrow">Beyond MVP — Harmonic mixing tools</div>
-    <h1 class="page-title">Interactive Camelot Wheel</h1>
-    <p class="page-sub">Pick a track to see recommended transitions, or click any wedge on the wheel itself to explore that key's relatives.</p>
+    <div class="eyebrow">Your account</div>
+    <h1 class="page-title">Profile</h1>
+    <p class="page-sub">Manage your account and see how your contributor reputation is building.</p>
   </div>
 
-  <div class="wheel-layout">
-    <div class="wheel-panel">
-      <input type="text" id="keySearchInput" class="search-input" list="keyOptions"
-             placeholder="Search a key, e.g. B Major or 1B..." style="margin-bottom:18px; max-width:100%;">
-      <datalist id="keyOptions"></datalist>
+  <div id="loggedOutNotice" class="empty-state" style="display:none;">
+    <div class="icon">&#9834;</div>
+    Log in (top right) to view your profile.
+  </div>
 
-      <svg id="wheelSvg" viewBox="0 0 400 400" class="wheel-svg">
-        <g id="wheelGroup"></g>
-        <g id="linesLayer"></g>
-        <g id="dotsLayer"></g>
-      </svg>
+  <div id="profileContent" class="grid md:grid-cols-[1fr_360px] gap-6" style="padding-bottom:60px;">
+    <div class="form-card" style="max-width:none;">
+      <div class="section-label">Account details</div>
+      <form id="profileForm">
+        <div class="form-row">
+          <label for="pUsername">Username</label>
+          <input type="text" id="pUsername" required>
+        </div>
+        <div class="form-row">
+          <label for="pEmail">Email</label>
+          <input type="email" id="pEmail" required>
+        </div>
+        <div class="form-grid-2">
+          <div class="form-row">
+            <label for="pCurrentPassword">Current password</label>
+            <input type="password" id="pCurrentPassword" placeholder="Only needed if changing password">
+          </div>
+          <div class="form-row">
+            <label for="pNewPassword">New password</label>
+            <input type="password" id="pNewPassword" placeholder="Leave blank to keep current">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:12px;">Save changes</button>
+        <p class="form-hint" id="profileStatus" style="margin-top:12px;"></p>
+      </form>
 
-      <div class="wheel-legend">
-        <span><i class="dot-legend current"></i> Current track</span>
-        <span><i class="dot-legend recommended"></i> Recommended</span>
-        <span><i class="seg-legend current"></i> Same key</span>
-        <span><i class="seg-legend compatible"></i> Compatible key</span>
-      </div>
+      <div class="section-label" style="margin-top:32px;">Your submissions</div>
+      <div id="submissionStats" class="flex gap-3 flex-wrap"></div>
+
+      <div class="section-label" style="margin-top:32px;">Recent reputation activity</div>
+      <div id="reputationLog" class="rec-list"></div>
     </div>
 
-    <div class="rec-panel">
-      <div id="trackView">
-        <div id="nowPlaying" class="now-playing"></div>
-        <div class="section-label" style="margin-top:20px;">Recommended transitions</div>
-        <div id="recList" class="rec-list"></div>
+    <div>
+      <div class="now-playing" style="margin-bottom:16px;">
+        <div class="track-title" id="repPoints" style="font-size:1.6rem;">—</div>
+        <div class="track-artist">reputation points</div>
+        <div class="status-pill" id="repTier" style="background:rgba(185,163,255,0.15); color:var(--accent-violet); margin-top:10px; display:inline-block;">—</div>
       </div>
 
-      <div id="keyView" style="display:none;">
-        <button class="btn btn-ghost btn-sm" id="backToTrackBtn" style="margin-bottom:14px;">&larr; Back to track view</button>
-        <div id="keyInfoPanel"></div>
+      <div class="now-playing">
+        <div class="section-label" style="margin-top:0;">How reputation works</div>
+        <table class="admin-table" style="width:100%;">
+          <thead><tr><th>Action</th><th>Points</th></tr></thead>
+          <tbody>
+            <tr><td>Correct submission</td><td class="num" style="color:var(--verified);">+10</td></tr>
+            <tr><td>Verified analysis</td><td class="num" style="color:var(--verified);">+15</td></tr>
+            <tr><td>Rejected analysis</td><td class="num" style="color:var(--rejected);">−5</td></tr>
+          </tbody>
+        </table>
+        <div class="more-line" style="margin-top:14px; font-style:normal;">
+          As points add up, your tier evolves:
+        </div>
+        <div style="margin-top:8px; display:flex; flex-direction:column; gap:6px;">
+          <div class="more-line" style="font-style:normal;">0–19 pts &nbsp;→&nbsp; <b>New Contributor</b></div>
+          <div class="more-line" style="font-style:normal;">20–49 pts &nbsp;→&nbsp; <b>Trusted Analyzer</b></div>
+          <div class="more-line" style="font-style:normal;">50–99 pts &nbsp;→&nbsp; <b>Verified Contributor</b></div>
+          <div class="more-line" style="font-style:normal;">100+ pts &nbsp;→&nbsp; <b>Moderator</b></div>
+        </div>
       </div>
     </div>
   </div>
@@ -115,8 +148,6 @@
 
 <footer>KeySynx · Final Project Prototype · Key &amp; BPM Analysis Platform</footer>
 
-<script src="js/data.js"></script>
-<script src="js/camelot.js"></script>
-<script src="js/wheel.js"></script>
+<script src="js/profile.js"></script>
 </body>
 </html>

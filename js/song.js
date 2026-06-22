@@ -238,64 +238,104 @@ function renderTransitionsLocal(song){
 
 // ---- Contributor feedback (comments) — Alpine-powered ----
 // ---------------- Contributor feedback (comments) ----------------
-// IMPORTANT: comment data is passed to Alpine via a global variable
-// reference (window.__songComments), NOT serialized into the x-data
-// HTML attribute. Embedding JSON.stringify(...) directly inside
-// x-data="..." breaks as soon as any comment contains a double quote,
-// since that's also the attribute's own delimiter — this previously
-// caused comments to render blank or show mangled stray text.
+// Deliberately NOT using Alpine for this section. Cramming a multi-line
+// async handler into an inline @click="..." attribute string has been
+// the source of repeated, hard-to-debug breakage. Plain vanilla JS
+// (matching every other interactive piece in this app) is more robust.
+function commentRowHTML(c){
+  const hue = [...(c.username || '')].reduce((h, ch) => h + ch.charCodeAt(0), 0) % 360;
+  return `
+    <div style="display:flex; gap:10px; background:var(--surface-2); border-radius:10px; padding:10px 12px;">
+      <div style="width:28px; height:28px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#fff; background:hsl(${hue},55%,42%);">
+        ${(c.username || '??').slice(0, 2).toUpperCase()}
+      </div>
+      <div style="flex:1; min-width:0;">
+        <a href="profile.html?user_id=${c.user_id}" style="text-decoration:none;">
+          <span style="color:var(--text); font-weight:600;">${c.username}</span>
+        </a>
+        <span style="color:var(--text-dim); font-size:0.75rem;"> · ${c.reputation_points || 0} rep</span>
+        <div style="margin-top:4px; color:var(--text-muted); font-size:0.88rem;">${c.comment}</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderCommentsList(comments){
+  const listEl = document.getElementById('commentsList');
+  listEl.innerHTML = comments.length
+    ? comments.map(commentRowHTML).join('')
+    : `<p class="more-line">No feedback yet — be the first to weigh in.</p>`;
+  document.getElementById('commentsCount').textContent = `(${comments.length})`;
+}
+
+async function postComment(songId){
+  const input = document.getElementById('commentInput');
+  const text = input.value.trim();
+  if(!text) return;
+
+  const user = window.Alpine && Alpine.store('auth').user;
+  if(!user){ alert('Log in first to leave feedback.'); return; }
+
+  const postBtn = document.getElementById('commentPostBtn');
+  postBtn.disabled = true;
+
+  try {
+    const res = await fetch('api/comments.php', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ song_id: songId, comment: text })
+    });
+    const raw = await res.text();
+    let data;
+    try { data = JSON.parse(raw); }
+    catch(parseErr){
+      console.error('comments.php returned non-JSON response:', raw);
+      alert(`Server returned an unexpected response (HTTP ${res.status}). Check the browser console for details — this usually means a PHP error on the backend.`);
+      postBtn.disabled = false;
+      return;
+    }
+
+    if(!res.ok){
+      alert(data.error || `Could not post comment (HTTP ${res.status}).`);
+      postBtn.disabled = false;
+      return;
+    }
+
+    window.__songComments.unshift({
+      id: data.id, user_id: user.id, username: user.username,
+      reputation_points: user.reputation_points, comment: text
+    });
+    renderCommentsList(window.__songComments);
+    input.value = '';
+  } catch(networkErr){
+    console.error('Network error posting comment:', networkErr);
+    alert('Could not reach the server. Open the browser console (F12) for the technical error, and confirm Apache + MySQL are running.');
+  }
+  postBtn.disabled = false;
+}
+
 function renderComments(song, fromApi){
   const block = document.getElementById('commentsBlock');
   const comments = song.comments || [];
   window.__songComments = comments;
 
   block.innerHTML = `
-    <div x-data="{ comments: window.__songComments, text: '', posting: false }">
-      <div class="section-label">Contributor feedback (${comments.length})</div>
-
-      <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:14px;">
-        <template x-for="c in comments" :key="c.id">
-          <div style="display:flex; gap:10px; background:var(--surface-2); border-radius:10px; padding:10px 12px;">
-            <div :style="'width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;background:hsl(' + (c.username.split('').reduce((h,ch)=>h+ch.charCodeAt(0),0)%360) + ',55%,42%)'"
-                 x-text="c.username.slice(0,2).toUpperCase()"></div>
-            <div style="flex:1; min-width:0;">
-              <a :href="'profile.html?user_id=' + c.user_id" style="text-decoration:none;">
-                <span style="color:var(--text); font-weight:600;" x-text="c.username"></span>
-              </a>
-              <span style="color:var(--text-dim); font-size:0.75rem;" x-text="' · ' + (c.reputation_points || 0) + ' rep'"></span>
-              <div style="margin-top:4px; color:var(--text-muted); font-size:0.88rem;" x-text="c.comment"></div>
-            </div>
-          </div>
-        </template>
-        <p x-show="comments.length === 0" class="more-line">No feedback yet — be the first to weigh in.</p>
-      </div>
-
-      <div style="display:flex; gap:8px;">
-        <input x-model="text" type="text" placeholder="${fromApi ? 'Add feedback on this analysis...' : 'Log in to add feedback (demo mode has no backend)'}"
-               class="search-input" style="flex:1;" ${fromApi ? '' : 'disabled'}>
-        <button
-          ${fromApi ? `@click="(async () => {
-            if(!$store.auth.user){ alert('Log in first to leave feedback.'); return; }
-            if(!text.trim()) return;
-            posting = true;
-            try {
-              const res = await fetch('api/comments.php', {
-                method:'POST', headers:{'Content-Type':'application/json'},
-                body: JSON.stringify({ song_id: ${song.id}, comment: text })
-              });
-              if(res.ok){
-                comments.unshift({ id: Date.now(), user_id: $store.auth.user.id, username: $store.auth.user.username, reputation_points: $store.auth.user.reputation_points, comment: text });
-                text = '';
-              } else {
-                const d = await res.json(); alert(d.error || 'Could not post comment.');
-              }
-            } catch(e){ alert('Could not reach the server.'); }
-            posting = false;
-          })()"` : 'disabled'}
-          class="btn btn-primary btn-sm">Post</button>
-      </div>
+    <div class="section-label">Contributor feedback <span id="commentsCount">(${comments.length})</span></div>
+    <div id="commentsList" style="display:flex; flex-direction:column; gap:10px; margin-bottom:14px;"></div>
+    <div style="display:flex; gap:8px;">
+      <input id="commentInput" type="text" placeholder="${fromApi ? 'Add feedback on this analysis...' : 'Log in to add feedback (demo mode has no backend)'}"
+             class="search-input" style="flex:1;" ${fromApi ? '' : 'disabled'}>
+      <button id="commentPostBtn" class="btn btn-primary btn-sm" ${fromApi ? '' : 'disabled'}>Post</button>
     </div>
   `;
+
+  renderCommentsList(comments);
+
+  if(fromApi){
+    document.getElementById('commentPostBtn').addEventListener('click', () => postComment(song.id));
+    document.getElementById('commentInput').addEventListener('keydown', (e) => {
+      if(e.key === 'Enter'){ e.preventDefault(); postComment(song.id); }
+    });
+  }
 }
 
 // ---------------- Boot ----------------

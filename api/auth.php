@@ -15,7 +15,7 @@ $action = $_GET['action'] ?? '';
 $db = getDb();
 
 function currentUserPayload(mysqli $db, int $userId): array {
-    $stmt = $db->prepare('SELECT id, username, email, role, reputation_points, avatar_initials FROM users WHERE id = ?');
+    $stmt = $db->prepare('SELECT id, username, email, role, reputation_points, avatar_initials, avatar_path FROM users WHERE id = ?');
     $stmt->bind_param('i', $userId);
     $stmt->execute();
     $user = $stmt->get_result()->fetch_assoc();

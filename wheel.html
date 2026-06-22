@@ -75,7 +75,7 @@
   <div class="page-head">
     <div class="eyebrow">Beyond MVP — Harmonic mixing tools</div>
     <h1 class="page-title">Interactive Camelot Wheel</h1>
-    <p class="page-sub">Pick a track to see its harmonic neighbors and recommended transitions, scored by key compatibility + BPM proximity.</p>
+    <p class="page-sub">Pick a track to see recommended transitions, or click any wedge on the wheel itself to explore that key's relatives.</p>
   </div>
 
   <div class="wheel-layout">
@@ -97,9 +97,16 @@
     </div>
 
     <div class="rec-panel">
-      <div id="nowPlaying" class="now-playing"></div>
-      <div class="section-label" style="margin-top:20px;">Recommended transitions</div>
-      <div id="recList" class="rec-list"></div>
+      <div id="trackView">
+        <div id="nowPlaying" class="now-playing"></div>
+        <div class="section-label" style="margin-top:20px;">Recommended transitions</div>
+        <div id="recList" class="rec-list"></div>
+      </div>
+
+      <div id="keyView" style="display:none;">
+        <button class="btn btn-ghost btn-sm" id="backToTrackBtn" style="margin-bottom:14px;">&larr; Back to track view</button>
+        <div id="keyInfoPanel"></div>
+      </div>
     </div>
   </div>
 </main>

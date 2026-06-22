@@ -33,6 +33,7 @@ function normalizeSong(raw, fromApi){
       musicalKey: raw.musicalKey, hasVariation: raw.hasVariation,
       sectionKeys: raw.sectionKeys, footnote: raw.footnote,
       timeSignature: raw.timeSignature, submittedBy: raw.submittedBy,
+      albumTitle: 'Eternal Sunshine', releaseYear: 2024, submittedById: null,
       status: raw.status, upvotes: raw.upvotes, downvotes: raw.downvotes,
       confidenceScore: null, reputationTier: null, comments: [], recommendations: []
     };
@@ -41,8 +42,9 @@ function normalizeSong(raw, fromApi){
     id: raw.id, title: raw.title, artist: raw.artist, bpm: raw.bpm !== null ? parseFloat(raw.bpm) : null,
     musicalKey: raw.musical_key, hasVariation: !!raw.has_variation,
     sectionKeys: raw.sections.map(s => ({ section: s.section_name, key: s.musical_key, bpm: s.bpm })),
-    footnote: raw.footnote, timeSignature: raw.time_signature, youtubeUrl: raw.youtube_url,
-    submittedBy: raw.submitted_by_username || 'unknown',
+    footnote: raw.footnote, timeSignature: raw.time_signature, youtubeUrl: raw.youtube_url, thumbnailUrl: raw.thumbnail_url,
+    albumTitle: raw.album_title, releaseYear: raw.release_year,
+    submittedBy: raw.submitted_by_username || 'unknown', submittedById: raw.submitted_by,
     status: raw.status, upvotes: raw.upvotes, downvotes: raw.downvotes,
     confidenceScore: raw.confidence_score, comments: raw.comments,
     recommendations: raw.recommendations.map(r => ({
@@ -75,7 +77,7 @@ function renderSong(song, fromApi){
   const footnoteHTML = song.footnote ? `
     <div class="section-block">
       <div class="section-label">Notes</div>
-      <div class="more-line" style="font-size:0.92rem;">${song.footnote}</div>
+      <div class="more-line" style="font-size:0.92rem; white-space:pre-wrap; font-style:normal;">${song.footnote}</div>
     </div>` : '';
 
   function extractYoutubeId(url){
@@ -104,12 +106,16 @@ function renderSong(song, fromApi){
       <span><b>${song.confidenceScore}</b> confidence</span>
     </div>` : '';
 
+  const thumbHTML = song.thumbnailUrl
+    ? `<img src="${song.thumbnailUrl}" alt="" style="width:80px; height:80px; border-radius:16px; object-fit:cover;" onerror="this.outerHTML='<div class=&quot;track-thumb&quot; style=&quot;--thumb-a:${a}; --thumb-b:${b}; width:80px; height:80px; font-size:1.8rem; border-radius:16px;&quot;>&#9834;</div>'">`
+    : `<div class="track-thumb" style="--thumb-a:${a}; --thumb-b:${b}; width:80px; height:80px; font-size:1.8rem; border-radius:16px;">&#9834;</div>`;
+
   root.insertAdjacentHTML('beforeend', `
     <div class="detail-head">
-      <div class="track-thumb" style="--thumb-a:${a}; --thumb-b:${b}; width:80px; height:80px; font-size:1.8rem; border-radius:16px;">&#9834;</div>
+      ${thumbHTML}
       <div>
         <h1 class="detail-title">${song.title}</h1>
-        <div class="detail-artist">${song.artist} · Eternal Sunshine</div>
+        <div class="detail-artist">${song.artist}${song.albumTitle ? ' · ' + song.albumTitle : ''}${song.releaseYear ? ' (' + song.releaseYear + ')' : ''}</div>
         <div class="detail-stats">
           <div class="stat-chip"><b class="num">${song.bpm !== null ? song.bpm : 'Unfixed tempo'}</b>${song.bpm !== null ? ' BPM' : ''}</div>
           <div class="stat-chip">${star}<b>${song.musicalKey}</b>${code ? ` <span style="color:var(--text-dim)">(${code})</span>` : ''}</div>
@@ -129,8 +135,9 @@ function renderSong(song, fromApi){
     <div class="section-block" id="transitionsBlock"></div>
 
     <div class="section-block" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
-      <div style="color:var(--text-muted); font-size:0.88rem;">
-        Submitted by <b style="color:var(--text)">${song.submittedBy}</b>
+      <div style="color:var(--text-muted); font-size:0.88rem; display:flex; align-items:center; gap:10px;">
+        <span>Submitted by <b style="color:var(--text)">${song.submittedBy}</b></span>
+        <a href="submit.html?edit=${song.id}" class="btn btn-ghost btn-sm" id="editBtn" style="display:none;">✎ Edit</a>
       </div>
       <div class="vote-row">
         <button class="vote-btn up" id="upBtn">&#9650; <span class="num" id="upCount">${song.upvotes}</span></button>
@@ -148,6 +155,20 @@ function renderSong(song, fromApi){
   }
   renderComments(song, fromApi);
   wireVoteButtons(song, fromApi);
+  wireEditButton(song);
+}
+
+function wireEditButton(song){
+  const reveal = () => {
+    const user = window.Alpine && Alpine.store('auth').user;
+    if(!user) return;
+    const isOwner = song.submittedById !== null && song.submittedById !== undefined && Number(user.id) === Number(song.submittedById);
+    const isAdmin = user.role === 'admin';
+    if(isOwner || isAdmin) document.getElementById('editBtn').style.display = '';
+  };
+  // auth store may still be loading when this first runs — check now and shortly after
+  reveal();
+  setTimeout(reveal, 400);
 }
 
 function wireVoteButtons(song, fromApi){

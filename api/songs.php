@@ -3,17 +3,19 @@
  * KeySynx — Songs endpoint
  *
  * GET songs.php
- *   ?q=               search title/artist
- *   ?key=             exact musical_key match
+ *   ?q=                 search title/artist
+ *   ?key=               exact musical_key match
  *   ?bpm_min=&bpm_max=
  *   ?verified_only=1
- *   ?compatible_with=<song_id>   only return tracks harmonically
- *                                 compatible with this song (Advanced
- *                                 Search Feature #5 — Camelot compatibility)
+ *   ?compatible_with=<song_id>   Camelot-compatibility filter (Advanced Search #5)
+ *   ?page=1&per_page=25           pagination (defaults: page=1, per_page=25)
+ *   ?sort=artist|title|musical_key|bpm|year   default: id
+ *   ?dir=asc|desc                 default: asc
  *
  * GET songs.php?id=<id>
- *   Single song with: section timeline, contributor feedback,
- *   confidence score, and top 5 recommended transitions.
+ *   Single song with: real album name/year, section timeline, contributor
+ *   feedback, confidence score, top 5 recommended transitions, and a
+ *   thumbnail derived from the YouTube link (if one was provided).
  */
 
 header('Content-Type: application/json');
@@ -23,8 +25,18 @@ require_once __DIR__ . '/camelot.php';
 $db = getDb();
 
 /**
+ * Derives a thumbnail straight from YouTube's own CDN — no audio/image
+ * is ever stored on our side, just a predictable URL built from the
+ * video ID (matches proposal limitation: no copyrighted file storage).
+ */
+function youtubeThumbnail(?string $url): ?string {
+    if (!$url) return null;
+    if (!preg_match('#(?:youtube\.com/watch\?v=|youtu\.be/)([\w-]{6,})#', $url, $m)) return null;
+    return "https://img.youtube.com/vi/{$m[1]}/hqdefault.jpg";
+}
+
+/**
  * Confidence Score System (Beyond-MVP feature #2).
- * Our formula (not specified in the proposal, so documented here):
  *   40% validation count   — total votes, maxes out at 10 votes
  *   30% agreement ratio    — upvotes / total votes
  *   30% contributor rep    — avg reputation of everyone who voted, maxes out at 100 pts
@@ -57,8 +69,10 @@ if (isset($_GET['id'])) {
     $id = (int) $_GET['id'];
 
     $stmt = $db->prepare(
-        'SELECT s.*, u.username AS submitted_by_username
-         FROM songs s LEFT JOIN users u ON u.id = s.submitted_by
+        'SELECT s.*, u.username AS submitted_by_username, a.title AS album_title, a.release_year
+         FROM songs s
+         LEFT JOIN users u ON u.id = s.submitted_by
+         LEFT JOIN albums a ON a.id = s.album_id
          WHERE s.id = ?'
     );
     $stmt->bind_param('i', $id);
@@ -95,6 +109,7 @@ if (isset($_GET['id'])) {
     $recommendations = array_slice($recommendations, 0, 5);
 
     $song['confidence_score'] = computeConfidenceScore($db, $song);
+    $song['thumbnail_url'] = youtubeThumbnail($song['youtube_url']);
     $song['sections'] = $sections;
     $song['comments'] = $comments;
     $song['recommendations'] = $recommendations;
@@ -102,39 +117,72 @@ if (isset($_GET['id'])) {
     jsonResponse($song);
 }
 
-// ---------------- List / search / filter ----------------
+// ---------------- List / search / filter / sort / paginate ----------------
 $conditions = [];
 $params = [];
 $types = '';
 
 if (!empty($_GET['q'])) {
-    $conditions[] = '(title LIKE ? OR artist LIKE ?)';
+    $conditions[] = '(s.title LIKE ? OR s.artist LIKE ?)';
     $like = '%' . $_GET['q'] . '%';
     $params[] = $like; $params[] = $like;
     $types .= 'ss';
 }
 if (!empty($_GET['key'])) {
-    $conditions[] = 'musical_key = ?';
+    $conditions[] = 's.musical_key = ?';
     $params[] = $_GET['key'];
     $types .= 's';
 }
+if (!empty($_GET['camelot_code'])) {
+    $conditions[] = 's.camelot_code = ?';
+    $params[] = strtoupper($_GET['camelot_code']);
+    $types .= 's';
+}
 if (!empty($_GET['bpm_min'])) {
-    $conditions[] = 'bpm >= ?';
+    $conditions[] = 's.bpm >= ?';
     $params[] = (float) $_GET['bpm_min'];
     $types .= 'd';
 }
 if (!empty($_GET['bpm_max'])) {
-    $conditions[] = 'bpm <= ?';
+    $conditions[] = 's.bpm <= ?';
     $params[] = (float) $_GET['bpm_max'];
     $types .= 'd';
 }
 if (!empty($_GET['verified_only'])) {
-    $conditions[] = "status = 'verified'";
+    $conditions[] = "s.status = 'verified'";
 }
 
-$sql = 'SELECT * FROM songs';
-if ($conditions) $sql .= ' WHERE ' . implode(' AND ', $conditions);
-$sql .= ' ORDER BY id';
+$sortMap = [
+    'artist' => 's.artist',
+    'title' => 's.title',
+    'musical_key' => 's.musical_key',
+    'bpm' => 's.bpm',
+    'year' => 'a.release_year',
+];
+$sortCol = $sortMap[$_GET['sort'] ?? ''] ?? 's.id';
+$sortDir = (strtolower($_GET['dir'] ?? 'asc') === 'desc') ? 'DESC' : 'ASC';
+
+$baseSql = 'FROM songs s LEFT JOIN albums a ON a.id = s.album_id';
+if ($conditions) $baseSql .= ' WHERE ' . implode(' AND ', $conditions);
+
+// Total count (for pagination UI), before applying LIMIT
+if ($params) {
+    $stmt = $db->prepare("SELECT COUNT(*) AS c $baseSql");
+    $stmt->bind_param($types, ...$params);
+    $stmt->execute();
+    $total = (int) $stmt->get_result()->fetch_assoc()['c'];
+} else {
+    $total = (int) $db->query("SELECT COUNT(*) AS c $baseSql")->fetch_assoc()['c'];
+}
+
+$perPage = max(1, min(1000, (int) ($_GET['per_page'] ?? 25)));
+$page = max(1, (int) ($_GET['page'] ?? 1));
+$offset = ($page - 1) * $perPage;
+
+$sql = "SELECT s.*, a.title AS album_title, a.release_year
+        $baseSql
+        ORDER BY $sortCol $sortDir
+        LIMIT $perPage OFFSET $offset";
 
 if ($params) {
     $stmt = $db->prepare($sql);
@@ -145,8 +193,14 @@ if ($params) {
     $songs = $db->query($sql)->fetch_all(MYSQLI_ASSOC);
 }
 
+foreach ($songs as &$s) {
+    $s['thumbnail_url'] = youtubeThumbnail($s['youtube_url']);
+}
+
 // Camelot-compatibility filter (Advanced Search Feature #5) — applied
 // in PHP after the base query since it depends on the chosen song's key.
+// NOTE: when active, this filters/sorts the CURRENT PAGE only (compatibility
+// scoring against 400+ tracks per request isn't paginated server-side here).
 if (!empty($_GET['compatible_with'])) {
     $baseId = (int) $_GET['compatible_with'];
     $stmt = $db->prepare('SELECT * FROM songs WHERE id = ?');
@@ -159,11 +213,17 @@ if (!empty($_GET['compatible_with'])) {
             if ($s['id'] == $baseSong['id']) return false;
             return computeTransitionScore($baseSong, $s)['score'] > 0;
         }));
-        // attach the score so the frontend can show/sort by it
         foreach ($songs as &$s) {
             $s['transition'] = computeTransitionScore($baseSong, $s);
         }
     }
 }
 
-jsonResponse(['songs' => $songs, 'count' => count($songs)]);
+jsonResponse([
+    'songs' => $songs,
+    'count' => count($songs),
+    'total' => $total,
+    'page' => $page,
+    'per_page' => $perPage,
+    'total_pages' => (int) ceil($total / $perPage),
+]);

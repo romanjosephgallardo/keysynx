@@ -1,20 +1,22 @@
 /* ============================================
    wheel.html logic
-   Renders an interactive Camelot Wheel: 12 key
-   numbers x 2 rings (B=major outer, A=minor inner).
-   Tracks from the album are plotted inside their
-   key's wedge. Selecting a track highlights its
-   key + compatible keys, draws transition lines to
-   recommended tracks, and lists the ranked engine output.
+   - Track mode (existing): pick a track, see its key
+     highlighted + compatible keys + recommended transitions.
+   - Key mode (new): click a bare wedge on the wheel (not a
+     track dot) to see that key's relatives and a sample of
+     library tracks in that exact key, independent of any
+     specific track.
+   Tries the live API first; falls back to local sample data.
    ============================================ */
 
 const CX = 200, CY = 200;
 const R_B_OUT = 190, R_B_IN = 128;
 const R_A_OUT = 128, R_A_IN = 68;
-const DOT_R_B = 159, DOT_R_A = 98; // radius where track dots sit within each ring
+const DOT_R_B = 159, DOT_R_A = 98;
 
 let allSongs = [];
 let currentId = null;
+let backendAvailable = true;
 
 function polar(r, angleDeg){
   const a = angleDeg * Math.PI / 180;
@@ -46,38 +48,15 @@ function buildWheelSkeleton(){
   return svg;
 }
 
-function trackDotPositions(songs){
-  // group songs sharing the same Camelot code so dots don't overlap
-  const groups = {};
-  songs.forEach(s => {
-    const code = getCamelotCode(s.musicalKey);
-    if(!code) return;
-    groups[code] = groups[code] || [];
-    groups[code].push(s);
-  });
-
-  const positions = {};
-  Object.entries(groups).forEach(([code, group]) => {
-    const { num, letter } = parseCamelot(code);
-    const baseAngle = (num - 1) * 30;
-    const r = letter === 'B' ? DOT_R_B : DOT_R_A;
-    group.forEach((song, i) => {
-      const jitter = (i - (group.length - 1) / 2) * 9;
-      positions[song.id] = polar(r, baseAngle + jitter);
-    });
-  });
-  return positions;
+function dotPosition(code, jitter = 0){
+  const { num, letter } = parseCamelot(code);
+  const baseAngle = (num - 1) * 30;
+  const r = letter === 'B' ? DOT_R_B : DOT_R_A;
+  return polar(r, baseAngle + jitter);
 }
 
-function renderWheel(){
-  const current = allSongs.find(s => s.id === currentId);
-  if(!current) return;
-
-  const currentCode = getCamelotCode(current.musicalKey);
+function highlightSegments(currentCode){
   const compatible = currentCode ? getCompatibleCodes(currentCode) : null;
-  const positions = trackDotPositions(allSongs);
-
-  // --- segment highlighting ---
   document.querySelectorAll('.wheel-seg').forEach(seg => {
     const code = seg.dataset.code;
     seg.classList.remove('current', 'compatible', 'dim');
@@ -86,21 +65,51 @@ function renderWheel(){
     else if([compatible.relative, compatible.energyUp, compatible.energyDown].includes(code)) seg.classList.add('compatible');
     else seg.classList.add('dim');
   });
+}
 
-  // --- recommendations (engine output) ---
+// ---------------- Track mode ----------------
+function showTrackView(){
+  document.getElementById('trackView').style.display = '';
+  document.getElementById('keyView').style.display = 'none';
+}
+
+function renderTrackMode(){
+  showTrackView();
+  const current = allSongs.find(s => s.id === currentId);
+  if(!current) return;
+
+  const currentCode = getCamelotCode(current.musicalKey);
+  highlightSegments(currentCode);
+
   const recs = getRecommendations(current, allSongs, 6);
 
-  // --- track dots ---
+  // Only plot dots for the current track + its recommendations — keeps
+  // the wheel readable regardless of how large the catalog gets.
+  const relevant = [current, ...recs.map(r => r.song)];
+  const positions = {};
+  const byCode = {};
+  relevant.forEach(s => {
+    const code = getCamelotCode(s.musicalKey);
+    if(!code) return;
+    byCode[code] = byCode[code] || [];
+    byCode[code].push(s);
+  });
+  Object.entries(byCode).forEach(([code, group]) => {
+    group.forEach((song, i) => {
+      const jitter = (i - (group.length - 1) / 2) * 9;
+      positions[song.id] = dotPosition(code, jitter);
+    });
+  });
+
   const dotsLayer = document.getElementById('dotsLayer');
   dotsLayer.innerHTML = Object.entries(positions).map(([id, pos]) => {
-    const song = allSongs.find(s => s.id === Number(id));
+    const song = relevant.find(s => s.id === Number(id));
     const isCurrent = song.id === current.id;
     const isRec = recs.some(r => r.song.id === song.id);
     const cls = isCurrent ? 'track-dot current' : isRec ? 'track-dot recommended' : 'track-dot';
     return `<circle class="${cls}" data-id="${song.id}" cx="${pos.x.toFixed(1)}" cy="${pos.y.toFixed(1)}" r="${isCurrent ? 8 : 5.5}"></circle>`;
   }).join('');
 
-  // --- transition lines from current dot to each recommended dot ---
   const linesLayer = document.getElementById('linesLayer');
   const curPos = positions[current.id];
   linesLayer.innerHTML = curPos ? recs.map(r => {
@@ -111,16 +120,14 @@ function renderWheel(){
     return `<line x1="${curPos.x.toFixed(1)}" y1="${curPos.y.toFixed(1)}" x2="${pos.x.toFixed(1)}" y2="${pos.y.toFixed(1)}" stroke="var(--accent-violet)" stroke-width="${width.toFixed(1)}" opacity="${opacity.toFixed(2)}"></line>`;
   }).join('') : '';
 
-  // --- now-playing readout ---
   document.getElementById('nowPlaying').innerHTML = `
     <div class="track-title" style="font-size:1.1rem;">${current.title}</div>
-    <div class="track-artist">${current.artist} · <span class="num">${current.bpm}</span> BPM · ${current.musicalKey}${currentCode ? ` (${currentCode})` : ' — not mappable'}</div>
+    <div class="track-artist">${current.artist} · <span class="num">${current.bpm ?? 'unfixed tempo'}</span>${current.bpm !== null ? ' BPM' : ''} · ${current.musicalKey}${currentCode ? ` (${currentCode})` : ' — not mappable'}</div>
   `;
 
-  // --- recommendation list ---
   const list = document.getElementById('recList');
   if(!recs.length){
-    list.innerHTML = `<div class="empty-state"><div class="icon">&#9834;</div>No compatible tracks found in this album.</div>`;
+    list.innerHTML = `<div class="empty-state"><div class="icon">&#9834;</div>No compatible tracks found.</div>`;
     return;
   }
   list.innerHTML = recs.map(r => `
@@ -128,16 +135,83 @@ function renderWheel(){
       <div class="rec-score" style="--pct:${r.score}%">${r.score}</div>
       <div class="rec-info">
         <div class="rec-title">${r.song.title}</div>
-        <div class="rec-meta">${r.relation} · <span class="num">${r.song.bpm}</span> BPM (${r.bpmDiff > 0 ? '±' : ''}${r.bpmDiff}) · ${r.codeB}</div>
+        <div class="rec-meta">${r.relation} · <span class="num">${r.song.bpm ?? 'unfixed tempo'}</span>${r.song.bpm !== null ? ' BPM' : ''} (${r.codeB})</div>
       </div>
       <button class="btn btn-sm rec-select">Set as current</button>
     </div>
   `).join('');
 }
 
+// ---------------- Key mode (click a bare wedge) ----------------
+async function renderKeyMode(code){
+  document.getElementById('trackView').style.display = 'none';
+  document.getElementById('keyView').style.display = '';
+  highlightSegments(code);
+
+  const compatible = getCompatibleCodes(code);
+  const relationLabel = {
+    [compatible.relative]: 'Relative major/minor',
+    [compatible.energyUp]: 'Energy boost (+1 step)',
+    [compatible.energyDown]: 'Energy drop (−1 step)'
+  };
+  const keyNames = getKeysForCode(code).join(' / ') || '(modal/unmapped)';
+
+  const familyHTML = [compatible.relative, compatible.energyUp, compatible.energyDown].map(c => `
+    <div class="more-line" style="font-size:0.88rem; margin-bottom:6px;">
+      <b>${c}</b> (${getKeysForCode(c).join(' / ') || '—'}) — ${relationLabel[c]}
+    </div>
+  `).join('');
+
+  let songsHTML = `<div class="more-line">Loading…</div>`;
+  let total = 0;
+  let sample = [];
+
+  if(backendAvailable){
+    try {
+      const res = await fetch(`api/songs.php?camelot_code=${encodeURIComponent(code)}&per_page=8`);
+      const data = await res.json();
+      total = data.total;
+      sample = data.songs.map(s => ({ id: s.id, title: s.title, artist: s.artist }));
+    } catch(e){ backendAvailable = false; }
+  }
+  if(!backendAvailable){
+    const matches = allSongs.filter(s => getCamelotCode(s.musicalKey) === code);
+    total = matches.length;
+    sample = matches.slice(0, 8);
+  }
+
+  songsHTML = sample.length ? sample.map(s => `
+    <a href="song.html?id=${s.id}" class="rec-row" style="text-decoration:none; color:inherit;">
+      <div class="rec-info">
+        <div class="rec-title">${s.title}</div>
+        <div class="rec-meta">${s.artist}</div>
+      </div>
+    </a>
+  `).join('') : `<div class="more-line">No tracks in this key yet.</div>`;
+
+  document.getElementById('keyInfoPanel').innerHTML = `
+    <div class="now-playing">
+      <div class="track-title" style="font-size:1.1rem;">${code}</div>
+      <div class="track-artist">${keyNames}</div>
+    </div>
+    <div class="section-label" style="margin-top:18px;">Compatible keys</div>
+    ${familyHTML}
+    <div class="section-label" style="margin-top:18px; display:flex; justify-content:space-between; align-items:center;">
+      <span>Tracks in this key (${total})</span>
+      <a href="index.html?camelot_code=${encodeURIComponent(code)}" class="btn btn-ghost btn-sm">View all in library →</a>
+    </div>
+    <div class="rec-list">${songsHTML}</div>
+  `;
+}
+
+document.getElementById('backToTrackBtn').addEventListener('click', () => {
+  renderTrackMode();
+});
+
+// ---------------- Event wiring ----------------
 document.getElementById('trackSelect').addEventListener('change', (e) => {
   currentId = Number(e.target.value);
-  renderWheel();
+  renderTrackMode();
 });
 
 document.getElementById('wheelSvg').addEventListener('click', (e) => {
@@ -145,7 +219,12 @@ document.getElementById('wheelSvg').addEventListener('click', (e) => {
   if(dot){
     currentId = Number(dot.dataset.id);
     document.getElementById('trackSelect').value = currentId;
-    renderWheel();
+    renderTrackMode();
+    return;
+  }
+  const seg = e.target.closest('.wheel-seg');
+  if(seg){
+    renderKeyMode(seg.dataset.code);
   }
 });
 
@@ -153,22 +232,38 @@ document.getElementById('recList').addEventListener('click', (e) => {
   if(e.target.classList.contains('rec-select')){
     currentId = Number(e.target.closest('.rec-row').dataset.id);
     document.getElementById('trackSelect').value = currentId;
-    renderWheel();
+    renderTrackMode();
   }
 });
 
-fetchSongs().then(songs => {
-  allSongs = songs;
-
+// ---------------- Boot ----------------
+async function boot(){
   document.getElementById('wheelGroup').insertAdjacentHTML('beforeend', buildWheelSkeleton());
 
+  try {
+    const res = await fetch('api/songs.php?per_page=500&verified_only=0');
+    if(!res.ok) throw new Error('not ok');
+    const data = await res.json();
+    backendAvailable = true;
+    allSongs = data.songs.map(s => ({
+      id: s.id, title: s.title, artist: s.artist,
+      bpm: s.bpm !== null ? parseFloat(s.bpm) : null,
+      musicalKey: s.musical_key
+    }));
+  } catch(e){
+    backendAvailable = false;
+    allSongs = await fetchSongs();
+  }
+
   const select = document.getElementById('trackSelect');
-  select.innerHTML = songs.map(s => `<option value="${s.id}">${s.title}</option>`).join('');
+  select.innerHTML = allSongs.map(s => `<option value="${s.id}">${s.title} — ${s.artist}</option>`).join('');
 
   const params = new URLSearchParams(window.location.search);
   const requestedId = Number(params.get('id'));
-  currentId = songs.find(s => s.id === requestedId) ? requestedId : songs[0].id;
+  currentId = allSongs.find(s => s.id === requestedId) ? requestedId : allSongs[0].id;
   select.value = currentId;
 
-  renderWheel();
-});
+  renderTrackMode();
+}
+
+boot();

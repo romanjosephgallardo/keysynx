@@ -27,6 +27,20 @@ function getCamelotCode(musicalKey){
   return CAMELOT_MAP[musicalKey] || null;
 }
 
+// Reverse lookup: which key name(s) correspond to a given Camelot code.
+// Built once from CAMELOT_MAP so it stays in sync automatically.
+const REVERSE_CAMELOT = (() => {
+  const out = {};
+  for(const [key, code] of Object.entries(CAMELOT_MAP)){
+    out[code] = out[code] || [];
+    out[code].push(key);
+  }
+  return out;
+})();
+function getKeysForCode(code){
+  return REVERSE_CAMELOT[code] || [];
+}
+
 function parseCamelot(code){
   const num = parseInt(code, 10);
   const letter = code.replace(/[0-9]/g, '');

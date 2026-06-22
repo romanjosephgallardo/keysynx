@@ -1,22 +1,40 @@
 /* ============================================
    submit.html logic
-   Structure rows are fully functional (add/remove).
-   Final submit currently logs to console + shows a
-   confirmation message instead of POSTing — wire to
-   api/submit_song.php (POST) once backend exists.
+   Two modes, both on this same page:
+   - New submission (default):       POST api/submit.php
+   - Edit existing (?edit=<id>):      POST api/update_song.php,
+     only allowed if the logged-in user is the original
+     submitter or an admin (also enforced server-side).
    ============================================ */
 
-document.getElementById('addRow').addEventListener('click', () => {
+const params = new URLSearchParams(window.location.search);
+const editId = params.get('edit');
+let isEditMode = !!editId;
+
+document.getElementById('youtubeUrl').addEventListener('input', (e) => {
+  const m = e.target.value.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{6,})/);
+  const preview = document.getElementById('ytPreview');
+  if(m){
+    preview.src = `https://img.youtube.com/vi/${m[1]}/hqdefault.jpg`;
+    preview.style.display = '';
+  } else {
+    preview.style.display = 'none';
+  }
+});
+
+function addStructureRow(section = '', key = ''){
   const builder = document.getElementById('structureBuilder');
   const row = document.createElement('div');
   row.className = 'structure-row';
   row.innerHTML = `
-    <input type="text" placeholder="Section (e.g. Chorus)" class="seg-name">
-    <input type="text" placeholder="Key (e.g. Bb Minor)" class="seg-bars">
+    <input type="text" placeholder="Section (e.g. Chorus)" class="seg-name" value="${section}">
+    <input type="text" placeholder="Key (e.g. Bb Minor)" class="seg-bars" value="${key}">
     <button type="button" class="icon-btn remove-row">×</button>
   `;
   builder.appendChild(row);
-});
+}
+
+document.getElementById('addRow').addEventListener('click', () => addStructureRow());
 
 document.getElementById('structureBuilder').addEventListener('click', (e) => {
   if(e.target.classList.contains('remove-row')){
@@ -24,6 +42,79 @@ document.getElementById('structureBuilder').addEventListener('click', (e) => {
     if(rows.length > 1){ e.target.closest('.structure-row').remove(); }
   }
 });
+
+function clearStructureRows(){
+  document.getElementById('structureBuilder').innerHTML = '';
+}
+
+async function loadForEdit(id){
+  const statusEl = document.getElementById('formStatus');
+  try {
+    const res = await fetch(`api/songs.php?id=${id}`);
+    if(!res.ok) throw new Error('not found');
+    const song = await res.json();
+
+    // Ownership check (UI-level convenience; the API enforces this for real)
+    const checkOwnership = () => {
+      const user = window.Alpine && Alpine.store('auth').user;
+      if(!user){
+        statusEl.style.color = 'var(--rejected)';
+        statusEl.textContent = 'Log in (top-right) to edit this submission.';
+        document.getElementById('submitForm').style.opacity = '0.5';
+        document.getElementById('submitForm').style.pointerEvents = 'none';
+        return false;
+      }
+      const isOwner = song.submitted_by !== null && Number(user.id) === Number(song.submitted_by);
+      const isAdmin = user.role === 'admin';
+      if(!isOwner && !isAdmin){
+        statusEl.style.color = 'var(--rejected)';
+        statusEl.textContent = `Only the original submitter (${song.submitted_by_username || 'unknown'}) or an admin can edit this entry.`;
+        document.getElementById('submitForm').style.opacity = '0.5';
+        document.getElementById('submitForm').style.pointerEvents = 'none';
+        return false;
+      }
+      return true;
+    };
+
+    // Auth store may still be loading — check now and shortly after
+    if(!checkOwnership()) setTimeout(checkOwnership, 400);
+
+    document.getElementById('formHeading').textContent = 'Edit song analysis';
+    document.getElementById('formSubheading').innerHTML = `Editing <b>${song.title}</b> — only the original submitter or an admin can save changes.`;
+    document.getElementById('submitBtnLabel').textContent = 'Save changes';
+
+    document.getElementById('title').value = song.title;
+    document.getElementById('artist').value = song.artist;
+    document.getElementById('bpm').value = song.bpm ?? '';
+    document.getElementById('musicalKey').value = song.musical_key;
+    document.getElementById('timeSignature').value = song.time_signature || '';
+    document.getElementById('youtubeUrl').value = song.youtube_url || '';
+    document.getElementById('notes').value = song.footnote || '';
+
+    if(song.youtube_url){
+      document.getElementById('youtubeUrl').dispatchEvent(new Event('input'));
+    }
+
+    clearStructureRows();
+    const sections = song.sections && song.sections.length
+      ? song.sections.map(s => ({ section: s.section_name, key: s.musical_key }))
+      : (song.section_keys ? JSON.parse(song.section_keys) : []);
+    if(sections.length){
+      sections.forEach(s => addStructureRow(s.section, s.key));
+    } else {
+      addStructureRow();
+    }
+  } catch(err){
+    statusEl.style.color = 'var(--rejected)';
+    statusEl.textContent = 'Could not load this song for editing.';
+  }
+}
+
+if(isEditMode){
+  loadForEdit(editId);
+} else {
+  addStructureRow();
+}
 
 document.getElementById('submitForm').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -53,22 +144,32 @@ document.getElementById('submitForm').addEventListener('submit', async (e) => {
     return;
   }
 
+  const endpoint = isEditMode ? 'api/update_song.php' : 'api/submit.php';
+  if(isEditMode) payload.id = Number(editId);
+
   try {
-    const res = await fetch('api/submit.php', {
+    const res = await fetch(endpoint, {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify(payload)
     });
     const data = await res.json();
     if(!res.ok){
       statusEl.style.color = 'var(--rejected)';
-      statusEl.textContent = data.error || 'Submission failed.';
+      statusEl.textContent = data.error || 'Save failed.';
       return;
     }
     statusEl.style.color = 'var(--verified)';
-    statusEl.textContent = `✓ ${data.message} (+10 reputation awarded)`;
-    document.getElementById('submitForm').reset();
+    if(isEditMode){
+      statusEl.textContent = '✓ Changes saved.';
+      setTimeout(() => { window.location.href = `song.html?id=${editId}`; }, 900);
+    } else {
+      statusEl.textContent = `✓ ${data.message} (+10 reputation awarded)`;
+      document.getElementById('submitForm').reset();
+      clearStructureRows();
+      addStructureRow();
+    }
   } catch(err){
     statusEl.style.color = 'var(--rejected)';
-    statusEl.textContent = 'Could not reach the server. Is XAMPP\'s Apache + MySQL running?';
+    statusEl.textContent = "Could not reach the server. Is XAMPP's Apache + MySQL running?";
   }
 });

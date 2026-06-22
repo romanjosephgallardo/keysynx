@@ -1,13 +1,22 @@
 /* ============================================
    index.html logic
-   Tries api/songs.php for search/filter (incl. Camelot
-   compatibility — Advanced Search Feature #5). Falls back
-   to local sample data + client-side camelot.js scoring if
-   the backend isn't reachable (e.g. opened without XAMPP).
+   Sortable, paginated library table (matches the
+   reference "Showing X to Y of Z results" pattern).
+   Tries api/songs.php first; falls back to local
+   sample data (paginated client-side) if unreachable.
    ============================================ */
 
-let allSongs = [];
 let backendAvailable = true;
+let allSongsLocal = []; // only populated in fallback mode
+
+let state = {
+  page: 1,
+  perPage: 25,
+  sort: null,      // null = default (id) order
+  dir: 'asc',
+  q: '', key: '', bpmMin: '', bpmMax: '', verifiedOnly: false, compatibleWith: '',
+  camelotCode: new URLSearchParams(window.location.search).get('camelot_code') || ''
+};
 
 const THUMB_GRADIENTS = [
   ['#E0995A', '#C2547E'], ['#5A9CE0', '#7E54C2'], ['#E05A8C', '#C27E54'],
@@ -15,71 +24,119 @@ const THUMB_GRADIENTS = [
 ];
 function thumbGradient(id){ return THUMB_GRADIENTS[id % THUMB_GRADIENTS.length]; }
 
-function statusLabel(status){
-  return status === 'verified' ? 'Verified' : status === 'pending' ? 'Pending' : 'Rejected';
+function thumbCellHTML(song){
+  if(song.thumbnail_url){
+    return `<img class="lib-thumb" src="${song.thumbnail_url}" alt="" loading="lazy"
+                 onerror="this.outerHTML=this.parentElement.dataset.fallback">`;
+  }
+  const [a, b] = thumbGradient(song.id);
+  return `<div class="lib-thumb-fallback" style="--thumb-a:${a}; --thumb-b:${b}">&#9834;</div>`;
+}
+
+function bpmLabel(bpm){
+  return (bpm === null || bpm === undefined) ? '<span style="color:var(--text-dim)">—</span>' : `<span class="lib-bpm-badge">${bpm}</span>`;
+}
+
+function rowHTML(song){
+  const fallback = (() => {
+    const [a, b] = thumbGradient(song.id);
+    return `<div class="lib-thumb-fallback" style="--thumb-a:${a}; --thumb-b:${b}">&#9834;</div>`;
+  })().replace(/"/g, '&quot;');
+
+  return `
+    <tr data-id="${song.id}">
+      <td data-fallback="${fallback}">${thumbCellHTML(song)}</td>
+      <td class="lib-artist">${song.artist}</td>
+      <td class="lib-title">${song.title}${song.hasVariation ? '<span class="star"> *</span>' : ''}</td>
+      <td class="lib-key">${song.musicalKey}</td>
+      <td>${bpmLabel(song.bpm)}</td>
+      <td class="lib-year">${song.releaseYear ?? '—'}</td>
+    </tr>
+  `;
 }
 
 function normalizeApiSong(raw){
   return {
-    id: raw.id, title: raw.title, artist: raw.artist, bpm: raw.bpm !== null ? parseFloat(raw.bpm) : null,
+    id: raw.id, title: raw.title, artist: raw.artist,
+    bpm: raw.bpm !== null ? parseFloat(raw.bpm) : null,
     musicalKey: raw.musical_key, hasVariation: !!raw.has_variation,
-    sectionKeys: raw.section_keys ? JSON.parse(raw.section_keys) : [],
-    status: raw.status, upvotes: raw.upvotes, downvotes: raw.downvotes,
-    transition: raw.transition || null
+    status: raw.status, thumbnail_url: raw.thumbnail_url,
+    releaseYear: raw.release_year, albumTitle: raw.album_title
   };
 }
 
-function morePanelHTML(song){
-  if(!song.hasVariation || !song.sectionKeys.length) return '';
-  const lines = song.sectionKeys.map(sk =>
-    `<div class="more-line"><b>${sk.section}:</b> ${sk.key}</div>`
-  ).join('');
-  return `
-    <button type="button" class="more-toggle" data-id="${song.id}">
-      <span>&#8801; More</span><span class="chev">&#9662;</span>
-    </button>
-    <div class="more-panel" id="more-${song.id}">
-      <div class="more-panel-inner">${lines}</div>
-    </div>
-  `;
-}
-
-function songCardHTML(song){
-  const [a, b] = thumbGradient(song.id);
-  const star = song.hasVariation ? '<span class="star">*</span>' : '';
-  const transitionBadge = song.transition
-    ? `<span class="status-pill" style="background:rgba(185,163,255,0.15); color:var(--accent-violet); margin-left:8px;">${song.transition.score}% match</span>`
-    : '';
-  return `
-    <div class="track-card-wrap" data-id="${song.id}">
-      <div class="track-card" data-nav="${song.id}">
-        <div class="track-thumb" style="--thumb-a:${a}; --thumb-b:${b}">&#9834;</div>
-        <div class="track-main">
-          <div class="track-title">${song.title}</div>
-          <div class="track-artist">${song.artist}</div>
-        </div>
-        <div class="track-divider"></div>
-        <div class="track-stats">
-          <div class="track-key">${star}${song.musicalKey}</div>
-          <div class="track-bpm"><span class="num">${song.bpm !== null ? song.bpm + ' BPM' : 'Unfixed tempo'}</span></div>
-        </div>
-        <span class="status-pill status-${song.status}" style="margin-left:8px;">${statusLabel(song.status)}</span>
-        ${transitionBadge}
-      </div>
-      ${morePanelHTML(song)}
-    </div>
-  `;
-}
-
-function renderGrid(songs){
-  const grid = document.getElementById('songGrid');
+function renderRows(songs){
+  const body = document.getElementById('libraryBody');
   if(!songs.length){
-    grid.innerHTML = `<div class="empty-state"><div class="icon">&#9834;</div><div>No tracks match those filters.</div></div>`;
+    body.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="icon">&#9834;</div>No tracks match those filters.</div></td></tr>`;
     return;
   }
-  grid.innerHTML = songs.map(songCardHTML).join('');
+  body.innerHTML = songs.map(rowHTML).join('');
 }
 
+document.getElementById('libraryBody').addEventListener('click', (e) => {
+  const row = e.target.closest('tr');
+  if(row && row.dataset.id) window.location.href = `song.html?id=${row.dataset.id}`;
+});
+
+// ---------------- Sorting ----------------
+document.querySelectorAll('.lib-sortable').forEach(th => {
+  th.addEventListener('click', () => {
+    const col = th.dataset.sort;
+    if(state.sort === col){ state.dir = state.dir === 'asc' ? 'desc' : 'asc'; }
+    else { state.sort = col; state.dir = 'asc'; }
+    state.page = 1;
+    document.querySelectorAll('.lib-sortable').forEach(h => {
+      h.classList.toggle('active', h === th);
+      h.querySelector('.sort-arrow').textContent = h === th ? (state.dir === 'asc' ? '▲' : '▼') : '';
+    });
+    load();
+  });
+});
+
+// ---------------- Pagination ----------------
+function renderPagination(total, page, perPage, totalPages){
+  const start = total === 0 ? 0 : (page - 1) * perPage + 1;
+  const end = Math.min(total, page * perPage);
+  document.getElementById('paginationInfo').textContent =
+    `Showing ${start} to ${end} of ${total.toLocaleString()} results`;
+
+  document.getElementById('firstPageBtn').disabled = page <= 1;
+  document.getElementById('prevPageBtn').disabled = page <= 1;
+  document.getElementById('nextPageBtn').disabled = page >= totalPages;
+  document.getElementById('lastPageBtn').disabled = page >= totalPages;
+
+  const pages = [];
+  const add = (p) => { if(!pages.includes(p)) pages.push(p); };
+  add(1);
+  for(let p = page - 1; p <= page + 1; p++) if(p > 0 && p <= totalPages) add(p);
+  add(totalPages);
+  pages.sort((a,b) => a - b);
+
+  let html = '';
+  let prev = 0;
+  for(const p of pages){
+    if(p - prev > 1) html += `<span class="page-ellipsis">…</span>`;
+    html += `<div class="page-num ${p === page ? 'active' : ''}" data-page="${p}">${p}</div>`;
+    prev = p;
+  }
+  document.getElementById('pageNumbers').innerHTML = html;
+  document.querySelectorAll('.page-num').forEach(el => {
+    el.addEventListener('click', () => { state.page = Number(el.dataset.page); load(); });
+  });
+}
+
+document.getElementById('firstPageBtn').addEventListener('click', () => { state.page = 1; load(); });
+document.getElementById('prevPageBtn').addEventListener('click', () => { state.page = Math.max(1, state.page - 1); load(); });
+document.getElementById('nextPageBtn').addEventListener('click', () => { state.page++; load(); });
+document.getElementById('lastPageBtn').addEventListener('click', () => { state.page = lastTotalPages; load(); });
+document.getElementById('perPageSelect').addEventListener('change', (e) => {
+  state.perPage = Number(e.target.value); state.page = 1; load();
+});
+
+let lastTotalPages = 1;
+
+// ---------------- Filters ----------------
 function populateFilterOptions(songs){
   const keySel = document.getElementById('keyFilter');
   const compatSel = document.getElementById('compatibleWith');
@@ -89,66 +146,25 @@ function populateFilterOptions(songs){
     opt.value = k; opt.textContent = k;
     keySel.appendChild(opt);
   });
-  songs.forEach(s => {
+  songs.slice(0, 200).forEach(s => { // cap dropdown size for sanity
     const opt = document.createElement('option');
-    opt.value = s.id; opt.textContent = s.title;
+    opt.value = s.id; opt.textContent = `${s.title} — ${s.artist}`;
     compatSel.appendChild(opt);
   });
 }
 
-async function applyFilters(){
-  const q = document.getElementById('searchInput').value.trim();
-  const key = document.getElementById('keyFilter').value;
-  const bpmMin = document.getElementById('bpmMin').value;
-  const bpmMax = document.getElementById('bpmMax').value;
-  const verifiedOnly = document.getElementById('verifiedOnly').checked;
-  const compatibleWith = document.getElementById('compatibleWith').value;
-
-  if(backendAvailable){
-    const params = new URLSearchParams();
-    if(q) params.set('q', q);
-    if(key) params.set('key', key);
-    if(bpmMin) params.set('bpm_min', bpmMin);
-    if(bpmMax) params.set('bpm_max', bpmMax);
-    if(verifiedOnly) params.set('verified_only', '1');
-    if(compatibleWith) params.set('compatible_with', compatibleWith);
-
-    try {
-      const res = await fetch(`api/songs.php?${params.toString()}`);
-      if(!res.ok) throw new Error('bad response');
-      const data = await res.json();
-      renderGrid(data.songs.map(normalizeApiSong));
-      return;
-    } catch(e){
-      backendAvailable = false; // fall through to local filtering below
-    }
-  }
-
-  // ---- local fallback (no backend) ----
-  const qLower = q.toLowerCase();
-  let filtered = allSongs.filter(s => {
-    const matchesQuery = !qLower || s.title.toLowerCase().includes(qLower) || s.artist.toLowerCase().includes(qLower);
-    const matchesKey = !key || s.musicalKey === key;
-    const matchesBpm = s.bpm >= (parseFloat(bpmMin) || 0) && s.bpm <= (parseFloat(bpmMax) || Infinity);
-    const matchesVerified = !verifiedOnly || s.status === 'verified';
-    return matchesQuery && matchesKey && matchesBpm && matchesVerified;
-  });
-  if(compatibleWith && typeof computeTransitionScore === 'function'){
-    const base = allSongs.find(s => s.id === Number(compatibleWith));
-    if(base){
-      filtered = filtered
-        .filter(s => s.id !== base.id)
-        .map(s => ({ ...s, transition: computeTransitionScore(base, s) }))
-        .filter(s => s.transition.score > 0)
-        .sort((x, y) => y.transition.score - x.transition.score);
-    }
-  }
-  renderGrid(filtered);
+function readFilters(){
+  state.q = document.getElementById('searchInput').value.trim();
+  state.key = document.getElementById('keyFilter').value;
+  state.bpmMin = document.getElementById('bpmMin').value;
+  state.bpmMax = document.getElementById('bpmMax').value;
+  state.verifiedOnly = document.getElementById('verifiedOnly').checked;
+  state.compatibleWith = document.getElementById('compatibleWith').value;
 }
 
 ['searchInput','keyFilter','bpmMin','bpmMax','verifiedOnly','compatibleWith'].forEach(id => {
-  document.getElementById(id).addEventListener('input', applyFilters);
-  document.getElementById(id).addEventListener('change', applyFilters);
+  document.getElementById(id).addEventListener('input', () => { state.page = 1; readFilters(); load(); });
+  document.getElementById(id).addEventListener('change', () => { state.page = 1; readFilters(); load(); });
 });
 
 document.getElementById('resetFilters').addEventListener('click', () => {
@@ -158,21 +174,57 @@ document.getElementById('resetFilters').addEventListener('click', () => {
   document.getElementById('bpmMax').value = '';
   document.getElementById('verifiedOnly').checked = false;
   document.getElementById('compatibleWith').value = '';
-  applyFilters();
+  state = { ...state, page: 1, q:'', key:'', bpmMin:'', bpmMax:'', verifiedOnly:false, compatibleWith:'' };
+  load();
 });
 
-document.getElementById('songGrid').addEventListener('click', (e) => {
-  const toggle = e.target.closest('.more-toggle');
-  if(toggle){
-    const id = toggle.dataset.id;
-    const panel = document.getElementById(`more-${id}`);
-    panel.classList.toggle('open');
-    toggle.classList.toggle('open');
-    return;
+// ---------------- Load (API with local fallback) ----------------
+async function load(){
+  if(backendAvailable){
+    const params = new URLSearchParams();
+    if(state.q) params.set('q', state.q);
+    if(state.key) params.set('key', state.key);
+    if(state.bpmMin) params.set('bpm_min', state.bpmMin);
+    if(state.bpmMax) params.set('bpm_max', state.bpmMax);
+    if(state.verifiedOnly) params.set('verified_only', '1');
+    if(state.compatibleWith) params.set('compatible_with', state.compatibleWith);
+    if(state.camelotCode) params.set('camelot_code', state.camelotCode);
+    params.set('page', state.page);
+    params.set('per_page', state.perPage);
+    if(state.sort) { params.set('sort', state.sort); params.set('dir', state.dir); }
+
+    try {
+      const res = await fetch(`api/songs.php?${params.toString()}`);
+      if(!res.ok) throw new Error('bad response');
+      const data = await res.json();
+      lastTotalPages = data.total_pages || 1;
+      renderRows(data.songs.map(normalizeApiSong));
+      renderPagination(data.total, data.page, data.per_page, data.total_pages);
+      return;
+    } catch(e){
+      backendAvailable = false;
+    }
   }
-  const card = e.target.closest('.track-card');
-  if(card){ window.location.href = `song.html?id=${card.dataset.nav}`; }
-});
+
+  // ---- local fallback: paginate the small sample dataset client-side ----
+  const qLower = state.q.toLowerCase();
+  let filtered = allSongsLocal.filter(s => {
+    const matchesQuery = !qLower || s.title.toLowerCase().includes(qLower) || s.artist.toLowerCase().includes(qLower);
+    const matchesKey = !state.key || s.musicalKey === state.key;
+    const matchesBpm = (s.bpm ?? 0) >= (parseFloat(state.bpmMin) || 0) && (s.bpm ?? Infinity) <= (parseFloat(state.bpmMax) || Infinity);
+    const matchesVerified = !state.verifiedOnly || s.status === 'verified';
+    return matchesQuery && matchesKey && matchesBpm && matchesVerified;
+  });
+
+  const total = filtered.length;
+  const totalPages = Math.max(1, Math.ceil(total / state.perPage));
+  lastTotalPages = totalPages;
+  const startIdx = (state.page - 1) * state.perPage;
+  const pageSongs = filtered.slice(startIdx, startIdx + state.perPage);
+
+  renderRows(pageSongs);
+  renderPagination(total, state.page, state.perPage, totalPages);
+}
 
 // ---------------- Hero stats ----------------
 fetch('api/stats.php')
@@ -189,19 +241,34 @@ fetch('api/stats.php')
   });
 
 // ---------------- Boot ----------------
-fetch('api/songs.php')
+const urlParams = new URLSearchParams(window.location.search);
+const urlCamelotCode = urlParams.get('camelot_code');
+if(urlCamelotCode){
+  document.getElementById('libraryAnchor').insertAdjacentHTML('afterend', `
+    <div style="margin-bottom:16px;">
+      <span class="status-pill" style="background:rgba(185,163,255,0.15); color:var(--accent-violet); padding:6px 12px;">
+        Filtered by key: <b>${urlCamelotCode}</b>
+        <a href="index.html" style="margin-left:8px; color:var(--text-dim); text-decoration:none;">✕ clear</a>
+      </span>
+    </div>
+  `);
+}
+
+fetch('api/songs.php?per_page=1')
   .then(res => { if(!res.ok) throw new Error('not ok'); return res.json(); })
-  .then(data => {
+  .then(() => {
     backendAvailable = true;
-    allSongs = data.songs.map(normalizeApiSong);
-    populateFilterOptions(allSongs);
-    renderGrid(allSongs);
+    load();
+    // populate filter dropdowns from a larger sample (first 200 by default order)
+    fetch('api/songs.php?per_page=200').then(r => r.json()).then(d => {
+      populateFilterOptions(d.songs.map(normalizeApiSong));
+    });
   })
   .catch(() => {
     backendAvailable = false;
     fetchSongs().then(songs => {
-      allSongs = songs;
+      allSongsLocal = songs;
       populateFilterOptions(songs);
-      renderGrid(songs);
+      load();
     });
   });

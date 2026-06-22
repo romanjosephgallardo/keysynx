@@ -74,8 +74,8 @@
 <main class="shell">
   <div class="page-head">
     <div class="eyebrow">Contribute</div>
-    <h1 class="page-title">Submit a song analysis</h1>
-    <p class="page-sub">New entries start as <b>Pending</b> until the community votes them to Verified.</p>
+    <h1 class="page-title" id="formHeading">Submit a song analysis</h1>
+    <p class="page-sub" id="formSubheading">New entries start as <b>Pending</b> until the community votes them to Verified.</p>
   </div>
 
   <form class="form-card" id="submitForm" style="margin-bottom:60px;">
@@ -93,7 +93,7 @@
     <div class="form-grid-2">
       <div class="form-row">
         <label for="bpm">BPM</label>
-        <input type="number" step="0.01" id="bpm" placeholder="119" required>
+        <input type="number" step="0.01" id="bpm" placeholder="119 (leave blank if unfixed tempo)">
       </div>
       <div class="form-row">
         <label for="musicalKey">Musical key</label>
@@ -128,7 +128,8 @@
     <div class="form-row">
       <label for="youtubeUrl">YouTube link (optional)</label>
       <input type="url" id="youtubeUrl" placeholder="https://www.youtube.com/watch?v=...">
-      <div class="form-hint">Links to the official YouTube video/audio — we never store or host the audio file itself.</div>
+      <div class="form-hint">This becomes the song's artwork/thumbnail automatically — we never store or host the audio file itself.</div>
+      <img id="ytPreview" style="display:none; width:120px; height:90px; object-fit:cover; border-radius:10px; margin-top:10px; border:1px solid var(--border);">
     </div>
 
     <div class="form-row">
@@ -137,7 +138,7 @@
     </div>
 
     <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:12px;">
-      Submit for community review
+      <span id="submitBtnLabel">Submit for community review</span>
     </button>
     <p class="form-hint" id="formStatus" style="margin-top:12px;"></p>
   </form>

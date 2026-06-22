@@ -24,6 +24,14 @@ function getCamelotCode(string $musicalKey): ?string {
     return CAMELOT_MAP[$musicalKey] ?? null;
 }
 
+function getKeysForCode(string $code): array {
+    $out = [];
+    foreach (CAMELOT_MAP as $key => $c) {
+        if ($c === $code) $out[] = $key;
+    }
+    return $out;
+}
+
 function parseCamelot(string $code): array {
     preg_match('/(\d+)([AB])/', $code, $m);
     return ['num' => (int)$m[1], 'letter' => $m[2]];

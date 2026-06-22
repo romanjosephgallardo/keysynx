@@ -142,8 +142,39 @@
     <button class="btn btn-ghost btn-sm" id="resetFilters">Reset</button>
   </div>
 
-  <div class="song-grid" id="songGrid">
-    <!-- cards injected by main.js -->
+  <div class="lib-table-wrap">
+    <table class="lib-table">
+      <thead>
+        <tr>
+          <th class="lib-th-art">Artwork</th>
+          <th class="lib-sortable" data-sort="artist">Artist <span class="sort-arrow"></span></th>
+          <th class="lib-sortable" data-sort="title">Song <span class="sort-arrow"></span></th>
+          <th class="lib-sortable" data-sort="musical_key">Key <span class="sort-arrow"></span></th>
+          <th class="lib-sortable" data-sort="bpm">BPM <span class="sort-arrow"></span></th>
+          <th class="lib-sortable" data-sort="year">Year <span class="sort-arrow"></span></th>
+        </tr>
+      </thead>
+      <tbody id="libraryBody">
+        <!-- rows injected by main.js -->
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination-bar">
+    <div class="pagination-info" id="paginationInfo">Showing 0 results</div>
+    <div class="pagination-controls">
+      <span class="pp-label">Per page:</span>
+      <select id="perPageSelect">
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+      </select>
+      <button class="page-btn" id="firstPageBtn">&laquo;</button>
+      <button class="page-btn" id="prevPageBtn">&lsaquo;</button>
+      <div id="pageNumbers" class="page-numbers"></div>
+      <button class="page-btn" id="nextPageBtn">&rsaquo;</button>
+      <button class="page-btn" id="lastPageBtn">&raquo;</button>
+    </div>
   </div>
 </main>
 

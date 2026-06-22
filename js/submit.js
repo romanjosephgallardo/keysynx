@@ -171,7 +171,7 @@ document.getElementById('submitForm').addEventListener('submit', async (e) => {
     statusEl.style.color = 'var(--verified)';
     if(isEditMode){
       statusEl.textContent = '✓ Changes saved.';
-      setTimeout(() => { window.location.href = `song.html?id=${editId}`; }, 900);
+      setTimeout(() => { window.location.href = `song.php?id=${editId}`; }, 900);
     } else {
       statusEl.textContent = `✓ ${data.message} (+10 reputation awarded)`;
       document.getElementById('submitForm').reset();

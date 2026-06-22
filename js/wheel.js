@@ -182,7 +182,7 @@ async function renderKeyMode(code){
   }
 
   songsHTML = sample.length ? sample.map(s => `
-    <a href="song.html?id=${s.id}" class="rec-row" style="text-decoration:none; color:inherit;">
+    <a href="song.php?id=${s.id}" class="rec-row" style="text-decoration:none; color:inherit;">
       <div class="rec-info">
         <div class="rec-title">${s.title}</div>
         <div class="rec-meta">${s.artist}</div>

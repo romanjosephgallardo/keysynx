@@ -76,7 +76,7 @@ function renderRows(songs){
 
 document.getElementById('libraryBody').addEventListener('click', (e) => {
   const row = e.target.closest('tr');
-  if(row && row.dataset.id) window.location.href = `song.html?id=${row.dataset.id}`;
+  if(row && row.dataset.id) window.location.href = `song.php?id=${row.dataset.id}`;
 });
 
 // ---------------- Sorting ----------------

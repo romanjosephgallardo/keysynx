@@ -195,7 +195,7 @@ function renderTransitionsFromApi(song){
   const block = document.getElementById('transitionsBlock');
   const recs = song.recommendations;
   const rowsHTML = recs.length ? recs.map(r => `
-    <a href="song.html?id=${r.song.id}" class="rec-row" style="text-decoration:none; color:inherit;">
+    <a href="song.php?id=${r.song.id}" class="rec-row" style="text-decoration:none; color:inherit;">
       <div class="rec-score" style="--pct:${r.score}%">${r.score}</div>
       <div class="rec-info">
         <div class="rec-title">${r.song.title}</div>
@@ -218,7 +218,7 @@ function renderTransitionsLocal(song){
   fetchSongs().then(allSongs => {
     const recs = getRecommendations(song, allSongs, 3);
     const rowsHTML = recs.length ? recs.map(r => `
-      <a href="song.html?id=${r.song.id}" class="rec-row" style="text-decoration:none; color:inherit;">
+      <a href="song.php?id=${r.song.id}" class="rec-row" style="text-decoration:none; color:inherit;">
         <div class="rec-score" style="--pct:${r.score}%">${r.score}</div>
         <div class="rec-info">
           <div class="rec-title">${r.song.title}</div>

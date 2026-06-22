@@ -75,7 +75,7 @@ async function load(){
 
     const recent = data.recent_songs || [];
     document.getElementById('recentSongs').innerHTML = recent.length ? recent.map(song => `
-      <a href="song.html?id=${song.id}" class="rec-row" style="text-decoration:none; color:inherit;">
+      <a href="song.php?id=${song.id}" class="rec-row" style="text-decoration:none; color:inherit;">
         <div class="rec-info">
           <div class="rec-title">${song.title}</div>
           <div class="rec-meta">${song.artist}</div>

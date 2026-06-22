@@ -21,43 +21,9 @@
 header('Content-Type: application/json');
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/camelot.php';
+require_once __DIR__ . '/song_helpers.php';
 
 $db = getDb();
-
-/**
- * Derives a thumbnail straight from YouTube's own CDN — no audio/image
- * is ever stored on our side, just a predictable URL built from the
- * video ID (matches proposal limitation: no copyrighted file storage).
- */
-function youtubeThumbnail(?string $url): ?string {
-    if (!$url) return null;
-    if (!preg_match('#(?:youtube\.com/watch\?v=|youtu\.be/)([\w-]{6,})#', $url, $m)) return null;
-    return "https://img.youtube.com/vi/{$m[1]}/hqdefault.jpg";
-}
-
-/**
- * Confidence Score System (Beyond-MVP feature #2).
- *   40% validation count   — total votes, maxes out at 10 votes
- *   30% agreement ratio    — upvotes / total votes
- *   30% contributor rep    — avg reputation of everyone who voted, maxes out at 100 pts
- */
-function computeConfidenceScore(mysqli $db, array $song): int {
-    $totalVotes = $song['upvotes'] + $song['downvotes'];
-    $validationFactor = min(1, $totalVotes / 10);
-    $agreementFactor = $totalVotes > 0 ? $song['upvotes'] / $totalVotes : 0;
-
-    $stmt = $db->prepare(
-        'SELECT AVG(u.reputation_points) AS avg_rep FROM votes v
-         JOIN users u ON u.id = v.user_id WHERE v.song_id = ?'
-    );
-    $stmt->bind_param('i', $song['id']);
-    $stmt->execute();
-    $avgRep = $stmt->get_result()->fetch_assoc()['avg_rep'] ?? 0;
-    $reputationFactor = min(1, ($avgRep ?? 0) / 100);
-
-    $score = ($validationFactor * 40) + ($agreementFactor * 30) + ($reputationFactor * 30);
-    return (int) round($score);
-}
 
 function fetchAllSongs(mysqli $db): array {
     $res = $db->query('SELECT * FROM songs ORDER BY id');
@@ -67,52 +33,8 @@ function fetchAllSongs(mysqli $db): array {
 // ---------------- Single song detail ----------------
 if (isset($_GET['id'])) {
     $id = (int) $_GET['id'];
-
-    $stmt = $db->prepare(
-        'SELECT s.*, u.username AS submitted_by_username, a.title AS album_title, a.release_year
-         FROM songs s
-         LEFT JOIN users u ON u.id = s.submitted_by
-         LEFT JOIN albums a ON a.id = s.album_id
-         WHERE s.id = ?'
-    );
-    $stmt->bind_param('i', $id);
-    $stmt->execute();
-    $song = $stmt->get_result()->fetch_assoc();
-
+    $song = getSongFullDetail($db, $id);
     if (!$song) jsonError('Song not found.', 404);
-
-    $stmt = $db->prepare('SELECT section_name, order_index, bpm, musical_key, camelot_code FROM song_sections WHERE song_id = ? ORDER BY order_index');
-    $stmt->bind_param('i', $id);
-    $stmt->execute();
-    $sections = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-
-    $stmt = $db->prepare(
-        'SELECT c.id, c.comment, c.created_at, c.user_id, u.username, u.reputation_points
-         FROM song_comments c JOIN users u ON u.id = c.user_id
-         WHERE c.song_id = ? ORDER BY c.created_at DESC'
-    );
-    $stmt->bind_param('i', $id);
-    $stmt->execute();
-    $comments = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-
-    $allSongs = fetchAllSongs($db);
-    $recommendations = [];
-    foreach ($allSongs as $other) {
-        if ($other['id'] == $song['id']) continue;
-        $result = computeTransitionScore($song, $other);
-        if ($result['score'] > 0) {
-            $result['song'] = $other;
-            $recommendations[] = $result;
-        }
-    }
-    usort($recommendations, fn($a, $b) => $b['score'] - $a['score']);
-    $recommendations = array_slice($recommendations, 0, 5);
-
-    $song['confidence_score'] = computeConfidenceScore($db, $song);
-    $song['thumbnail_url'] = youtubeThumbnail($song['youtube_url']);
-    $song['sections'] = $sections;
-    $song['comments'] = $comments;
-    $song['recommendations'] = $recommendations;
 
     jsonResponse($song);
 }

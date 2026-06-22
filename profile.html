@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Profile — KeySynx</title>
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?v=3">
 
 <!-- Tailwind CSS (Play CDN — no build step, fits XAMPP/Apache setup) -->
 <script src="https://cdn.tailwindcss.com"></script>
@@ -22,7 +22,7 @@
     }
   }
 </script>
-<script src="js/auth.js"></script>
+<script src="js/auth.js?v=3"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body>
@@ -44,8 +44,11 @@
         <button @click="open = true" class="btn btn-sm">Log in</button>
       </template>
       <template x-if="!$store.auth.loading && $store.auth.user">
-        <div style="display:flex; align-items:center; gap:8px;">
-          <a href="profile.html" style="font-size:0.78rem; color:var(--text-muted); text-decoration:none;" x-text="$store.auth.user.username + ' · ' + $store.auth.user.reputation_tier"></a>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <a href="profile.html"
+             :title="$store.auth.user.username + ' · ' + $store.auth.user.reputation_tier"
+             :style="'width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;text-decoration:none;background:hsl(' + ($store.auth.user.username.split('').reduce((h,c)=>h+c.charCodeAt(0),0)%360) + ',55%,42%)'"
+             x-text="$store.auth.user.username.slice(0,2).toUpperCase()"></a>
           <button @click="$store.auth.logout()" class="btn btn-sm btn-ghost">Log out</button>
         </div>
       </template>
@@ -73,7 +76,7 @@
 <main class="shell">
   <div class="page-head">
     <div class="eyebrow">Your account</div>
-    <h1 class="page-title">Profile</h1>
+    <h1 class="page-title" id="pageTitle">Profile</h1>
     <p class="page-sub">Manage your account and see how your contributor reputation is building.</p>
   </div>
 
@@ -84,32 +87,39 @@
 
   <div id="profileContent" class="grid md:grid-cols-[1fr_360px] gap-6" style="padding-bottom:60px;">
     <div class="form-card" style="max-width:none;">
-      <div class="section-label">Account details</div>
-      <form id="profileForm">
-        <div class="form-row">
-          <label for="pUsername">Username</label>
-          <input type="text" id="pUsername" required>
-        </div>
-        <div class="form-row">
-          <label for="pEmail">Email</label>
-          <input type="email" id="pEmail" required>
-        </div>
-        <div class="form-grid-2">
-          <div class="form-row">
-            <label for="pCurrentPassword">Current password</label>
-            <input type="password" id="pCurrentPassword" placeholder="Only needed if changing password">
-          </div>
-          <div class="form-row">
-            <label for="pNewPassword">New password</label>
-            <input type="password" id="pNewPassword" placeholder="Leave blank to keep current">
-          </div>
-        </div>
-        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:12px;">Save changes</button>
-        <p class="form-hint" id="profileStatus" style="margin-top:12px;"></p>
-      </form>
+      <div id="publicHeader" style="display:none; align-items:center; gap:14px; margin-bottom:24px;"></div>
 
-      <div class="section-label" style="margin-top:32px;">Your submissions</div>
+      <div id="editSection">
+        <div class="section-label">Account details</div>
+        <form id="profileForm">
+          <div class="form-row">
+            <label for="pUsername">Username</label>
+            <input type="text" id="pUsername" required>
+          </div>
+          <div class="form-row">
+            <label for="pEmail">Email</label>
+            <input type="email" id="pEmail" required>
+          </div>
+          <div class="form-grid-2">
+            <div class="form-row">
+              <label for="pCurrentPassword">Current password</label>
+              <input type="password" id="pCurrentPassword" placeholder="Only needed if changing password">
+            </div>
+            <div class="form-row">
+              <label for="pNewPassword">New password</label>
+              <input type="password" id="pNewPassword" placeholder="Leave blank to keep current">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:12px;">Save changes</button>
+          <p class="form-hint" id="profileStatus" style="margin-top:12px;"></p>
+        </form>
+      </div>
+
+      <div class="section-label" style="margin-top:32px;">Submissions</div>
       <div id="submissionStats" class="flex gap-3 flex-wrap"></div>
+
+      <div class="section-label" style="margin-top:24px;">Recent submissions</div>
+      <div id="recentSongs" class="rec-list"></div>
 
       <div class="section-label" style="margin-top:32px;">Recent reputation activity</div>
       <div id="reputationLog" class="rec-list"></div>
@@ -148,6 +158,6 @@
 
 <footer>KeySynx · Final Project Prototype · Key &amp; BPM Analysis Platform</footer>
 
-<script src="js/profile.js"></script>
+<script src="js/profile.js?v=3"></script>
 </body>
 </html>

@@ -76,8 +76,18 @@ async function loadForEdit(id){
       return true;
     };
 
-    // Auth store may still be loading — check now and shortly after
-    if(!checkOwnership()) setTimeout(checkOwnership, 400);
+    // Wait until the auth store has definitively finished loading (not a
+    // fixed timeout guess) before deciding whether to lock the form —
+    // a fixed-delay check could miss a slow session lookup and wrongly
+    // disable editing for the actual owner.
+    async function waitForAuthReady(){
+      for(let i = 0; i < 50; i++){
+        if(window.Alpine && Alpine.store('auth') && !Alpine.store('auth').loading) return;
+        await new Promise(r => setTimeout(r, 100));
+      }
+    }
+    await waitForAuthReady();
+    checkOwnership();
 
     document.getElementById('formHeading').textContent = 'Edit song analysis';
     document.getElementById('formSubheading').innerHTML = `Editing <b>${song.title}</b> — only the original submitter or an admin can save changes.`;

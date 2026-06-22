@@ -11,17 +11,24 @@ require_once __DIR__ . '/db.php';
 
 if (empty($_SESSION['user_id'])) jsonError('Login required.', 401);
 $db = getDb();
-$userId = $_SESSION['user_id'];
+$sessionUserId = $_SESSION['user_id'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $stmt = $db->prepare('SELECT id, username, email, role, reputation_points, created_at FROM users WHERE id = ?');
-    $stmt->bind_param('i', $userId);
+    $viewingUserId = isset($_GET['user_id']) ? (int) $_GET['user_id'] : $sessionUserId;
+    $isOwnProfile = $viewingUserId === (int) $sessionUserId;
+
+    $stmt = $db->prepare('SELECT id, username, email, role, reputation_points, avatar_initials, created_at FROM users WHERE id = ?');
+    $stmt->bind_param('i', $viewingUserId);
     $stmt->execute();
     $user = $stmt->get_result()->fetch_assoc();
+    if (!$user) jsonError('User not found.', 404);
+
     $user['reputation_tier'] = reputationTier((int) $user['reputation_points']);
+    $user['is_own_profile'] = $isOwnProfile;
+    if (!$isOwnProfile) unset($user['email']); // public view never exposes email
 
     $stmt = $db->prepare('SELECT points, reason, created_at, song_id FROM reputation_log WHERE user_id = ? ORDER BY created_at DESC LIMIT 50');
-    $stmt->bind_param('i', $userId);
+    $stmt->bind_param('i', $viewingUserId);
     $stmt->execute();
     $log = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
@@ -33,14 +40,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             SUM(status = 'rejected') AS rejected
          FROM songs WHERE submitted_by = ?"
     );
-    $stmt->bind_param('i', $userId);
+    $stmt->bind_param('i', $viewingUserId);
     $stmt->execute();
     $stats = $stmt->get_result()->fetch_assoc();
 
-    jsonResponse(['user' => $user, 'reputation_log' => $log, 'submission_stats' => $stats]);
+    // A small sample of their actual submissions, for the public view to feel substantive
+    $stmt = $db->prepare('SELECT id, title, artist, status FROM songs WHERE submitted_by = ? ORDER BY created_at DESC LIMIT 10');
+    $stmt->bind_param('i', $viewingUserId);
+    $stmt->execute();
+    $recentSongs = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+    jsonResponse(['user' => $user, 'reputation_log' => $log, 'submission_stats' => $stats, 'recent_songs' => $recentSongs]);
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $userId = $sessionUserId; // you can only ever edit your own account
     $body = json_decode(file_get_contents('php://input'), true);
     $username = trim($body['username'] ?? '');
     $email = trim($body['email'] ?? '');

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Submit Song Analysis — KeySynx</title>
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?v=3">
 
 <!-- Tailwind CSS (Play CDN — no build step, fits XAMPP/Apache setup) -->
 <script src="https://cdn.tailwindcss.com"></script>
@@ -23,7 +23,7 @@
   }
 </script>
 <!-- Alpine.js (CDN — handles new interactive widgets: comments, compat filter, reputation badges) -->
-<script src="js/auth.js"></script>
+<script src="js/auth.js?v=3"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body>
@@ -45,8 +45,11 @@
         <button @click="open = true" class="btn btn-sm">Log in</button>
       </template>
       <template x-if="!$store.auth.loading && $store.auth.user">
-        <div style="display:flex; align-items:center; gap:8px;">
-          <span style="font-size:0.78rem; color:var(--text-muted);" x-text="$store.auth.user.username + ' · ' + $store.auth.user.reputation_tier"></span>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <a href="profile.html"
+             :title="$store.auth.user.username + ' · ' + $store.auth.user.reputation_tier"
+             :style="'width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;text-decoration:none;background:hsl(' + ($store.auth.user.username.split('').reduce((h,c)=>h+c.charCodeAt(0),0)%360) + ',55%,42%)'"
+             x-text="$store.auth.user.username.slice(0,2).toUpperCase()"></a>
           <button @click="$store.auth.logout()" class="btn btn-sm btn-ghost">Log out</button>
         </div>
       </template>
@@ -146,6 +149,6 @@
 
 <footer>KeySynx · Final Project Prototype · Key &amp; BPM Analysis Platform</footer>
 
-<script src="js/submit.js"></script>
+<script src="js/submit.js?v=3"></script>
 </body>
 </html>

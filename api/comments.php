@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!$songId) jsonError('song_id is required.');
 
     $stmt = $db->prepare(
-        'SELECT c.id, c.comment, c.created_at, u.username, u.reputation_points
+        'SELECT c.id, c.comment, c.created_at, c.user_id, u.username, u.reputation_points
          FROM song_comments c JOIN users u ON u.id = c.user_id
          WHERE c.song_id = ? ORDER BY c.created_at DESC'
     );

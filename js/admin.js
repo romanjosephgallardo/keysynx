@@ -15,7 +15,7 @@ function statusLabel(status){
 
 function normalizeApiSong(raw){
   return {
-    id: raw.id, title: raw.title, artist: raw.artist, bpm: parseFloat(raw.bpm),
+    id: raw.id, title: raw.title, artist: raw.artist, bpm: raw.bpm !== null ? parseFloat(raw.bpm) : null,
     musicalKey: raw.musical_key, hasVariation: !!raw.has_variation,
     submittedBy: raw.submitted_by, status: raw.status,
     upvotes: raw.upvotes, downvotes: raw.downvotes
@@ -33,7 +33,7 @@ function songRowHTML(song){
       </td>
       <td>
         ${star}<span style="font-family:var(--font-display); font-weight:600;">${song.musicalKey}</span>
-        &nbsp;·&nbsp; <span class="num">${song.bpm}</span> BPM
+        &nbsp;·&nbsp; <span class="num">${song.bpm !== null ? song.bpm + ' BPM' : 'Unfixed tempo'}</span>
       </td>
       <td>${song.submittedBy ?? '—'}</td>
       <td><span class="num" style="color:var(--verified)">▲${song.upvotes}</span> / <span class="num" style="color:var(--rejected)">▼${song.downvotes}</span></td>

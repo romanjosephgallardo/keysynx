@@ -1,6 +1,11 @@
 /* ============================================
    profile.html logic
+   No ?user_id= in URL  -> your own profile (editable)
+   ?user_id=<id>        -> public, read-only view of that user
    ============================================ */
+
+const params = new URLSearchParams(window.location.search);
+const viewingUserId = params.get('user_id');
 
 async function waitForAuth(){
   for(let i = 0; i < 20; i++){
@@ -19,6 +24,10 @@ function statTile(label, value, color){
   `;
 }
 
+function songStatusPill(status){
+  return `<span class="status-pill status-${status}" style="font-size:0.68rem;">${status}</span>`;
+}
+
 async function load(){
   const auth = await waitForAuth();
   if(!auth.user){
@@ -28,14 +37,34 @@ async function load(){
   }
 
   try {
-    const res = await fetch('api/profile.php');
+    const url = viewingUserId ? `api/profile.php?user_id=${encodeURIComponent(viewingUserId)}` : 'api/profile.php';
+    const res = await fetch(url);
     if(!res.ok) throw new Error('failed');
     const data = await res.json();
+    const user = data.user;
 
-    document.getElementById('pUsername').value = data.user.username;
-    document.getElementById('pEmail').value = data.user.email;
-    document.getElementById('repPoints').textContent = data.user.reputation_points;
-    document.getElementById('repTier').textContent = data.user.reputation_tier;
+    document.getElementById('pageTitle') && (document.getElementById('pageTitle').textContent = user.is_own_profile ? 'Profile' : `${user.username}'s profile`);
+
+    if(user.is_own_profile){
+      document.getElementById('editSection').style.display = '';
+      document.getElementById('publicHeader').style.display = 'none';
+      document.getElementById('pUsername').value = user.username;
+      document.getElementById('pEmail').value = user.email;
+    } else {
+      document.getElementById('editSection').style.display = 'none';
+      const header = document.getElementById('publicHeader');
+      header.style.display = 'flex';
+      header.innerHTML = `
+        ${window.avatarHTML(user.username, 56)}
+        <div>
+          <div class="track-title" style="font-size:1.3rem;">${user.username}</div>
+          <div class="track-artist">Member since ${new Date(user.created_at).toLocaleDateString()}</div>
+        </div>
+      `;
+    }
+
+    document.getElementById('repPoints').textContent = user.reputation_points;
+    document.getElementById('repTier').textContent = user.reputation_tier;
 
     const s = data.submission_stats;
     document.getElementById('submissionStats').innerHTML =
@@ -43,6 +72,17 @@ async function load(){
       statTile('Verified', s.verified || 0, 'var(--verified)') +
       statTile('Pending', s.pending || 0, 'var(--pending)') +
       statTile('Rejected', s.rejected || 0, 'var(--rejected)');
+
+    const recent = data.recent_songs || [];
+    document.getElementById('recentSongs').innerHTML = recent.length ? recent.map(song => `
+      <a href="song.html?id=${song.id}" class="rec-row" style="text-decoration:none; color:inherit;">
+        <div class="rec-info">
+          <div class="rec-title">${song.title}</div>
+          <div class="rec-meta">${song.artist}</div>
+        </div>
+        ${songStatusPill(song.status)}
+      </a>
+    `).join('') : `<div class="more-line">No submissions yet.</div>`;
 
     const log = data.reputation_log;
     document.getElementById('reputationLog').innerHTML = log.length ? log.map(l => `
@@ -62,38 +102,39 @@ async function load(){
   }
 }
 
-document.getElementById('profileForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const statusEl = document.getElementById('profileStatus');
+if(!viewingUserId){
+  document.getElementById('profileForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const statusEl = document.getElementById('profileStatus');
 
-  const payload = {
-    username: document.getElementById('pUsername').value,
-    email: document.getElementById('pEmail').value,
-    current_password: document.getElementById('pCurrentPassword').value,
-    new_password: document.getElementById('pNewPassword').value
-  };
+    const payload = {
+      username: document.getElementById('pUsername').value,
+      email: document.getElementById('pEmail').value,
+      current_password: document.getElementById('pCurrentPassword').value,
+      new_password: document.getElementById('pNewPassword').value
+    };
 
-  try {
-    const res = await fetch('api/profile.php', {
-      method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify(payload)
-    });
-    const data = await res.json();
-    if(!res.ok){
+    try {
+      const res = await fetch('api/profile.php', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if(!res.ok){
+        statusEl.style.color = 'var(--rejected)';
+        statusEl.textContent = data.error || 'Could not save changes.';
+        return;
+      }
+      statusEl.style.color = 'var(--verified)';
+      statusEl.textContent = '✓ Profile updated.';
+      document.getElementById('pCurrentPassword').value = '';
+      document.getElementById('pNewPassword').value = '';
+      Alpine.store('auth').init();
+    } catch(err){
       statusEl.style.color = 'var(--rejected)';
-      statusEl.textContent = data.error || 'Could not save changes.';
-      return;
+      statusEl.textContent = 'Could not reach the server.';
     }
-    statusEl.style.color = 'var(--verified)';
-    statusEl.textContent = '✓ Profile updated.';
-    document.getElementById('pCurrentPassword').value = '';
-    document.getElementById('pNewPassword').value = '';
-    // refresh the topbar auth display in case the username changed
-    Alpine.store('auth').init();
-  } catch(err){
-    statusEl.style.color = 'var(--rejected)';
-    statusEl.textContent = 'Could not reach the server.';
-  }
-});
+  });
+}
 
 load();

@@ -56,6 +56,7 @@ function normalizeSong(raw, fromApi){
 
 function renderSong(song, fromApi){
   const root = document.getElementById('detailRoot');
+  window.__currentSongOwnerId = song.submittedById ?? null;
   const [a, b] = thumbGradient(song.id);
   const star = song.hasVariation ? '<span class="star">*</span>' : '';
   const code = (typeof getCamelotCode === 'function') ? getCamelotCode(song.musicalKey) : null;
@@ -137,7 +138,9 @@ function renderSong(song, fromApi){
     <div class="section-block" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
       <div style="color:var(--text-muted); font-size:0.88rem; display:flex; align-items:center; gap:10px;">
         <span>Submitted by <b style="color:var(--text)">${song.submittedBy}</b></span>
-        <a href="submit.html?edit=${song.id}" class="btn btn-ghost btn-sm" id="editBtn" style="display:none;">✎ Edit</a>
+        <a href="submit.html?edit=${song.id}" class="btn btn-ghost btn-sm" id="editBtn"
+           x-data x-cloak
+           x-show="$store.auth.user && (Number($store.auth.user.id) === Number(window.__currentSongOwnerId) || $store.auth.user.role === 'admin')">✎ Edit</a>
       </div>
       <div class="vote-row">
         <button class="vote-btn up" id="upBtn">&#9650; <span class="num" id="upCount">${song.upvotes}</span></button>
@@ -155,20 +158,6 @@ function renderSong(song, fromApi){
   }
   renderComments(song, fromApi);
   wireVoteButtons(song, fromApi);
-  wireEditButton(song);
-}
-
-function wireEditButton(song){
-  const reveal = () => {
-    const user = window.Alpine && Alpine.store('auth').user;
-    if(!user) return;
-    const isOwner = song.submittedById !== null && song.submittedById !== undefined && Number(user.id) === Number(song.submittedById);
-    const isAdmin = user.role === 'admin';
-    if(isOwner || isAdmin) document.getElementById('editBtn').style.display = '';
-  };
-  // auth store may still be loading when this first runs — check now and shortly after
-  reveal();
-  setTimeout(reveal, 400);
 }
 
 function wireVoteButtons(song, fromApi){
@@ -248,20 +237,34 @@ function renderTransitionsLocal(song){
 }
 
 // ---- Contributor feedback (comments) — Alpine-powered ----
+// ---------------- Contributor feedback (comments) ----------------
+// IMPORTANT: comment data is passed to Alpine via a global variable
+// reference (window.__songComments), NOT serialized into the x-data
+// HTML attribute. Embedding JSON.stringify(...) directly inside
+// x-data="..." breaks as soon as any comment contains a double quote,
+// since that's also the attribute's own delimiter — this previously
+// caused comments to render blank or show mangled stray text.
 function renderComments(song, fromApi){
   const block = document.getElementById('commentsBlock');
   const comments = song.comments || [];
+  window.__songComments = comments;
 
   block.innerHTML = `
-    <div x-data="{ comments: ${JSON.stringify(comments)}, text: '', posting: false }">
+    <div x-data="{ comments: window.__songComments, text: '', posting: false }">
       <div class="section-label">Contributor feedback (${comments.length})</div>
 
       <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:14px;">
         <template x-for="c in comments" :key="c.id">
-          <div class="more-line" style="font-style:normal; background:var(--surface-2); border-radius:10px; padding:10px 12px;">
-            <span style="color:var(--text); font-weight:600;" x-text="c.username"></span>
-            <span style="color:var(--text-dim); font-size:0.75rem;" x-text="' · ' + (c.reputation_points || 0) + ' rep'"></span>
-            <div style="margin-top:4px; color:var(--text-muted);" x-text="c.comment"></div>
+          <div style="display:flex; gap:10px; background:var(--surface-2); border-radius:10px; padding:10px 12px;">
+            <div :style="'width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;background:hsl(' + (c.username.split('').reduce((h,ch)=>h+ch.charCodeAt(0),0)%360) + ',55%,42%)'"
+                 x-text="c.username.slice(0,2).toUpperCase()"></div>
+            <div style="flex:1; min-width:0;">
+              <a :href="'profile.html?user_id=' + c.user_id" style="text-decoration:none;">
+                <span style="color:var(--text); font-weight:600;" x-text="c.username"></span>
+              </a>
+              <span style="color:var(--text-dim); font-size:0.75rem;" x-text="' · ' + (c.reputation_points || 0) + ' rep'"></span>
+              <div style="margin-top:4px; color:var(--text-muted); font-size:0.88rem;" x-text="c.comment"></div>
+            </div>
           </div>
         </template>
         <p x-show="comments.length === 0" class="more-line">No feedback yet — be the first to weigh in.</p>
@@ -281,7 +284,7 @@ function renderComments(song, fromApi){
                 body: JSON.stringify({ song_id: ${song.id}, comment: text })
               });
               if(res.ok){
-                comments.unshift({ id: Date.now(), username: $store.auth.user.username, reputation_points: $store.auth.user.reputation_points, comment: text });
+                comments.unshift({ id: Date.now(), user_id: $store.auth.user.id, username: $store.auth.user.username, reputation_points: $store.auth.user.reputation_points, comment: text });
                 text = '';
               } else {
                 const d = await res.json(); alert(d.error || 'Could not post comment.');

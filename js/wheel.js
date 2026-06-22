@@ -228,15 +228,25 @@ function resolveKeyQuery(raw){
 }
 
 function populateKeyDatalist(){
-  const list = document.getElementById('keyOptions');
-  const names = Object.keys(CAMELOT_MAP).sort();
-  const codes = Object.keys(REVERSE_CAMELOT).sort();
-  list.innerHTML = [...names, ...codes].map(v => `<option value="${v}"></option>`).join('');
+  // no-op now — kept as a stub in case something else still calls it
 }
 
-document.getElementById('keySearchInput').addEventListener('input', (e) => {
-  const code = resolveKeyQuery(e.target.value);
-  if(code) renderKeyMode(code);
+function runKeySearch(){
+  const input = document.getElementById('keySearchInput');
+  const errorEl = document.getElementById('keySearchError');
+  const code = resolveKeyQuery(input.value);
+  if(code){
+    errorEl.style.display = 'none';
+    renderKeyMode(code);
+  } else {
+    errorEl.textContent = `Couldn't match "${input.value}" to a key. Try something like "B Major", "A Minor", or a Camelot code like "1B".`;
+    errorEl.style.display = '';
+  }
+}
+
+document.getElementById('keySearchBtn').addEventListener('click', runKeySearch);
+document.getElementById('keySearchInput').addEventListener('keydown', (e) => {
+  if(e.key === 'Enter'){ e.preventDefault(); runKeySearch(); }
 });
 
 // ---------------- Event wiring ----------------

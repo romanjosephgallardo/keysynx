@@ -7,6 +7,15 @@
    runs init, i.e. via alpine:init listener below.
    ============================================ */
 
+// Shared avatar-circle generator — used by the topbar profile icon,
+// comment authors, and the profile page. Deterministic color per username.
+function avatarHTML(username, size = 28){
+  const initials = (username || '??').slice(0, 2).toUpperCase();
+  const hue = [...(username || '')].reduce((h, c) => h + c.charCodeAt(0), 0) % 360;
+  return `<div style="width:${size}px; height:${size}px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:${size * 0.4}px; font-weight:700; color:#fff; background:hsl(${hue},55%,42%);">${initials}</div>`;
+}
+window.avatarHTML = avatarHTML;
+
 document.addEventListener('alpine:init', () => {
   Alpine.store('auth', {
     user: null,

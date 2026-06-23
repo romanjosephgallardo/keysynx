@@ -94,6 +94,18 @@ input, select, textarea{ font-family: inherit; }
 }
 .nav-links a:hover, .nav-links a.active{ color: var(--text); border-color: var(--k7); }
 
+.admin-badge-link{
+  background: rgba(94,230,168,0.15);
+  border: 1px solid rgba(94,230,168,0.4) !important;
+  border-radius: 999px;
+  padding: 5px 14px !important;
+  color: var(--verified) !important;
+  font-weight: 600;
+  font-size: 0.82rem;
+}
+.admin-badge-link:hover{ background: rgba(94,230,168,0.25); color: var(--verified) !important; }
+.admin-badge-link.active{ background: rgba(94,230,168,0.3); }
+
 .search-wrap{ flex:1; max-width: 420px; margin-left: auto; }
 .search-input{
   width:100%; background: var(--surface);

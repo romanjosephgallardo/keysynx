@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Submit Song Analysis — KeySynx</title>
-<link rel="stylesheet" href="css/style.css?v=5">
+<link rel="stylesheet" href="css/style.css?v=6">
 
 <!-- Tailwind CSS (Play CDN — no build step, fits XAMPP/Apache setup) -->
 <script src="https://cdn.tailwindcss.com"></script>
@@ -23,7 +23,7 @@
   }
 </script>
 <!-- Alpine.js (CDN — handles new interactive widgets: comments, compat filter, reputation badges) -->
-<script src="js/auth.js?v=5"></script>
+<script src="js/auth.js?v=6"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body>
@@ -31,11 +31,13 @@
 <header class="topbar">
   <div class="shell topbar-inner">
     <a href="index.html" class="logo"><span class="dot"></span> KeySynx</a>
-    <nav class="nav-links">
+    <nav class="nav-links" x-data>
       <a href="index.html">Browse</a>
       <a href="wheel.html">Wheel</a>
       <a href="submit.html" class="active">Submit</a>
-      <a href="admin.html">Admin</a>
+      <template x-if="$store.auth.user && ($store.auth.user.role === 'admin' || $store.auth.user.reputation_points >= 100)">
+        <a href="admin.php" class="admin-badge-link">Admin Panel</a>
+      </template>
     </nav>
     <div x-data="{ open:false, mode:'login', u:'', e:'', p:'' }" class="relative" style="margin-left:12px;">
       <template x-if="$store.auth.loading">
@@ -155,6 +157,6 @@
 
 <footer>KeySynx · Final Project Prototype · Key &amp; BPM Analysis Platform</footer>
 
-<script src="js/submit.js?v=5"></script>
+<script src="js/submit.js?v=6"></script>
 </body>
 </html>

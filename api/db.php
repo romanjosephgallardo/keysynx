@@ -47,6 +47,29 @@ if (!function_exists('avatarHue')) {
     }
 }
 
+/**
+ * Song moderation access (approve/reject/delete entries): granted to
+ * true admins, OR to any user who's reached 100+ reputation points
+ * (the "Moderator" tier) — either path counts, per the proposal's
+ * Contributor Reputation System. Managing OTHER users' roles is a
+ * stricter permission — see isTrueAdmin() below, used for that.
+ */
+function hasModeratorAccess(?array $user): bool {
+    if (!$user) return false;
+    if (($user['role'] ?? '') === 'admin') return true;
+    return (int) ($user['reputation_points'] ?? 0) >= 100;
+}
+
+/**
+ * Role management (promoting/demoting other users) stays restricted to
+ * users with the actual 'admin' role in the database — reaching 100+
+ * reputation grants moderation access, not the ability to grant access
+ * to others.
+ */
+function isTrueAdmin(?array $user): bool {
+    return $user && ($user['role'] ?? '') === 'admin';
+}
+
 function jsonResponse($data, int $status = 200): void {
     http_response_code($status);
     header('Content-Type: application/json');

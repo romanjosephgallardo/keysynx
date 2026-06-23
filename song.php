@@ -53,7 +53,7 @@ $thumbGradients = [
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title><?= $song ? htmlspecialchars($song['title']) . ' — KeySynx' : 'Track not found — KeySynx' ?></title>
-<link rel="stylesheet" href="css/style.css?v=5">
+<link rel="stylesheet" href="css/style.css?v=6">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
   tailwind.config = { theme: { extend: {
@@ -191,6 +191,9 @@ $thumbGradients = [
         <?php else: foreach ($song['comments'] as $c):
           $hue = array_sum(array_map('ord', str_split($c['username']))) % 360;
           $canDelete = $currentUserId && ((int) $c['user_id'] === (int) $currentUserId || $isAdmin);
+          $canEdit = $currentUserId && (int) $c['user_id'] === (int) $currentUserId; // strictly owner-only, not even admin
+          $isEditingThis = $canEdit && isset($_GET['edit_comment']) && (int) $_GET['edit_comment'] === (int) $c['id'];
+          $baseSongUrl = 'song.php?id=' . $song['id'];
         ?>
           <div style="display:flex; gap:10px; background:var(--surface-2); border-radius:10px; padding:10px 12px;">
             <a href="profile.php?user_id=<?= (int) $c['user_id'] ?>" style="width:28px;height:28px;border-radius:50%;flex-shrink:0;overflow:hidden;display:block;">
@@ -207,14 +210,32 @@ $thumbGradients = [
                 <span style="color:var(--text); font-weight:600;"><?= htmlspecialchars($c['username']) ?></span>
               </a>
               <span style="color:var(--text-dim); font-size:0.75rem;"> · <?= (int) $c['reputation_points'] ?> rep</span>
-              <div style="margin-top:4px; color:var(--text-muted); font-size:0.88rem;"><?= htmlspecialchars($c['comment']) ?></div>
+
+              <?php if ($isEditingThis): ?>
+                <form method="post" action="api/edit_comment_handler.php" style="margin-top:6px; display:flex; gap:8px;">
+                  <input type="hidden" name="comment_id" value="<?= $c['id'] ?>">
+                  <input type="hidden" name="redirect" value="<?= htmlspecialchars($baseSongUrl) ?>">
+                  <input type="text" name="comment" value="<?= htmlspecialchars($c['comment']) ?>" class="search-input" style="flex:1;" maxlength="1000" required>
+                  <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                  <a href="<?= htmlspecialchars($baseSongUrl) ?>" class="btn btn-ghost btn-sm">Cancel</a>
+                </form>
+              <?php else: ?>
+                <div style="margin-top:4px; color:var(--text-muted); font-size:0.88rem;"><?= htmlspecialchars($c['comment']) ?></div>
+              <?php endif; ?>
             </div>
-            <?php if ($canDelete): ?>
-              <form method="post" action="api/delete_comment_handler.php" style="margin:0;" onsubmit="return confirm('Delete this comment?');">
-                <input type="hidden" name="comment_id" value="<?= $c['id'] ?>">
-                <input type="hidden" name="redirect" value="<?= htmlspecialchars($currentUrl) ?>">
-                <button type="submit" class="icon-btn" title="Delete" style="width:28px; height:28px; font-size:0.95rem; color:var(--text-dim);">×</button>
-              </form>
+            <?php if (!$isEditingThis): ?>
+              <div style="display:flex; gap:4px;">
+                <?php if ($canEdit): ?>
+                  <a href="<?= htmlspecialchars($baseSongUrl . '&edit_comment=' . $c['id']) ?>" class="icon-btn" title="Edit" style="width:28px; height:28px; font-size:0.85rem; color:var(--text-dim); text-decoration:none; display:flex; align-items:center; justify-content:center;">✎</a>
+                <?php endif; ?>
+                <?php if ($canDelete): ?>
+                  <form method="post" action="api/delete_comment_handler.php" style="margin:0;" onsubmit="return confirm('Delete this comment?');">
+                    <input type="hidden" name="comment_id" value="<?= $c['id'] ?>">
+                    <input type="hidden" name="redirect" value="<?= htmlspecialchars($currentUrl) ?>">
+                    <button type="submit" class="icon-btn" title="Delete" style="width:28px; height:28px; font-size:0.95rem; color:var(--text-dim);">×</button>
+                  </form>
+                <?php endif; ?>
+              </div>
             <?php endif; ?>
           </div>
         <?php endforeach; endif; ?>

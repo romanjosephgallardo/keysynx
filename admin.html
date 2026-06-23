@@ -2,143 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Panel — KeySynx</title>
-<link rel="stylesheet" href="css/style.css?v=5">
-
-<!-- Tailwind CSS (Play CDN — no build step, fits XAMPP/Apache setup) -->
-<script src="https://cdn.tailwindcss.com"></script>
+<title>Redirecting…</title>
 <script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          ksbg: '#14141A', kssurface: '#1E1E27', kssurface2: '#25252F',
-          ksborder: '#32323E', kstext: '#EDEDF2', ksmuted: '#8A8A99',
-          ksviolet: '#B9A3FF', ksverified: '#5EE6A8', kspending: '#F2B84B', ksrejected: '#EF5C6E'
-        },
-        fontFamily: { display: ['Space Grotesk','sans-serif'], body: ['Inter','sans-serif'] }
-      }
-    }
-  }
+  // admin.html is superseded by admin.php (server-rendered — access tiers,
+  // pagination, and clickable rows all needed real server logic).
+  const params = new URLSearchParams(window.location.search);
+  window.location.replace('admin.php' + (params.toString() ? '?' + params.toString() : ''));
 </script>
-<!-- Alpine.js (CDN — handles new interactive widgets: comments, compat filter, reputation badges) -->
-<script src="js/auth.js?v=5"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body>
-
-<header class="topbar">
-  <div class="shell topbar-inner">
-    <a href="index.html" class="logo"><span class="dot"></span> KeySynx</a>
-    <nav class="nav-links">
-      <a href="index.html">Browse</a>
-      <a href="wheel.html">Wheel</a>
-      <a href="submit.html">Submit</a>
-      <a href="admin.html" class="active">Admin</a>
-    </nav>
-    <div x-data="{ open:false, mode:'login', u:'', e:'', p:'' }" class="relative" style="margin-left:12px;">
-      <template x-if="$store.auth.loading">
-        <span style="font-size:0.78rem; color:var(--text-dim);">···</span>
-      </template>
-      <template x-if="!$store.auth.loading && !$store.auth.user">
-        <button @click="open = true" class="btn btn-sm">Log in</button>
-      </template>
-      <template x-if="!$store.auth.loading && $store.auth.user">
-        <div style="display:flex; align-items:center; gap:10px;">
-          <a href="profile.php" :title="$store.auth.user.username + ' · ' + $store.auth.user.reputation_tier"
-             style="width:32px;height:32px;border-radius:50%;display:block;overflow:hidden;text-decoration:none;">
-            <template x-if="$store.auth.user.avatar_path">
-              <img :src="$store.auth.user.avatar_path" style="width:100%;height:100%;object-fit:cover;display:block;">
-            </template>
-            <template x-if="!$store.auth.user.avatar_path">
-              <div :style="'width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;background:hsl(' + ($store.auth.user.username.split('').reduce((h,c)=>h+c.charCodeAt(0),0)%360) + ',55%,42%)'"
-                   x-text="$store.auth.user.username.slice(0,2).toUpperCase()"></div>
-            </template>
-          </a>
-          <button @click="$store.auth.logout()" class="btn btn-sm btn-ghost">Log out</button>
-        </div>
-      </template>
-
-      <div x-show="open" @click.outside="open=false" x-cloak
-           style="position:absolute; right:0; margin-top:8px; width:280px; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px; z-index:30; box-shadow:0 12px 30px rgba(0,0,0,0.4);">
-        <div style="display:flex; gap:14px; margin-bottom:12px; font-size:0.88rem;">
-          <button @click="mode='login'" :style="mode==='login' ? 'color:var(--text); font-weight:600;' : 'color:var(--text-muted);'">Log in</button>
-          <button @click="mode='register'" :style="mode==='register' ? 'color:var(--text); font-weight:600;' : 'color:var(--text-muted);'">Register</button>
-        </div>
-        <input x-show="mode==='register'" x-model="e" type="email" placeholder="Email" class="search-input" style="width:100%; margin-bottom:8px;">
-        <input x-model="u" type="text" placeholder="Username" class="search-input" style="width:100%; margin-bottom:8px;">
-        <input x-model="p" type="password" placeholder="Password" class="search-input" style="width:100%; margin-bottom:8px;">
-        <p x-show="$store.auth.error" x-text="$store.auth.error" style="font-size:0.75rem; color:var(--rejected); margin-bottom:8px;"></p>
-        <button
-          @click="(async () => { const ok = mode==='login' ? await $store.auth.login(u,p) : await $store.auth.register(u,e,p); if(ok) open = false; })()"
-          class="btn btn-primary btn-sm" style="width:100%; justify-content:center;">
-          <span x-text="mode==='login' ? 'Log in' : 'Create account'"></span>
-        </button>
-      </div>
-    </div>
-  </div>
-</header>
-
-<main class="shell">
-  <div class="page-head">
-    <div class="eyebrow">Moderation</div>
-    <h1 class="page-title">Admin panel</h1>
-    <p class="page-sub">Review pending submissions, manage entries, and handle contributor roles.</p>
-  </div>
-
-  <div class="filterbar" style="justify-content:space-between;">
-    <div style="display:flex; gap:10px;">
-      <button class="btn btn-sm" id="tabSongs">Songs</button>
-      <button class="btn btn-sm btn-ghost" id="tabUsers">Users &amp; Roles</button>
-    </div>
-    <select id="statusFilter">
-      <option value="">All statuses</option>
-      <option value="pending">Pending</option>
-      <option value="verified">Verified</option>
-      <option value="rejected">Rejected</option>
-    </select>
-  </div>
-
-  <div id="songsPanel" style="overflow-x:auto; padding-bottom:60px;">
-    <table class="admin-table">
-      <thead>
-        <tr>
-          <th>Song</th>
-          <th>Key / BPM</th>
-          <th>Submitted by</th>
-          <th>Votes</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="adminTableBody">
-        <!-- injected by admin.js -->
-      </tbody>
-    </table>
-  </div>
-
-  <div id="usersPanel" style="overflow-x:auto; padding-bottom:60px; display:none;">
-    <table class="admin-table">
-      <thead>
-        <tr>
-          <th>User</th>
-          <th>Reputation</th>
-          <th>Tier</th>
-          <th>Role</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="usersTableBody">
-        <!-- injected by admin.js -->
-      </tbody>
-    </table>
-  </div>
-</main>
-
-<footer>KeySynx · Final Project Prototype · Key &amp; BPM Analysis Platform</footer>
-
-<script src="js/data.js?v=5"></script>
-<script src="js/admin.js?v=5"></script>
+  <p>Redirecting to <a href="admin.php">admin.php</a>…</p>
 </body>
 </html>

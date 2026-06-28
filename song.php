@@ -29,6 +29,7 @@ if ($currentUserId) {
 
 $activePage = 'browse';
 $currentUrl = $_SERVER['REQUEST_URI'];
+$appDir = rtrim(dirname($_SERVER['PHP_SELF']), '/\\'); // e.g. "/keysynx" — works at root or in a subfolder
 
 function statusLabel($status) {
     return $status === 'verified' ? '✓ Verified' : ($status === 'pending' ? '◔ Pending review' : '✕ Rejected');
@@ -163,6 +164,14 @@ $thumbGradients = [
         <?php if ($isOwner || $isAdmin): ?>
           <a href="submit.html?edit=<?= $song['id'] ?>" class="btn btn-ghost btn-sm">✎ Edit</a>
         <?php endif; ?>
+        <?php if ($isAdmin): ?>
+          <form method="post" action="api/delete_song_handler.php" style="margin:0; display:inline;"
+                onsubmit="return confirm('Delete &quot;<?= htmlspecialchars(addslashes($song['title'])) ?>&quot; permanently? This also removes its comments, votes, and section data. This cannot be undone.');">
+            <input type="hidden" name="song_id" value="<?= $song['id'] ?>">
+            <input type="hidden" name="redirect" value="<?= htmlspecialchars($currentUrl) ?>">
+            <button type="submit" class="btn btn-ghost btn-sm" style="color:var(--rejected); border-color:var(--rejected);">🗑 Delete</button>
+          </form>
+        <?php endif; ?>
       </div>
       <div class="vote-row">
         <form method="post" action="api/vote_handler.php" style="display:inline; margin:0;">
@@ -193,7 +202,7 @@ $thumbGradients = [
           $canDelete = $currentUserId && ((int) $c['user_id'] === (int) $currentUserId || $isAdmin);
           $canEdit = $currentUserId && (int) $c['user_id'] === (int) $currentUserId; // strictly owner-only, not even admin
           $isEditingThis = $canEdit && isset($_GET['edit_comment']) && (int) $_GET['edit_comment'] === (int) $c['id'];
-          $baseSongUrl = 'song.php?id=' . $song['id'];
+          $baseSongUrl = $appDir . '/song.php?id=' . $song['id'];
         ?>
           <div style="display:flex; gap:10px; background:var(--surface-2); border-radius:10px; padding:10px 12px;">
             <a href="profile.php?user_id=<?= (int) $c['user_id'] ?>" style="width:28px;height:28px;border-radius:50%;flex-shrink:0;overflow:hidden;display:block;">

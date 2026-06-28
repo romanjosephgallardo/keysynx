@@ -25,20 +25,75 @@ $canModerate = hasModeratorAccess($me);
 $canManageRoles = isTrueAdmin($me);
 
 $tab = ($_GET['tab'] ?? 'songs') === 'users' && $canManageRoles ? 'users' : 'songs';
-$perPage = 25;
+$perPage = max(1, min(100, (int) ($_GET['per_page'] ?? 25)));
 $page = max(1, (int) ($_GET['page'] ?? 1));
 $statusFilter = $_GET['status'] ?? '';
+$searchQuery = trim($_GET['q'] ?? '');
 
 function tabUrl($tab) {
     $params = $_GET;
     $params['tab'] = $tab;
-    unset($params['page']);
+    unset($params['page'], $params['q'], $params['status']);
     return 'admin.php?' . http_build_query($params);
 }
 function pageUrl($p) {
     $params = $_GET;
     $params['page'] = $p;
     return 'admin.php?' . http_build_query($params);
+}
+function paramsExcept(array $keys) {
+    $p = $_GET;
+    foreach ($keys as $k) unset($p[$k]);
+    return $p;
+}
+
+/**
+ * Renders the same "Showing X to Y of Z results / Per page / « ‹ 1 2 … › »"
+ * pagination bar used on index.html, but server-rendered via plain links —
+ * no JS required, since every control here is just a GET navigation.
+ */
+function renderAdminPagination($total, $page, $perPage, $totalPages, $label) {
+    $start = $total ? (($page - 1) * $perPage + 1) : 0;
+    $end = min($total, $page * $perPage);
+    ?>
+    <div class="pagination-bar">
+      <div class="pagination-info">Showing <?= $start ?> to <?= $end ?> of <?= $total ?> <?= $label ?></div>
+      <div class="pagination-controls">
+        <span class="pp-label">Per page:</span>
+        <form method="get" action="admin.php" style="display:inline;">
+          <?php foreach (paramsExcept(['per_page', 'page']) as $k => $v): ?>
+            <input type="hidden" name="<?= htmlspecialchars($k) ?>" value="<?= htmlspecialchars($v) ?>">
+          <?php endforeach; ?>
+          <select name="per_page" onchange="this.form.submit()">
+            <option value="25" <?= $perPage === 25 ? 'selected' : '' ?>>25</option>
+            <option value="50" <?= $perPage === 50 ? 'selected' : '' ?>>50</option>
+            <option value="100" <?= $perPage === 100 ? 'selected' : '' ?>>100</option>
+          </select>
+        </form>
+        <a href="<?= pageUrl(1) ?>" class="page-btn" style="<?= $page <= 1 ? 'opacity:0.35;pointer-events:none;' : '' ?>">&laquo;</a>
+        <a href="<?= pageUrl(max(1, $page - 1)) ?>" class="page-btn" style="<?= $page <= 1 ? 'opacity:0.35;pointer-events:none;' : '' ?>">&lsaquo;</a>
+        <div class="page-numbers">
+          <?php
+          $pagesToShow = [];
+          $add = function ($p) use (&$pagesToShow) { if (!in_array($p, $pagesToShow)) $pagesToShow[] = $p; };
+          $add(1);
+          for ($p = $page - 1; $p <= $page + 1; $p++) if ($p > 0 && $p <= $totalPages) $add($p);
+          $add($totalPages);
+          sort($pagesToShow);
+          $prev = 0;
+          foreach ($pagesToShow as $p):
+              if ($p - $prev > 1): ?><span class="page-ellipsis">&hellip;</span><?php endif;
+              ?>
+              <a href="<?= pageUrl($p) ?>" class="page-num <?= $p === $page ? 'active' : '' ?>" style="text-decoration:none;"><?= $p ?></a>
+              <?php $prev = $p;
+          endforeach;
+          ?>
+        </div>
+        <a href="<?= pageUrl(min($totalPages, $page + 1)) ?>" class="page-btn" style="<?= $page >= $totalPages ? 'opacity:0.35;pointer-events:none;' : '' ?>">&rsaquo;</a>
+        <a href="<?= pageUrl($totalPages) ?>" class="page-btn" style="<?= $page >= $totalPages ? 'opacity:0.35;pointer-events:none;' : '' ?>">&raquo;</a>
+      </div>
+    </div>
+    <?php
 }
 ?>
 <!DOCTYPE html>
@@ -76,25 +131,38 @@ function pageUrl($p) {
     </div>
   <?php else: ?>
 
-    <div class="filterbar" style="justify-content:space-between;">
-      <div style="display:flex; gap:10px;">
-        <a href="<?= tabUrl('songs') ?>" class="btn btn-sm <?= $tab === 'songs' ? '' : 'btn-ghost' ?>">Songs</a>
-        <?php if ($canManageRoles): ?>
-          <a href="<?= tabUrl('users') ?>" class="btn btn-sm <?= $tab === 'users' ? '' : 'btn-ghost' ?>">Users &amp; Roles</a>
-        <?php endif; ?>
-      </div>
-      <?php if ($tab === 'songs'): ?>
-        <form method="get" action="admin.php">
-          <input type="hidden" name="tab" value="songs">
-          <select name="status" onchange="this.form.submit()">
-            <option value="">All statuses</option>
-            <option value="pending" <?= $statusFilter === 'pending' ? 'selected' : '' ?>>Pending</option>
-            <option value="verified" <?= $statusFilter === 'verified' ? 'selected' : '' ?>>Verified</option>
-            <option value="rejected" <?= $statusFilter === 'rejected' ? 'selected' : '' ?>>Rejected</option>
-          </select>
-        </form>
+    <div style="display:flex; gap:10px; margin-bottom:18px;">
+      <a href="<?= tabUrl('songs') ?>" class="btn btn-sm <?= $tab === 'songs' ? '' : 'btn-ghost' ?>">Songs</a>
+      <?php if ($canManageRoles): ?>
+        <a href="<?= tabUrl('users') ?>" class="btn btn-sm <?= $tab === 'users' ? '' : 'btn-ghost' ?>">Users &amp; Roles</a>
       <?php endif; ?>
     </div>
+
+    <?php if ($tab === 'songs'): ?>
+      <form method="get" action="admin.php" class="filterbar">
+        <input type="hidden" name="tab" value="songs">
+        <input type="text" name="q" value="<?= htmlspecialchars($searchQuery) ?>" placeholder="Search title or artist..." class="search-input" style="flex:1; min-width:220px;">
+        <select name="status" onchange="this.form.submit()">
+          <option value="">All statuses</option>
+          <option value="pending" <?= $statusFilter === 'pending' ? 'selected' : '' ?>>Pending</option>
+          <option value="verified" <?= $statusFilter === 'verified' ? 'selected' : '' ?>>Verified</option>
+          <option value="rejected" <?= $statusFilter === 'rejected' ? 'selected' : '' ?>>Rejected</option>
+        </select>
+        <button type="submit" class="btn btn-sm">Search</button>
+        <?php if ($searchQuery || $statusFilter): ?>
+          <a href="<?= tabUrl('songs') ?>" class="btn btn-ghost btn-sm">Reset</a>
+        <?php endif; ?>
+      </form>
+    <?php else: ?>
+      <form method="get" action="admin.php" class="filterbar">
+        <input type="hidden" name="tab" value="users">
+        <input type="text" name="q" value="<?= htmlspecialchars($searchQuery) ?>" placeholder="Search username or email..." class="search-input" style="flex:1; min-width:220px;">
+        <button type="submit" class="btn btn-sm">Search</button>
+        <?php if ($searchQuery): ?>
+          <a href="<?= tabUrl('users') ?>" class="btn btn-ghost btn-sm">Reset</a>
+        <?php endif; ?>
+      </form>
+    <?php endif; ?>
 
     <?php if (!empty($_GET['error'])): ?>
       <p style="color:var(--rejected); font-size:0.85rem; margin-bottom:14px;"><?= htmlspecialchars($_GET['error']) ?></p>
@@ -105,6 +173,11 @@ function pageUrl($p) {
       $params = [];
       $types = '';
       if ($statusFilter) { $conditions[] = 's.status = ?'; $params[] = $statusFilter; $types .= 's'; }
+      if ($searchQuery) {
+          $conditions[] = '(s.title LIKE ? OR s.artist LIKE ?)';
+          $like = '%' . $searchQuery . '%';
+          $params[] = $like; $params[] = $like; $types .= 'ss';
+      }
       $where = $conditions ? 'WHERE ' . implode(' AND ', $conditions) : '';
 
       $countSql = "SELECT COUNT(*) AS c FROM songs s $where";
@@ -117,7 +190,7 @@ function pageUrl($p) {
       if ($params) { $stmt = $db->prepare($sql); $stmt->bind_param($types, ...$params); $stmt->execute(); $songs = $stmt->get_result()->fetch_all(MYSQLI_ASSOC); }
       else { $songs = $db->query($sql)->fetch_all(MYSQLI_ASSOC); }
     ?>
-      <div style="overflow-x:auto; padding-bottom:30px;">
+      <div style="overflow-x:auto; padding-bottom:10px; margin-top:20px;">
         <table class="admin-table">
           <thead><tr><th>Song</th><th>Key / BPM</th><th>Submitted by</th><th>Votes</th><th>Status</th><th>Actions</th></tr></thead>
           <tbody>
@@ -166,26 +239,36 @@ function pageUrl($p) {
         </table>
       </div>
 
-      <div class="pagination-bar">
-        <div class="pagination-info">Showing <?= $total ? ($offset + 1) . ' to ' . min($total, $offset + $perPage) : 0 ?> of <?= $total ?> results</div>
-        <div class="pagination-controls">
-          <?php for ($p = 1; $p <= $totalPages; $p++): ?>
-            <a href="<?= pageUrl($p) ?>" class="page-num <?= $p === $page ? 'active' : '' ?>" style="text-decoration:none;"><?= $p ?></a>
-          <?php endfor; ?>
-        </div>
-      </div>
+      <?php renderAdminPagination($total, $page, $perPage, $totalPages, 'results'); ?>
 
     <?php else: // Users & Roles tab (true admins only)
-      $totalUsers = $db->query('SELECT COUNT(*) AS c FROM users')->fetch_assoc()['c'];
+      $uConditions = [];
+      $uParams = [];
+      $uTypes = '';
+      if ($searchQuery) {
+          $uConditions[] = '(username LIKE ? OR email LIKE ?)';
+          $like = '%' . $searchQuery . '%';
+          $uParams[] = $like; $uParams[] = $like; $uTypes .= 'ss';
+      }
+      $uWhere = $uConditions ? 'WHERE ' . implode(' AND ', $uConditions) : '';
+
+      $countSql = "SELECT COUNT(*) AS c FROM users $uWhere";
+      if ($uParams) { $stmt = $db->prepare($countSql); $stmt->bind_param($uTypes, ...$uParams); $stmt->execute(); $totalUsers = $stmt->get_result()->fetch_assoc()['c']; }
+      else { $totalUsers = $db->query($countSql)->fetch_assoc()['c']; }
       $totalPages = max(1, (int) ceil($totalUsers / $perPage));
       $offset = ($page - 1) * $perPage;
-      $users = $db->query("SELECT id, username, email, role, reputation_points FROM users ORDER BY reputation_points DESC LIMIT $perPage OFFSET $offset")->fetch_all(MYSQLI_ASSOC);
+
+      $sql = "SELECT id, username, email, role, reputation_points FROM users $uWhere ORDER BY reputation_points DESC LIMIT $perPage OFFSET $offset";
+      if ($uParams) { $stmt = $db->prepare($sql); $stmt->bind_param($uTypes, ...$uParams); $stmt->execute(); $users = $stmt->get_result()->fetch_all(MYSQLI_ASSOC); }
+      else { $users = $db->query($sql)->fetch_all(MYSQLI_ASSOC); }
     ?>
-      <div style="overflow-x:auto; padding-bottom:30px;">
+      <div style="overflow-x:auto; padding-bottom:10px; margin-top:20px;">
         <table class="admin-table">
           <thead><tr><th>User</th><th>Reputation</th><th>Tier</th><th>Role</th><th>Actions</th></tr></thead>
           <tbody>
-            <?php foreach ($users as $u): $tier = reputationTier((int) $u['reputation_points']); ?>
+            <?php if (empty($users)): ?>
+              <tr><td colspan="5"><div class="empty-state"><div class="icon">&#9834;</div>No users match.</div></td></tr>
+            <?php else: foreach ($users as $u): $tier = reputationTier((int) $u['reputation_points']); ?>
               <tr>
                 <td>
                   <div style="font-weight:600;"><?= htmlspecialchars($u['username']) ?></div>
@@ -208,19 +291,12 @@ function pageUrl($p) {
                   </form>
                 </td>
               </tr>
-            <?php endforeach; ?>
+            <?php endforeach; endif; ?>
           </tbody>
         </table>
       </div>
 
-      <div class="pagination-bar">
-        <div class="pagination-info">Showing <?= $totalUsers ? ($offset + 1) . ' to ' . min($totalUsers, $offset + $perPage) : 0 ?> of <?= $totalUsers ?> users</div>
-        <div class="pagination-controls">
-          <?php for ($p = 1; $p <= $totalPages; $p++): ?>
-            <a href="<?= pageUrl($p) ?>" class="page-num <?= $p === $page ? 'active' : '' ?>" style="text-decoration:none;"><?= $p ?></a>
-          <?php endfor; ?>
-        </div>
-      </div>
+      <?php renderAdminPagination($totalUsers, $page, $perPage, $totalPages, 'users'); ?>
     <?php endif; ?>
 
   <?php endif; ?>

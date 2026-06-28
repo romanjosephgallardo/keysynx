@@ -36,7 +36,11 @@ function navClass($page, $current) { return $page === $current ? 'active' : ''; 
       <a href="index.html" class="<?= navClass('browse', $activePage) ?>">Browse</a>
       <a href="wheel.html" class="<?= navClass('wheel', $activePage) ?>">Wheel</a>
       <a href="submit.html" class="<?= navClass('submit', $activePage) ?>">Submit</a>
-      <a href="admin.html" class="<?= navClass('admin', $activePage) ?>">Admin</a>
+      <?php if (hasModeratorAccess($currentUser)): ?>
+        <a href="admin.php" class="admin-badge-link <?= navClass('admin', $activePage) ?>">
+          <?= $activePage === 'admin' ? 'Admin Panel' : 'Admin' ?>
+        </a>
+      <?php endif; ?>
     </nav>
 
     <?php if ($currentUser): ?>

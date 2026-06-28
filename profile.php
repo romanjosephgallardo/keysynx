@@ -30,7 +30,7 @@ if ($viewingUserId) {
     $stmt->bind_param('i', $viewingUserId);
     $stmt->execute();
     $profileUser = $stmt->get_result()->fetch_assoc();
-    if ($profileUser) $profileUser['reputation_tier'] = reputationTier((int) $profileUser['reputation_points']);
+    if ($profileUser) $profileUser['reputation_tier'] = reputationTier((float) $profileUser['reputation_points']);
 }
 
 $stats = null;
@@ -231,9 +231,10 @@ if ($profileUser) {
 
       <div>
         <div class="now-playing" style="margin-bottom:16px;">
-          <div class="track-title" style="font-size:1.6rem;"><?= (int) $profileUser['reputation_points'] ?></div>
+          <div class="track-title" style="font-size:1.6rem;"><?= number_format((float) $profileUser['reputation_points'], 1) ?></div>
           <div class="track-artist">reputation points</div>
-          <div class="status-pill" style="background:rgba(185,163,255,0.15); color:var(--accent-violet); margin-top:10px; display:inline-block;"><?= $profileUser['reputation_tier'] ?></div>
+          <?php $myTc = reputationTierColor($profileUser['reputation_tier']); ?>
+          <div class="status-pill" style="background:<?= $myTc['bg'] ?>; color:<?= $myTc['color'] ?>; margin-top:10px; display:inline-block;"><?= $profileUser['reputation_tier'] ?></div>
         </div>
 
         <div class="now-playing">
@@ -241,16 +242,26 @@ if ($profileUser) {
           <table class="admin-table" style="width:100%;">
             <thead><tr><th>Action</th><th>Points</th></tr></thead>
             <tbody>
-              <tr><td>Correct submission</td><td class="num" style="color:var(--verified);">+10</td></tr>
-              <tr><td>Verified analysis</td><td class="num" style="color:var(--verified);">+15</td></tr>
-              <tr><td>Rejected analysis</td><td class="num" style="color:var(--rejected);">−5</td></tr>
+              <tr><td>Correct submission</td><td class="num" style="color:var(--verified);">+0.1</td></tr>
+              <tr><td>Each upvote received</td><td class="num" style="color:var(--verified);">+2</td></tr>
+              <tr><td>Each downvote received</td><td class="num" style="color:var(--rejected);">−1</td></tr>
             </tbody>
           </table>
-          <div style="margin-top:14px; display:flex; flex-direction:column; gap:6px;">
-            <div class="more-line" style="font-style:normal;">0–19 pts &nbsp;→&nbsp; <b>New Contributor</b></div>
-            <div class="more-line" style="font-style:normal;">20–49 pts &nbsp;→&nbsp; <b>Trusted Analyzer</b></div>
-            <div class="more-line" style="font-style:normal;">50–99 pts &nbsp;→&nbsp; <b>Verified Contributor</b></div>
-            <div class="more-line" style="font-style:normal;">100+ pts &nbsp;→&nbsp; <b>Moderator</b></div>
+          <div class="more-line" style="font-style:normal; margin-top:8px;">Upvotes/downvotes affect your reputation immediately, in real time — not just once a track is fully verified.</div>
+          <div style="margin-top:14px; display:flex; flex-direction:column; gap:9px;">
+            <?php foreach ([
+                ['New Contributor', '0–19 pts'],
+                ['Trusted Analyzer', '20–49 pts'],
+                ['Verified Contributor', '50–99 pts'],
+                ['Moderator', '100+ pts'],
+            ] as [$tierName, $range]): $legendTc = reputationTierColor($tierName); ?>
+              <div style="display:flex; align-items:center; gap:8px; font-size:0.85rem;">
+                <span style="width:9px; height:9px; border-radius:50%; flex-shrink:0; background:<?= $legendTc['color'] ?>;"></span>
+                <span style="color:var(--text-dim);"><?= $range ?></span>
+                <span style="color:var(--text-dim);">&rarr;</span>
+                <b style="color:<?= $legendTc['color'] ?>;"><?= $tierName ?></b>
+              </div>
+            <?php endforeach; ?>
           </div>
         </div>
       </div>

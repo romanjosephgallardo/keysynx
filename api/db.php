@@ -29,11 +29,26 @@ function getDb(): mysqli {
  * Derives a reputation tier label from points.
  * Thresholds are ours (not specified in the proposal) — tune freely.
  */
-function reputationTier(int $points): string {
+function reputationTier(float $points): string {
     if ($points >= 100) return 'Moderator';
     if ($points >= 50)  return 'Verified Contributor';
     if ($points >= 20)  return 'Trusted Analyzer';
     return 'New Contributor';
+}
+
+/**
+ * Color pairing for each reputation tier, so the same tier always looks
+ * the same wherever it's shown (comment feed, profile badge, profile
+ * legend). Moderator gets the "gold" treatment since it's the highest
+ * tier and also the one that unlocks actual moderation access.
+ */
+function reputationTierColor(string $tier): array {
+    return match ($tier) {
+        'Moderator'             => ['color' => 'var(--pending)',       'bg' => 'rgba(242,184,75,0.15)'],
+        'Verified Contributor'  => ['color' => 'var(--verified)',      'bg' => 'rgba(94,230,168,0.15)'],
+        'Trusted Analyzer'      => ['color' => 'var(--accent-violet)', 'bg' => 'rgba(185,163,255,0.15)'],
+        default                 => ['color' => 'var(--text-dim)',      'bg' => 'rgba(255,255,255,0.06)'],
+    };
 }
 
 /**
@@ -57,7 +72,7 @@ if (!function_exists('avatarHue')) {
 function hasModeratorAccess(?array $user): bool {
     if (!$user) return false;
     if (($user['role'] ?? '') === 'admin') return true;
-    return (int) ($user['reputation_points'] ?? 0) >= 100;
+    return (float) ($user['reputation_points'] ?? 0) >= 100;
 }
 
 /**

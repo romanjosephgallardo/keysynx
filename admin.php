@@ -268,14 +268,14 @@ function renderAdminPagination($total, $page, $perPage, $totalPages, $label) {
           <tbody>
             <?php if (empty($users)): ?>
               <tr><td colspan="5"><div class="empty-state"><div class="icon">&#9834;</div>No users match.</div></td></tr>
-            <?php else: foreach ($users as $u): $tier = reputationTier((int) $u['reputation_points']); ?>
+            <?php else: foreach ($users as $u): $tier = reputationTier((float) $u['reputation_points']); ?>
               <tr>
                 <td>
                   <div style="font-weight:600;"><?= htmlspecialchars($u['username']) ?></div>
                   <div style="color:var(--text-muted); font-size:0.8rem;"><?= htmlspecialchars($u['email']) ?></div>
                 </td>
-                <td class="num"><?= $u['reputation_points'] ?></td>
-                <td><span class="status-pill" style="background:rgba(185,163,255,0.15); color:var(--accent-violet);"><?= $tier ?></span></td>
+                <td class="num"><?= number_format((float) $u['reputation_points'], 1) ?></td>
+                <td><?php $aTc = reputationTierColor($tier); ?><span class="status-pill" style="background:<?= $aTc['bg'] ?>; color:<?= $aTc['color'] ?>;"><?= $tier ?></span></td>
                 <td><span class="status-pill status-<?= $u['role'] === 'admin' ? 'verified' : 'pending' ?>"><?= $u['role'] ?></span></td>
                 <td>
                   <form method="post" action="api/set_role_handler.php" style="margin:0;">

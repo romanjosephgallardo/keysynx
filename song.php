@@ -124,7 +124,7 @@ $thumbGradients = [
     <?php if ($song['footnote']): ?>
       <div class="section-block">
         <div class="section-label">Notes</div>
-        <div class="more-line" style="font-size:0.92rem; white-space:pre-wrap; font-style:normal;"><?= htmlspecialchars($song['footnote']) ?></div>
+        <div style="font-size:0.80rem; line-height:1.6; white-space:pre-wrap; color:var(--text); background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:12px 14px; font-style: italic"><?= htmlspecialchars($song['footnote']) ?></div>
       </div>
     <?php endif; ?>
 
@@ -218,7 +218,13 @@ $thumbGradients = [
               <a href="profile.php?user_id=<?= (int) $c['user_id'] ?>" style="text-decoration:none;">
                 <span style="color:var(--text); font-weight:600;"><?= htmlspecialchars($c['username']) ?></span>
               </a>
-              <span style="color:var(--text-dim); font-size:0.75rem;"> · <?= (int) $c['reputation_points'] ?> rep</span>
+              <?php
+                $cTier = reputationTier((float) $c['reputation_points']);
+                $cTc = reputationTierColor($cTier);
+              ?>
+              <span style="display:inline-flex; align-items:center; gap:4px; font-size:0.7rem; font-weight:700; letter-spacing:0.02em; padding:2px 9px; border-radius:999px; margin-left:6px; color:<?= $cTc['color'] ?>; background:<?= $cTc['bg'] ?>; vertical-align:middle;">
+                <?= htmlspecialchars($cTier) ?> · <?= number_format((float) $c['reputation_points'], 1) ?> pts
+              </span>
 
               <?php if ($isEditingThis): ?>
                 <form method="post" action="api/edit_comment_handler.php" style="margin-top:6px; display:flex; gap:8px;">

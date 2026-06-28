@@ -147,6 +147,8 @@ document.getElementById('submitForm').addEventListener('submit', async (e) => {
   };
 
   const statusEl = document.getElementById('formStatus');
+  const submitBtn = document.querySelector('#submitForm button[type="submit"]');
+  const submitBtnLabel = document.getElementById('submitBtnLabel');
 
   if(!Alpine.store('auth').user){
     statusEl.style.color = 'var(--rejected)';
@@ -157,6 +159,16 @@ document.getElementById('submitForm').addEventListener('submit', async (e) => {
   const endpoint = isEditMode ? 'api/update_song.php' : 'api/submit.php';
   if(isEditMode) payload.id = Number(editId);
 
+  // Loading state: disable the button and swap its label so there's
+  // clear feedback while the request is in flight (no full page reload).
+  const originalLabel = submitBtnLabel.textContent;
+  submitBtn.disabled = true;
+  submitBtn.style.opacity = '0.7';
+  submitBtn.style.cursor = 'wait';
+  submitBtnLabel.textContent = isEditMode ? 'Saving…' : 'Submitting…';
+  statusEl.style.color = 'var(--text-dim)';
+  statusEl.textContent = '';
+
   try {
     const res = await fetch(endpoint, {
       method: 'POST', headers: {'Content-Type':'application/json'},
@@ -166,20 +178,30 @@ document.getElementById('submitForm').addEventListener('submit', async (e) => {
     if(!res.ok){
       statusEl.style.color = 'var(--rejected)';
       statusEl.textContent = data.error || 'Save failed.';
+      submitBtn.disabled = false;
+      submitBtn.style.opacity = '';
+      submitBtn.style.cursor = '';
+      submitBtnLabel.textContent = originalLabel;
       return;
     }
     statusEl.style.color = 'var(--verified)';
     if(isEditMode){
-      statusEl.textContent = '✓ Changes saved.';
+      statusEl.textContent = '✓ Changes saved. Redirecting…';
+      submitBtnLabel.textContent = 'Saved ✓';
       setTimeout(() => { window.location.href = `song.php?id=${editId}`; }, 900);
     } else {
-      statusEl.textContent = `✓ ${data.message} (+10 reputation awarded)`;
-      document.getElementById('submitForm').reset();
-      clearStructureRows();
-      addStructureRow();
+      statusEl.textContent = `✓ ${data.message} (+0.1 reputation awarded) — back to the library…`;
+      submitBtnLabel.textContent = 'Submitted ✓';
+      // Form stays disabled during this transition (no double-submits),
+      // then we hand off to the home/browse page rather than resetting in place.
+      setTimeout(() => { window.location.href = 'index.html'; }, 1400);
     }
   } catch(err){
     statusEl.style.color = 'var(--rejected)';
     statusEl.textContent = "Could not reach the server. Is XAMPP's Apache + MySQL running?";
+    submitBtn.disabled = false;
+    submitBtn.style.opacity = '';
+    submitBtn.style.cursor = '';
+    submitBtnLabel.textContent = originalLabel;
   }
 });

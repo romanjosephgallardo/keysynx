@@ -4,7 +4,7 @@
  * POST { title, artist, bpm, musical_key, time_signature?, tags?,
  *        footnote?, section_keys?: [{section, key}] }
  * Requires login. New songs start as 'pending'. The DB trigger
- * trg_submission_reward grants +10 reputation immediately.
+ * trg_submission_reward grants +0.1 reputation immediately.
  */
 
 session_start();

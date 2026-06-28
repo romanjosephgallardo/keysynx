@@ -19,7 +19,7 @@ function currentUserPayload(mysqli $db, int $userId): array {
     $stmt->bind_param('i', $userId);
     $stmt->execute();
     $user = $stmt->get_result()->fetch_assoc();
-    $user['reputation_tier'] = reputationTier((int)$user['reputation_points']);
+    $user['reputation_tier'] = reputationTier((float)$user['reputation_points']);
     return $user;
 }
 

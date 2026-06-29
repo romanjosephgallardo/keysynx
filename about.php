@@ -147,7 +147,9 @@ $activePage = 'about';
         <div style="color:var(--accent-violet); font-size:0.82rem; font-weight:600; margin-top:2px;">Project Lead / Manager</div>
       </div>
       <div class="kx-team-card" style="border:1px solid var(--border); border-radius:14px; padding:16px; background:var(--surface-2);">
-        <div class="kx-team-photo"><span class="kx-team-initials">KL</span></div>
+                <div class="kx-team-photo">
+          <img src="images/team/lomod.jpg" alt="Gallardo, Roman Joseph C." style="width:100%; height:100%; object-fit:cover; display:block;">
+        </div>
         <div style="margin-top:10px; font-weight:600; color:var(--text); font-size:0.95rem; line-height:1.3;">Lomod, Kurt A.</div>
         <div style="color:var(--accent-violet); font-size:0.82rem; font-weight:600; margin-top:2px;">Backend Lead</div>
       </div>

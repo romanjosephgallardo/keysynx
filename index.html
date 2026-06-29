@@ -32,7 +32,7 @@
         },
       };
     </script>
-    <!-- Alpine.js (CDN — handles new interactive widgets: comments, compat filter, reputation badges) -->
+    <link rel="stylesheet" href="css/animations.css?v=1" />
     <script src="js/auth.js?v=6"></script>
     <script
       defer
@@ -135,7 +135,7 @@
         style="background: linear-gradient(135deg, #15182b 0%, #1a1230 100%)"
       >
         <div class="grid md:grid-cols-[1fr_300px] gap-8 items-start">
-          <div>
+          <div class="kx-animate kx-d1">
             <span
               class="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full border border-ksviolet/40 text-ksviolet"
             >
@@ -153,15 +153,15 @@
             </p>
             <div class="flex flex-wrap gap-2 mt-5">
               <span
-                class="text-xs px-3 py-1.5 rounded-full border border-ksborder text-ksmuted"
+                class="text-xs px-3 py-1.5 rounded-full border border-ksborder text-ksmuted kx-hover-pill"
                 >🎚️ BPM intelligence</span
               >
               <span
-                class="text-xs px-3 py-1.5 rounded-full border border-ksborder text-ksmuted"
+                class="text-xs px-3 py-1.5 rounded-full border border-ksborder text-ksmuted kx-hover-pill"
                 >🎹 Camelot-aware keys</span
               >
               <span
-                class="text-xs px-3 py-1.5 rounded-full border border-ksborder text-ksmuted"
+                class="text-xs px-3 py-1.5 rounded-full border border-ksborder text-ksmuted kx-hover-pill"
                 >⚡ Fast filtering</span
               >
             </div>
@@ -176,7 +176,7 @@
           </div>
 
           <div id="heroStats" class="flex flex-col gap-3">
-            <div class="bg-kssurface/60 border border-ksborder rounded-2xl p-4">
+            <div class="bg-kssurface/60 border border-ksborder rounded-2xl p-4 kx-hover-card kx-animate kx-d2">
               <div class="text-xs text-ksmuted uppercase tracking-wide">
                 Library
               </div>
@@ -190,7 +190,7 @@
                 Tracks ready for discovery
               </div>
             </div>
-            <div class="bg-kssurface/60 border border-ksborder rounded-2xl p-4">
+            <div class="bg-kssurface/60 border border-ksborder rounded-2xl p-4 kx-hover-card kx-animate kx-d3">
               <div class="text-xs text-ksmuted uppercase tracking-wide">
                 Contributors
               </div>
@@ -202,7 +202,7 @@
               </div>
               <div class="text-xs text-ksmuted mt-1">Community members</div>
             </div>
-            <div class="bg-kssurface/60 border border-ksborder rounded-2xl p-4">
+            <div class="bg-kssurface/60 border border-ksborder rounded-2xl p-4 kx-hover-card kx-animate kx-d4">
               <div class="text-xs text-ksmuted uppercase tracking-wide">
                 Coverage
               </div>
@@ -218,7 +218,7 @@
         </div>
       </div>
 
-      <div class="page-head" id="libraryAnchor">
+      <div class="page-head kx-animate kx-d2" id="libraryAnchor">
         <div class="eyebrow">Browse the database</div>
         <h1 class="page-title">Search by title, artist, key, or BPM</h1>
         <p class="page-sub">

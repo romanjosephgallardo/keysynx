@@ -17,6 +17,15 @@ $db = getDb();
 $id = (int) ($_GET['id'] ?? 0);
 $song = getSongFullDetail($db, $id);
 
+$artistArtwork = null;
+if ($song) {
+    $stmt = $db->prepare('SELECT image_path FROM artists WHERE LOWER(name) = LOWER(?) LIMIT 1');
+    $stmt->bind_param('s', $song['artist']);
+    $stmt->execute();
+    $artistRow = $stmt->get_result()->fetch_assoc();
+    if ($artistRow && !empty($artistRow['image_path'])) $artistArtwork = $artistRow['image_path'];
+}
+
 $currentUserId = $_SESSION['user_id'] ?? null;
 $isAdmin = false;
 if ($currentUserId) {
@@ -64,6 +73,7 @@ $thumbGradients = [
     fontFamily: { display:['Space Grotesk','sans-serif'], body:['Inter','sans-serif'] }
   }}};
 </script>
+<link rel="stylesheet" href="css/animations.css?v=1">
 </head>
 <body>
 
@@ -81,7 +91,7 @@ $thumbGradients = [
     $isOwner = $currentUserId && $song['submitted_by'] !== null && (int) $song['submitted_by'] === (int) $currentUserId;
   ?>
 
-    <div class="detail-head">
+    <div class="detail-head kx-animate kx-d1">
       <?php if ($song['thumbnail_url']): ?>
         <img src="<?= htmlspecialchars($song['thumbnail_url']) ?>" alt="" style="width:80px;height:80px;border-radius:16px;object-fit:cover;">
       <?php else: ?>
@@ -89,8 +99,11 @@ $thumbGradients = [
       <?php endif; ?>
       <div>
         <h1 class="detail-title"><?= htmlspecialchars($song['title']) ?></h1>
-        <div class="detail-artist">
-          <?= htmlspecialchars($song['artist']) ?><?= $song['album_title'] ? ' · ' . htmlspecialchars($song['album_title']) : '' ?><?= $song['release_year'] ? ' (' . (int) $song['release_year'] . ')' : '' ?>
+        <div class="detail-artist" style="display:flex; align-items:center; gap:8px;">
+          <?php if ($artistArtwork): ?>
+            <img src="<?= htmlspecialchars($artistArtwork) ?>" alt="" style="width:24px;height:24px;border-radius:50%;object-fit:cover;flex-shrink:0;">
+          <?php endif; ?>
+          <span><?= htmlspecialchars($song['artist']) ?><?= $song['album_title'] ? ' · ' . htmlspecialchars($song['album_title']) : '' ?><?= $song['release_year'] ? ' (' . (int) $song['release_year'] . ')' : '' ?></span>
         </div>
         <div class="detail-stats">
           <div class="stat-chip"><b class="num"><?= $song['bpm'] !== null ? $song['bpm'] : 'Unfixed tempo' ?></b><?= $song['bpm'] !== null ? ' BPM' : '' ?></div>

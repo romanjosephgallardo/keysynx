@@ -22,6 +22,7 @@
     }
   }
 </script>
+<link rel="stylesheet" href="css/animations.css?v=1">
 <!-- Alpine.js (CDN — handles new interactive widgets: comments, compat filter, reputation badges) -->
 <script src="js/auth.js?v=6"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -112,14 +113,14 @@
 </header>
 
 <main class="shell">
-  <div class="page-head">
+  <div class="page-head kx-animate kx-d1">
     <div class="eyebrow">Beyond MVP — Harmonic mixing tools</div>
     <h1 class="page-title">Interactive Camelot Wheel</h1>
     <p class="page-sub">Pick a track to see recommended transitions, or click any wedge on the wheel itself to explore that key's relatives.</p>
   </div>
 
   <div class="wheel-layout">
-    <div class="wheel-panel">
+    <div class="wheel-panel kx-animate kx-d2 kx-hover-card">
       <div style="display:flex; gap:8px; margin-bottom:8px;">
         <input type="text" id="keySearchInput" class="search-input"
                placeholder="Search a key, e.g. B Major or 1B..." style="flex:1;">
@@ -141,7 +142,7 @@
       </div>
     </div>
 
-    <div class="rec-panel">
+    <div class="rec-panel kx-animate kx-d3">
       <div id="trackView">
         <div id="nowPlaying" class="now-playing"></div>
         <div class="section-label" style="margin-top:20px;">Recommended transitions</div>

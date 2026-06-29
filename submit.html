@@ -22,6 +22,7 @@
     }
   }
 </script>
+<link rel="stylesheet" href="css/animations.css?v=1">
 <!-- Alpine.js (CDN — handles new interactive widgets: comments, compat filter, reputation badges) -->
 <script src="js/auth.js?v=6"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -112,13 +113,13 @@
 </header>
 
 <main class="shell">
-  <div class="page-head">
+  <div class="page-head kx-animate kx-d1">
     <div class="eyebrow">Contribute</div>
     <h1 class="page-title" id="formHeading">Submit a song analysis</h1>
     <p class="page-sub" id="formSubheading">New entries start as <b>Pending</b> until the community votes them to Verified.</p>
   </div>
 
-  <form class="form-card" id="submitForm" style="margin-bottom:60px;">
+  <form class="form-card kx-animate kx-d2" id="submitForm" style="margin-bottom:60px;">
     <div class="form-grid-2">
       <div class="form-row">
         <label for="title">Song title</label>

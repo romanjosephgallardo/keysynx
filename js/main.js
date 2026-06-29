@@ -25,6 +25,14 @@ const THUMB_GRADIENTS = [
 function thumbGradient(id){ return THUMB_GRADIENTS[id % THUMB_GRADIENTS.length]; }
 
 function thumbCellHTML(song){
+  // "Artwork" here means the ARTIST's photo by default — that's what
+  // this column represents. Falls back to the song's own thumbnail
+  // (e.g. a YouTube thumbnail) only if no artist photo is on file yet,
+  // then to the generic gradient placeholder as a last resort.
+  if(song.artistImage){
+    return `<img class="lib-thumb" src="${song.artistImage}" alt="" loading="lazy"
+                 onerror="this.outerHTML=this.parentElement.dataset.fallback">`;
+  }
   if(song.thumbnail_url){
     return `<img class="lib-thumb" src="${song.thumbnail_url}" alt="" loading="lazy"
                  onerror="this.outerHTML=this.parentElement.dataset.fallback">`;
@@ -61,6 +69,7 @@ function normalizeApiSong(raw){
     bpm: raw.bpm !== null ? parseFloat(raw.bpm) : null,
     musicalKey: raw.musical_key, hasVariation: !!raw.has_variation,
     status: raw.status, thumbnail_url: raw.thumbnail_url,
+    artistImage: raw.artist_image || null,
     releaseYear: raw.release_year, albumTitle: raw.album_title
   };
 }

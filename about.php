@@ -26,25 +26,7 @@ $activePage = 'about';
     fontFamily: { display:['Space Grotesk','sans-serif'], body:['Inter','sans-serif'] }
   }}};
 </script>
-<style>
-  @keyframes kxFadeUp { from { opacity:0; transform: translateY(16px); } to { opacity:1; transform: translateY(0); } }
-  .kx-animate { opacity:0; animation: kxFadeUp 0.6s ease forwards; }
-  .kx-d1 { animation-delay: 0.05s; } .kx-d2 { animation-delay: 0.15s; } .kx-d3 { animation-delay: 0.25s; }
-  .kx-d4 { animation-delay: 0.35s; } .kx-d5 { animation-delay: 0.45s; } .kx-d6 { animation-delay: 0.55s; }
-
-  .kx-feature-card { transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease; cursor:default; }
-  .kx-feature-card:hover { transform: scale(1.035); border-color: var(--accent-violet); box-shadow: 0 10px 30px rgba(185,163,255,0.15); }
-
-  .kx-tech-pill { transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease; cursor:default; }
-  .kx-tech-pill:hover { transform: scale(1.08); background: rgba(185,163,255,0.18) !important; color: var(--accent-violet) !important; }
-
-  .kx-team-card { transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease; }
-  .kx-team-card:hover { transform: translateY(-5px); border-color: var(--accent-violet); box-shadow: 0 14px 32px rgba(185,163,255,0.18); }
-  .kx-team-photo { aspect-ratio: 1 / 1; border-radius: 12px; background: linear-gradient(135deg, rgba(185,163,255,0.18), rgba(94,230,168,0.12)); display:flex; align-items:center; justify-content:center; overflow:hidden; transition: transform 0.35s ease; }
-  .kx-team-card:hover .kx-team-photo { transform: scale(1.04); }
-  .kx-team-photo img { width:100%; height:100%; object-fit:cover; display:block; }
-  .kx-team-initials { font-size:1.8rem; font-weight:700; color: var(--accent-violet); font-family: 'Space Grotesk', sans-serif; }
-</style>
+<link rel="stylesheet" href="css/animations.css?v=1">
 </head>
 <body>
 

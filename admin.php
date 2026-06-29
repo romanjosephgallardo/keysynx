@@ -24,7 +24,9 @@ $currentUrl = $_SERVER['REQUEST_URI'];
 $canModerate = hasModeratorAccess($me);
 $canManageRoles = isTrueAdmin($me);
 
-$tab = ($_GET['tab'] ?? 'songs') === 'users' && $canManageRoles ? 'users' : 'songs';
+$validTabs = ['songs', 'artists'];
+if ($canManageRoles) $validTabs[] = 'users';
+$tab = in_array($_GET['tab'] ?? '', $validTabs, true) ? $_GET['tab'] : 'songs';
 $perPage = max(1, min(100, (int) ($_GET['per_page'] ?? 25)));
 $page = max(1, (int) ($_GET['page'] ?? 1));
 $statusFilter = $_GET['status'] ?? '';
@@ -112,13 +114,14 @@ function renderAdminPagination($total, $page, $perPage, $totalPages, $label) {
     fontFamily: { display:['Space Grotesk','sans-serif'], body:['Inter','sans-serif'] }
   }}};
 </script>
+<link rel="stylesheet" href="css/animations.css?v=1">
 </head>
 <body>
 
 <?php include __DIR__ . '/partials/topbar.php'; ?>
 
 <main class="shell">
-  <div class="page-head">
+  <div class="page-head kx-animate kx-d1">
     <div class="eyebrow">Moderation</div>
     <h1 class="page-title">Admin panel</h1>
     <p class="page-sub">Review pending submissions, manage entries, and handle contributor roles.</p>
@@ -133,6 +136,7 @@ function renderAdminPagination($total, $page, $perPage, $totalPages, $label) {
 
     <div style="display:flex; gap:10px; margin-bottom:18px;">
       <a href="<?= tabUrl('songs') ?>" class="btn btn-sm <?= $tab === 'songs' ? '' : 'btn-ghost' ?>">Songs</a>
+      <a href="<?= tabUrl('artists') ?>" class="btn btn-sm <?= $tab === 'artists' ? '' : 'btn-ghost' ?>">Artists</a>
       <?php if ($canManageRoles): ?>
         <a href="<?= tabUrl('users') ?>" class="btn btn-sm <?= $tab === 'users' ? '' : 'btn-ghost' ?>">Users &amp; Roles</a>
       <?php endif; ?>
@@ -153,7 +157,7 @@ function renderAdminPagination($total, $page, $perPage, $totalPages, $label) {
           <a href="<?= tabUrl('songs') ?>" class="btn btn-ghost btn-sm">Reset</a>
         <?php endif; ?>
       </form>
-    <?php else: ?>
+    <?php elseif ($tab === 'users'): ?>
       <form method="get" action="admin.php" class="filterbar">
         <input type="hidden" name="tab" value="users">
         <input type="text" name="q" value="<?= htmlspecialchars($searchQuery) ?>" placeholder="Search username or email..." class="search-input" style="flex:1; min-width:220px;">
@@ -240,6 +244,39 @@ function renderAdminPagination($total, $page, $perPage, $totalPages, $label) {
       </div>
 
       <?php renderAdminPagination($total, $page, $perPage, $totalPages, 'results'); ?>
+
+    <?php elseif ($tab === 'artists'):
+      $artistsList = $db->query("SELECT id, name, image_path FROM artists ORDER BY name ASC")->fetch_all(MYSQLI_ASSOC);
+    ?>
+      <div style="overflow-x:auto; padding-bottom:10px; margin-top:20px;">
+        <table class="admin-table">
+          <thead><tr><th>Artwork</th><th>Artist</th><th>Upload / Replace</th></tr></thead>
+          <tbody>
+            <?php if (empty($artistsList)): ?>
+              <tr><td colspan="3"><div class="empty-state"><div class="icon">&#9834;</div>No artists found.</div></td></tr>
+            <?php else: foreach ($artistsList as $a): ?>
+              <tr>
+                <td>
+                  <?php if (!empty($a['image_path'])): ?>
+                    <img src="<?= htmlspecialchars($a['image_path']) ?>" alt="" style="width:48px;height:48px;border-radius:10px;object-fit:cover;display:block;">
+                  <?php else: ?>
+                    <div style="width:48px;height:48px;border-radius:10px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:0.62rem;text-align:center;">No art</div>
+                  <?php endif; ?>
+                </td>
+                <td style="font-weight:600;"><?= htmlspecialchars($a['name']) ?></td>
+                <td>
+                  <form method="post" action="api/upload_artist_artwork.php" enctype="multipart/form-data" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                    <input type="hidden" name="artist_id" value="<?= $a['id'] ?>">
+                    <input type="hidden" name="redirect" value="<?= htmlspecialchars($currentUrl) ?>">
+                    <input type="file" name="artwork" accept="image/png,image/jpeg,image/webp" required style="font-size:0.78rem; color:var(--text-muted); max-width:180px;">
+                    <button type="submit" class="btn btn-sm">Upload</button>
+                  </form>
+                </td>
+              </tr>
+            <?php endforeach; endif; ?>
+          </tbody>
+        </table>
+      </div>
 
     <?php else: // Users & Roles tab (true admins only)
       $uConditions = [];

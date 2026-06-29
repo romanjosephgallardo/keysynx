@@ -84,7 +84,7 @@ $sortMap = [
 $sortCol = $sortMap[$_GET['sort'] ?? ''] ?? 's.id';
 $sortDir = (strtolower($_GET['dir'] ?? 'asc') === 'desc') ? 'DESC' : 'ASC';
 
-$baseSql = 'FROM songs s LEFT JOIN albums a ON a.id = s.album_id';
+$baseSql = 'FROM songs s LEFT JOIN albums a ON a.id = s.album_id LEFT JOIN artists ar ON LOWER(ar.name) = LOWER(s.artist)';
 if ($conditions) $baseSql .= ' WHERE ' . implode(' AND ', $conditions);
 
 // Total count (for pagination UI), before applying LIMIT
@@ -101,7 +101,7 @@ $perPage = max(1, min(1000, (int) ($_GET['per_page'] ?? 25)));
 $page = max(1, (int) ($_GET['page'] ?? 1));
 $offset = ($page - 1) * $perPage;
 
-$sql = "SELECT s.*, a.title AS album_title, a.release_year
+$sql = "SELECT s.*, a.title AS album_title, a.release_year, ar.image_path AS artist_image
         $baseSql
         ORDER BY $sortCol $sortDir
         LIMIT $perPage OFFSET $offset";

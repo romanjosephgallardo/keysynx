@@ -1,0 +1,86 @@
+/* ============================================================
+   KeySynx — css/animations.css
+   Shared interactivity layer: fade-in entrance animations +
+   hover micro-interactions. Linked from every page so the same
+   polish applies consistently everywhere, instead of duplicating
+   <style> blocks inline on each page.
+   ============================================================ */
+
+/* ---------- Keyframes ---------- */
+@keyframes kxFadeUp  { from { opacity:0; transform: translateY(16px); } to { opacity:1; transform: translateY(0); } }
+@keyframes kxFadeIn  { from { opacity:0; } to { opacity:1; } }
+@keyframes kxPulseGlow {
+  0%, 100% { box-shadow: 0 0 0 rgba(185,163,255,0); }
+  50%      { box-shadow: 0 0 24px rgba(185,163,255,0.22); }
+}
+
+/* ---------- Entrance animation utilities ----------
+   Add `kx-animate` plus one `kx-dN` stagger class to any section
+   wrapper so it fades up into place on page load. */
+.kx-animate { opacity:0; animation: kxFadeUp 0.6s ease forwards; }
+.kx-d1 { animation-delay: 0.05s; } .kx-d2 { animation-delay: 0.15s; }
+.kx-d3 { animation-delay: 0.25s; } .kx-d4 { animation-delay: 0.35s; }
+.kx-d5 { animation-delay: 0.45s; } .kx-d6 { animation-delay: 0.55s; }
+.kx-d7 { animation-delay: 0.65s; } .kx-d8 { animation-delay: 0.75s; }
+
+/* ---------- Generic hover micro-interactions ----------
+   These target class names already used throughout the site, so
+   linking this file is enough — no per-page class additions needed
+   for these. */
+
+.btn { transition: transform 0.15s ease, box-shadow 0.15s ease; }
+.btn:hover  { transform: translateY(-2px); }
+.btn:active { transform: translateY(0) scale(0.97); }
+
+.stat-chip { transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease; }
+.stat-chip:hover { transform: translateY(-2px); border-color: var(--accent-violet); }
+
+.now-playing { transition: box-shadow 0.25s ease, transform 0.2s ease; }
+.now-playing:hover { box-shadow: 0 10px 28px rgba(185,163,255,0.12); }
+
+.rec-row { transition: background 0.2s ease, transform 0.15s ease; }
+.rec-row:hover { background: rgba(185,163,255,0.06); transform: translateX(2px); }
+
+.lib-table tbody tr { transition: background 0.15s ease; }
+.lib-table tbody tr:hover { background: rgba(185,163,255,0.05); }
+
+.admin-table tbody tr { transition: background 0.15s ease; }
+.admin-table tbody tr:hover { background: rgba(185,163,255,0.05); }
+
+.status-pill { transition: transform 0.2s ease; }
+.status-pill:hover { transform: scale(1.06); }
+
+.checkpill { transition: border-color 0.2s ease; }
+.checkpill:hover { border-color: var(--accent-violet); }
+
+.search-input { transition: box-shadow 0.2s ease, border-color 0.2s ease; }
+.search-input:focus { box-shadow: 0 0 0 3px rgba(185,163,255,0.18); border-color: var(--accent-violet); outline: none; }
+
+.form-card { transition: box-shadow 0.25s ease; }
+
+.page-btn { transition: transform 0.15s ease, background 0.15s ease; }
+.page-btn:hover { transform: translateY(-1px); }
+
+.track-thumb { transition: transform 0.25s ease; }
+.track-thumb:hover { transform: scale(1.05) rotate(-2deg); }
+
+.icon-btn { transition: transform 0.15s ease, color 0.15s ease; }
+.icon-btn:hover { transform: scale(1.15); color: var(--accent-violet); }
+
+/* ---------- About page card/team treatments ---------- */
+.kx-feature-card { transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease; cursor:default; }
+.kx-feature-card:hover { transform: scale(1.035); border-color: var(--accent-violet); box-shadow: 0 10px 30px rgba(185,163,255,0.15); }
+
+.kx-tech-pill { transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease; cursor:default; }
+.kx-tech-pill:hover { transform: scale(1.08); background: rgba(185,163,255,0.18) !important; color: var(--accent-violet) !important; }
+
+.kx-team-card { transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease; }
+.kx-team-card:hover { transform: translateY(-5px); border-color: var(--accent-violet); box-shadow: 0 14px 32px rgba(185,163,255,0.18); }
+.kx-team-photo { aspect-ratio: 1 / 1; border-radius: 12px; background: linear-gradient(135deg, rgba(185,163,255,0.18), rgba(94,230,168,0.12)); display:flex; align-items:center; justify-content:center; overflow:hidden; transition: transform 0.35s ease; }
+.kx-team-card:hover .kx-team-photo { transform: scale(1.04); }
+.kx-team-photo img { width:100%; height:100%; object-fit:cover; display:block; }
+.kx-team-initials { font-size:1.8rem; font-weight:700; color: var(--accent-violet); font-family: 'Space Grotesk', sans-serif; }
+
+/* ---------- Generic reusable hover-lift (cards, panels) ---------- */
+.kx-hover-card { transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease; }
+.kx-hover-card:hover { transform: translateY(-3px); border-color: var(--accent-violet); box-shadow: 0 10px 26px rgba(185,163,255,0.14); }

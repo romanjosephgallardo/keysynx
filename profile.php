@@ -82,13 +82,14 @@ if ($profileUser) {
     fontFamily: { display:['Space Grotesk','sans-serif'], body:['Inter','sans-serif'] }
   }}};
 </script>
+<link rel="stylesheet" href="css/animations.css?v=1">
 </head>
 <body>
 
 <?php include __DIR__ . '/partials/topbar.php'; ?>
 
 <main class="shell">
-  <div class="page-head">
+  <div class="page-head kx-animate kx-d1">
     <div class="eyebrow"><?= $isOwnProfile ? 'Your account' : 'Public profile' ?></div>
     <h1 class="page-title"><?= $isOwnProfile ? 'Profile' : htmlspecialchars($profileUser['username'] ?? '') . "'s profile" ?></h1>
     <p class="page-sub">
@@ -105,7 +106,7 @@ if ($profileUser) {
   <?php else: ?>
 
     <div class="grid md:grid-cols-[1fr_360px] gap-6" style="padding-bottom:60px;">
-      <div class="form-card" style="max-width:none;">
+      <div class="form-card kx-animate kx-d2" style="max-width:none;">
 
         <?php if ($isOwnProfile): ?>
           <!-- Own profile: full edit access -->

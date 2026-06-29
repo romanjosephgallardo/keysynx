@@ -13,23 +13,25 @@ $activePage = 'about';
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script>(function(){try{if(localStorage.getItem('kx-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>About — KeySynx</title>
-<link rel="stylesheet" href="css/style.css?v=6">
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-  tailwind.config = { theme: { extend: {
-    colors: { ksbg:'#14141A', kssurface:'#1E1E27', kssurface2:'#25252F', ksborder:'#32323E',
-              kstext:'#EDEDF2', ksmuted:'#8A8A99', ksviolet:'#B9A3FF', ksverified:'#5EE6A8',
-              kspending:'#F2B84B', ksrejected:'#EF5C6E' },
-    fontFamily: { display:['Space Grotesk','sans-serif'], body:['Inter','sans-serif'] }
-  }}};
-</script>
-<link rel="stylesheet" href="css/animations.css?v=1">
-<link rel="stylesheet" href="css/theme-light.css?v=1">
-<script src="js/theme.js?v=1"></script>
+  <script>(function(){try{if(localStorage.getItem('kx-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — KeySynx</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: {
+      colors: { ksbg:'#14141A', kssurface:'#1E1E27', kssurface2:'#25252F', ksborder:'#32323E',
+      kstext:'#EDEDF2', ksmuted:'#8A8A99', ksviolet:'#B9A3FF', ksverified:'#5EE6A8',
+      kspending:'#F2B84B', ksrejected:'#EF5C6E' },
+      fontFamily: { display:['Space Grotesk','sans-serif'], body:['Inter','sans-serif'] }
+    }}};
+    </script>
+  <link rel="stylesheet" href="css/style.css?v=6">
+  <link rel="stylesheet" href="css/animations.css?v=1">
+  <link rel="stylesheet" href="css/theme-light.css?v=1">
+  <link rel="stylesheet" href="css/responsiveness.css?v=1"> 
+  <link rel="icon" type="image/png" href="src/favicon.png">
+  <script src="js/theme.js?v=1"></script>
 </head>
 <body>
 
@@ -125,17 +127,22 @@ $activePage = 'about';
     -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
       <div class="kx-team-card" style="border:1px solid var(--border); border-radius:14px; padding:16px; background:var(--surface-2);">
-        <div class="kx-team-photo"><span class="kx-team-initials">JA</span></div>
+        <div class="kx-team-photo">          <img src="images/team/abendano.jpg" alt="Abendano, Juliana Veronica V." style="width:100%; height:100%; object-fit:cover; display:block;">
+        </div>
         <div style="margin-top:10px; font-weight:600; color:var(--text); font-size:0.95rem; line-height:1.3;">Abendaño, Juliana Veronica V.</div>
         <div style="color:var(--accent-violet); font-size:0.82rem; font-weight:600; margin-top:2px;">Quality Assurance Lead</div>
       </div>
       <div class="kx-team-card" style="border:1px solid var(--border); border-radius:14px; padding:16px; background:var(--surface-2);">
-        <div class="kx-team-photo"><span class="kx-team-initials">KA</span></div>
+        <div class="kx-team-photo">
+        <img src="images/team/albaira.jpg" alt="Albaira, Keannah Mhary D." style="width:100%; height:100%; object-fit:cover; display:block;">
+        </div>
         <div style="margin-top:10px; font-weight:600; color:var(--text); font-size:0.95rem; line-height:1.3;">Albaira, Keannah Mhary D.</div>
         <div style="color:var(--accent-violet); font-size:0.82rem; font-weight:600; margin-top:2px;">Frontend Lead</div>
       </div>
       <div class="kx-team-card" style="border:1px solid var(--border); border-radius:14px; padding:16px; background:var(--surface-2);">
-        <div class="kx-team-photo"><span class="kx-team-initials">RG</span></div>
+        <div class="kx-team-photo">
+          <img src="images/team/gallardo.jpg" alt="Gallardo, Roman Joseph C." style="width:100%; height:100%; object-fit:cover; display:block;">
+        </div>
         <div style="margin-top:10px; font-weight:600; color:var(--text); font-size:0.95rem; line-height:1.3;">Gallardo, Roman Joseph C.</div>
         <div style="color:var(--accent-violet); font-size:0.82rem; font-weight:600; margin-top:2px;">Project Lead / Manager</div>
       </div>
@@ -145,10 +152,6 @@ $activePage = 'about';
         <div style="color:var(--accent-violet); font-size:0.82rem; font-weight:600; margin-top:2px;">Backend Lead</div>
       </div>
     </div>
-
-    <p class="more-line" style="font-style:normal; color:var(--text-dim); margin-top:18px; font-size:0.88rem;">
-      Faculty-in-charge: Engr. Arlene B. Canlas
-    </p>
   </div>
 </main>
 

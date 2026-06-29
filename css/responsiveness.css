@@ -1,0 +1,312 @@
+/* ============================================================
+   KeySynx — css/responsiveness.css
+   Drop-in responsive layer. Load this AFTER style.css,
+   animations.css, and theme-light.css (it only adds overrides
+   inside @media queries, so it never fights specificity on
+   desktop — it just kicks in at smaller widths).
+
+   Link it on every page, e.g.:
+   <link rel="stylesheet" href="css/style.css?v=6">
+   <link rel="stylesheet" href="css/animations.css?v=1">
+   <link rel="stylesheet" href="css/theme-light.css?v=1">
+   <link rel="stylesheet" href="css/responsiveness.css?v=1">  <!-- last -->
+
+   Breakpoints used:
+     1024px → small laptop / large tablet
+      860px → tablet (matches existing .wheel-layout breakpoint)
+      720px → large phone / small tablet (matches existing style.css breakpoint)
+      480px → phone
+      380px → small/compact phone (mobile app webview default size)
+   ============================================================ */
+
+/* ---------- 0. Mobile-app shell basics ---------- */
+/* Respect device notches/home-indicator when this page is wrapped
+   in a Cordova/WebView shell. Safe no-op on regular browsers. */
+html{
+  -webkit-text-size-adjust: 100%;
+}
+body{
+  padding-top: env(safe-area-inset-top, 0);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  overflow-x: hidden; /* guard against any stray fixed-width element causing horizontal scroll */
+}
+img{ max-width:100%; height:auto; }
+
+/* Larger, friendlier tap targets everywhere once we're below tablet width */
+@media (max-width: 720px){
+  .btn, .page-btn, .icon-btn, .vote-btn, a.nav-links a, .more-toggle{
+    min-height: 40px;
+  }
+  input, select, textarea, button{
+    font-size: 16px; /* prevents iOS Safari/WebView auto-zoom on focus */
+  }
+}
+
+/* ============================================================
+   1. ≤1024px — small laptop / large tablet
+   ============================================================ */
+@media (max-width: 1024px){
+  .shell{ padding: 0 18px; }
+
+  .wheel-layout{
+    grid-template-columns: 1fr 320px;
+    gap: 20px;
+  }
+
+  .grid.md\:grid-cols-2,
+  .grid.md\:grid-cols-\[1fr_360px\]{
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ============================================================
+   2. ≤860px — tablet (wheel layout already stacks here; reinforce
+      it for any page that copies a similar 2-col layout)
+   ============================================================ */
+@media (max-width: 860px){
+  .wheel-layout{
+    grid-template-columns: 1fr;
+  }
+  .wheel-panel, .rec-panel{
+    padding: 16px;
+  }
+
+  .grid.md\:grid-cols-4{
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+/* ============================================================
+   3. ≤720px — phones / small tablets
+   ============================================================ */
+@media (max-width: 720px){
+  .shell{ padding: 0 14px; }
+
+  /* ---- Topbar ---- */
+  .topbar-inner{
+    height:auto;
+    min-height: 60px;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px 0;
+  }
+  .logo{ font-size: 1.1rem; }
+
+  /* Existing stylesheet hides .nav-links entirely at 720px with no
+     replacement — give it back as a full-width wrapping row instead
+     of vanishing, so navigation isn't lost on mobile. */
+  .nav-links{
+    display: flex !important;
+    order: 3;
+    width: 100%;
+    gap: 14px;
+    flex-wrap: wrap;
+    overflow-x: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+  .nav-links::-webkit-scrollbar{ display:none; }
+  .nav-links a{ white-space: nowrap; font-size: 0.85rem; }
+
+  .search-wrap{
+    order: 2;
+    max-width: none;
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .admin-badge-link{ white-space: nowrap; }
+
+  /* ---- Page header ---- */
+  .page-head{ padding: 24px 0 14px; text-align:left; }
+  .page-title{ font-size: 1.5rem; flex-wrap: wrap; }
+  .page-sub{ font-size: 0.9rem; }
+
+  /* ---- Filters ---- */
+  .filterbar{
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .filterbar select, .filterbar input, .filterbar label.checkpill{
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  /* ---- Track cards ---- */
+  .track-card{
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .track-thumb{ width:48px; height:48px; }
+  .track-divider{ display:none; }
+  .track-stats{ text-align:left; margin-left: 62px; }
+
+  /* ---- Song detail head ---- */
+  .detail-head{
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    text-align: left;
+    padding: 22px 0;
+  }
+  .key-dial.lg{ width:76px; height:76px; }
+  .key-dial.lg span{ width:50px; height:50px; font-size:1rem; }
+  .detail-title{ font-size: 1.5rem; }
+  .detail-stats{ gap: 10px; }
+
+  /* ---- Forms ---- */
+  .form-card{ padding: 20px; max-width: none; }
+  .form-grid-2{ grid-template-columns: 1fr; gap: 0; }
+
+  /* ---- Profile grid (md:grid-cols-[1fr_360px]) ---- */
+  .grid.md\:grid-cols-\[1fr_360px\]{
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  /* ---- About page team / feature grids ---- */
+  .grid.md\:grid-cols-2{ grid-template-columns: 1fr !important; }
+  .grid.grid-cols-2.md\:grid-cols-4{ grid-template-columns: repeat(2, minmax(0,1fr)) !important; }
+
+  /* ---- Tables: allow horizontal scroll instead of squashing ---- */
+  .admin-table{ display:block; }
+  .admin-table thead, .admin-table tbody, .admin-table tr{ display:block; }
+  .admin-table thead{ display:none; }
+  .admin-table tr{
+    border:1px solid var(--border); border-radius: var(--radius);
+    margin-bottom: 10px; padding: 6px 4px;
+  }
+  .admin-table td{
+    display:flex; justify-content:space-between; gap:10px;
+    border-bottom: 1px solid var(--border); padding: 8px 10px;
+    font-size: 0.85rem;
+  }
+  .admin-table td:last-child{ border-bottom:none; }
+  .admin-table td::before{
+    content: attr(data-label);
+    font-weight:600; color: var(--text-dim);
+    text-transform:uppercase; font-size:0.68rem; letter-spacing:0.04em;
+    flex-shrink:0;
+  }
+  .row-actions{ justify-content:flex-end; flex-wrap:wrap; }
+
+  /* lib-table already scrolls via .lib-table-wrap { overflow-x:auto },
+     just make that explicit/scroll-snappy on touch and keep min-width */
+  .lib-table-wrap{
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ---- Pagination ---- */
+  .pagination-bar{
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    padding: 14px 4px 40px;
+  }
+  .pagination-controls{ justify-content:center; flex-wrap:wrap; }
+
+  /* ---- Wheel page ---- */
+  .wheel-panel, .rec-panel{ padding: 14px; }
+  .wheel-legend{ gap: 10px; font-size:0.72rem; }
+
+  /* ---- Submit / structure builder rows ---- */
+  .structure-row{ flex-wrap: wrap; }
+  .structure-row input.bars{ max-width: 70px; }
+}
+
+/* ============================================================
+   4. ≤480px — phones
+   ============================================================ */
+@media (max-width: 480px){
+  .shell{ padding: 0 12px; }
+
+  .page-title{ font-size: 1.3rem; gap: 8px !important; }
+  .eyebrow{ font-size: 0.7rem; }
+
+  .btn{ padding: 8px 12px; font-size: 0.82rem; }
+  .btn-sm{ padding: 5px 9px; font-size: 0.76rem; }
+
+  .track-card-wrap{ padding: 12px; }
+  .track-title{ font-size: 0.92rem; }
+  .track-artist{ font-size: 0.8rem; }
+  .track-key{ font-size: 0.85rem; }
+  .track-bpm{ font-size: 0.76rem; }
+
+  .stat-chip{ font-size: 0.78rem; padding: 5px 10px; }
+  .detail-stats{ flex-direction: column; align-items: flex-start; }
+
+  .structure-track{ flex-wrap: wrap; height:auto; }
+  .structure-seg{ min-width: 56px; height:40px; }
+
+  /* About page team grid: 1 column on small phones */
+  .grid.grid-cols-2.md\:grid-cols-4{ grid-template-columns: 1fr !important; }
+
+  .now-playing{ padding: 12px; }
+  .rec-row{ padding: 8px 10px; gap: 8px; }
+  .rec-score{ width:32px; height:32px; font-size:0.75rem; }
+
+  .vote-row{ flex-wrap: wrap; gap: 10px; }
+  .vote-btn{ flex:1; justify-content:center; }
+
+  footer{ padding: 28px 0; font-size: 0.75rem; }
+}
+
+/* ============================================================
+   5. ≤380px — compact phones / default mobile-app webview width
+   ============================================================ */
+@media (max-width: 380px){
+  .logo span{ font-size: 1rem; }
+  .nav-links{ gap: 10px; }
+  .nav-links a{ font-size: 0.8rem; }
+
+  .track-thumb{ width:42px; height:42px; font-size:1.05rem; }
+  .track-stats{ margin-left: 54px; }
+
+  .form-card{ padding: 16px; }
+  .form-row input, .form-row select, .form-row textarea{ padding: 9px 11px; }
+
+  .page-numbers{ gap: 2px; }
+  .page-num{ min-width: 28px; height:28px; font-size:0.8rem; }
+  .page-btn{ width:28px; height:28px; }
+
+  .kx-team-initials{ font-size: 1.4rem; }
+}
+
+/* ============================================================
+   6. Landscape phones — keep sticky topbar from eating the
+      viewport on short, wide screens
+   ============================================================ */
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 480px){
+  .topbar-inner{ min-height: 52px; padding: 6px 0; }
+  .page-head{ padding: 14px 0 10px; }
+}
+
+/* ============================================================
+   7. Reduced motion — mobile app users on battery saver / users
+      with motion sensitivity. Existing animations.css has no
+      such guard, so add it here.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce){
+  .kx-animate, .btn, .stat-chip, .now-playing, .rec-row, .status-pill,
+  .checkpill, .search-input, .page-btn, .track-thumb, .icon-btn,
+  .kx-feature-card, .kx-tech-pill, .kx-team-card, .kx-team-photo, .kx-hover-card{
+    animation: none !important;
+    transition: none !important;
+  }
+  .kx-animate{ opacity: 1; transform: none; }
+}
+
+/* ============================================================
+   8. Touch device refinement — disable hover-only lift effects
+      that otherwise stick "on" after a tap on touchscreens
+   ============================================================ */
+@media (hover: none) and (pointer: coarse){
+  .btn:hover, .stat-chip:hover, .now-playing:hover, .rec-row:hover,
+  .track-thumb:hover, .icon-btn:hover, .kx-feature-card:hover,
+  .kx-tech-pill:hover, .kx-team-card:hover, .kx-hover-card:hover{
+    transform: none;
+    box-shadow: none;
+  }
+}

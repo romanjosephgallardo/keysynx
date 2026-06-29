@@ -60,23 +60,25 @@ $thumbGradients = [
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script>(function(){try{if(localStorage.getItem('kx-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title><?= $song ? htmlspecialchars($song['title']) . ' — KeySynx' : 'Track not found — KeySynx' ?></title>
-<link rel="stylesheet" href="css/style.css?v=6">
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-  tailwind.config = { theme: { extend: {
-    colors: { ksbg:'#14141A', kssurface:'#1E1E27', kssurface2:'#25252F', ksborder:'#32323E',
-              kstext:'#EDEDF2', ksmuted:'#8A8A99', ksviolet:'#B9A3FF', ksverified:'#5EE6A8',
-              kspending:'#F2B84B', ksrejected:'#EF5C6E' },
-    fontFamily: { display:['Space Grotesk','sans-serif'], body:['Inter','sans-serif'] }
-  }}};
-</script>
-<link rel="stylesheet" href="css/animations.css?v=1">
-<link rel="stylesheet" href="css/theme-light.css?v=1">
-<script src="js/theme.js?v=1"></script>
+  <script>(function(){try{if(localStorage.getItem('kx-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><?= $song ? htmlspecialchars($song['title']) . ' — KeySynx' : 'Track not found — KeySynx' ?></title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: {
+      colors: { ksbg:'#14141A', kssurface:'#1E1E27', kssurface2:'#25252F', ksborder:'#32323E',
+                kstext:'#EDEDF2', ksmuted:'#8A8A99', ksviolet:'#B9A3FF', ksverified:'#5EE6A8',
+                kspending:'#F2B84B', ksrejected:'#EF5C6E' },
+      fontFamily: { display:['Space Grotesk','sans-serif'], body:['Inter','sans-serif'] }
+    }}};
+  </script>
+  <link rel="stylesheet" href="css/style.css?v=6">
+  <link rel="stylesheet" href="css/animations.css?v=1">
+  <link rel="stylesheet" href="css/theme-light.css?v=1">
+  <link rel="stylesheet" href="css/responsiveness.css?v=1"> 
+  <link rel="icon" type="image/png" href="src/favicon.png">
+  <script src="js/theme.js?v=1"></script>
 </head>
 <body>
 

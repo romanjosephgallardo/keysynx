@@ -73,7 +73,6 @@ if ($profileUser) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title><?= $profileUser ? htmlspecialchars($profileUser['username']) . "'s profile — KeySynx" : 'Profile — KeySynx' ?></title>
-<link rel="stylesheet" href="css/style.css?v=6">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
   tailwind.config = { theme: { extend: {
@@ -83,8 +82,10 @@ if ($profileUser) {
     fontFamily: { display:['Space Grotesk','sans-serif'], body:['Inter','sans-serif'] }
   }}};
 </script>
+<link rel="stylesheet" href="css/style.css?v=6">
 <link rel="stylesheet" href="css/animations.css?v=1">
 <link rel="stylesheet" href="css/theme-light.css?v=1">
+<link rel="stylesheet" href="css/responsiveness.css?v=1"> 
 <script src="js/theme.js?v=1"></script>
 </head>
 <body>

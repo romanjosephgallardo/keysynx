@@ -13,6 +13,7 @@ $activePage = 'about';
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>(function(){try{if(localStorage.getItem('kx-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>About — KeySynx</title>
@@ -27,13 +28,15 @@ $activePage = 'about';
   }}};
 </script>
 <link rel="stylesheet" href="css/animations.css?v=1">
+<link rel="stylesheet" href="css/theme-light.css?v=1">
+<script src="js/theme.js?v=1"></script>
 </head>
 <body>
 
 <?php include __DIR__ . '/partials/topbar.php'; ?>
 
 <main class="shell">
-  <div class="page-head kx-animate kx-d1" style="text-align:center;">
+  <div class="page-head kx-animate kx-d1" style="text-align:center; margin-bottom:48px;">
     <div class="eyebrow" style="font-size:0.8rem;">A collaborative harmonic mixing and music analysis platform</div>
     <h1 class="page-title" style="display:flex; align-items:center; justify-content:center; gap:14px; font-size:2.4rem;">
       <span class="logo" style="display:inline-flex;"><span class="dot" style="width:30px; height:30px; flex-shrink:0;"></span></span>
@@ -46,7 +49,7 @@ $activePage = 'about';
     </p>
   </div>
 
-  <div class="section-block kx-animate kx-d2">
+  <div class="section-block kx-animate kx-d2" style="margin-top:40px; padding-top:32px; border-top:1px solid var(--border);">
     <div class="section-label" style="font-size:0.8rem;">Why community-driven?</div>
     <p class="more-line" style="font-style:normal; color:var(--text-muted); font-size:1rem; line-height:1.7;">
       Manually analyzing a song's key and BPM takes real musical ear training, and any single
@@ -56,7 +59,7 @@ $activePage = 'about';
     </p>
   </div>
 
-  <div class="section-block kx-animate kx-d3">
+  <div class="section-block kx-animate kx-d3" style="margin-top:40px; padding-top:32px; border-top:1px solid var(--border);">
     <div class="section-label" style="font-size:0.8rem;">Core features</div>
     <div class="grid md:grid-cols-2 gap-3">
       <div class="stat-chip kx-feature-card" style="flex-direction:column; align-items:flex-start; gap:6px; padding:16px;">
@@ -86,7 +89,7 @@ $activePage = 'about';
     </div>
   </div>
 
-  <div class="section-block kx-animate kx-d4">
+  <div class="section-block kx-animate kx-d4" style="margin-top:40px; padding-top:32px; border-top:1px solid var(--border);">
     <div class="section-label" style="font-size:0.8rem;">Beyond the core database</div>
     <p class="more-line" style="font-style:normal; color:var(--text-muted); margin-bottom:10px; font-size:1rem;">
       KeySynx also goes past a plain searchable list:
@@ -98,7 +101,7 @@ $activePage = 'about';
     </ul>
   </div>
 
-  <div class="section-block kx-animate kx-d5">
+  <div class="section-block kx-animate kx-d5" style="margin-top:40px; padding-top:32px; border-top:1px solid var(--border);">
     <div class="section-label" style="font-size:0.8rem;">Built with</div>
     <div class="flex gap-2 flex-wrap">
       <?php foreach (['PHP', 'MySQL', 'Apache', 'Tailwind CSS', 'Alpine.js', 'Apache Cordova'] as $tech): ?>
@@ -107,7 +110,7 @@ $activePage = 'about';
     </div>
   </div>
 
-  <div class="section-block kx-animate kx-d6">
+  <div class="section-block kx-animate kx-d6" style="margin-top:40px; margin-bottom:50px; padding-top:32px; border-top:1px solid var(--border);">
     <div class="section-label" style="font-size:0.8rem;">Project team</div>
     <p class="more-line" style="font-style:normal; color:var(--text-muted); margin-bottom:16px; font-size:1rem;">
       Built as a final project for Web and Mobile Systems.

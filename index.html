@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <script>(function(){try{if(localStorage.getItem('kx-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>KeySynx — Music Key &amp; BPM Database</title>
@@ -33,6 +34,8 @@
       };
     </script>
     <link rel="stylesheet" href="css/animations.css?v=1" />
+    <link rel="stylesheet" href="css/theme-light.css?v=1" />
+    <script src="js/theme.js?v=1"></script>
     <script src="js/auth.js?v=6"></script>
     <script
       defer
@@ -61,6 +64,10 @@
             <a href="admin.php" class="admin-badge-link">Admin Panel</a>
           </template>
         </nav>
+        <button type="button" class="kx-theme-toggle btn btn-sm btn-ghost" title="Toggle light/dark mode" style="padding:8px;">
+          <svg class="kx-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          <svg class="kx-icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </button>
         <a href="submit.html" class="btn btn-primary"
           >+ Add Song</a
         >
@@ -110,7 +117,7 @@
                   <button @click="mode='login'" :style="mode==='login' ? 'color:var(--text); font-weight:600;' : 'color:var(--text-muted);'">Log in</button>
                   <button @click="mode='register'" :style="mode==='register' ? 'color:var(--text); font-weight:600;' : 'color:var(--text-muted);'">Register</button>
                 </div>
-                <input x-show="mode==='register'" x-model="e" type="email" placeholder="Gmail address" class="search-input" style="width:100%; margin-bottom:8px;">
+                <input x-show="mode==='register'" x-model="e" type="email" placeholder="Email Address" class="search-input" style="width:100%; margin-bottom:8px;">
                 <input x-model="u" type="text" placeholder="Username" class="search-input" style="width:100%; margin-bottom:8px;">
                 <input x-model="p" type="password" placeholder="Password" class="search-input" style="width:100%; margin-bottom:8px;">
                 <p x-show="mode==='register'" style="font-size:0.72rem; color:var(--text-dim); margin-bottom:8px;">We'll email a verification code to this Gmail address.</p>
@@ -131,6 +138,7 @@
     <main class="shell">
       <!-- Hero / stats section (Tailwind) -->
       <div
+        id="heroBanner"
         class="relative overflow-hidden rounded-3xl border border-ksborder p-8 md:p-10 my-8"
         style="background: linear-gradient(135deg, #15182b 0%, #1a1230 100%)"
       >

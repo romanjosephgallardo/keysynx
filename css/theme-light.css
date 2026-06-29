@@ -1,0 +1,65 @@
+/* ============================================================
+   KeySynx — css/theme-light.css
+   Light mode overrides. Dark mode (style.css :root) stays the
+   default/unchanged — this file only applies when
+   <html data-theme="light"> is set (see js/theme.js).
+
+   Status/accent colors are intentionally DARKENED versions of
+   their dark-mode counterparts — the original light, bright
+   tones (designed to pop against a near-black background) don't
+   have enough contrast against a white one.
+   ============================================================ */
+
+[data-theme="light"] {
+  /* Surfaces */
+  --bg:        #F6F6FA;
+  --surface:   #FFFFFF;
+  --surface-2: #EEEEF3;
+  --border:    #DCDCE6;
+
+  /* Text (same hierarchy as dark mode, inverted) */
+  --text:      #1A1A22;
+  --text-muted:#5B5B68;
+  --text-dim:  #93939E;
+
+  /* Status — darkened for contrast against white/light surfaces */
+  --verified:  #0E9F6E;
+  --pending:   #B7791F;
+  --rejected:  #D7263D;
+  --accent-violet: #7C5CE0;
+
+  /* The "green" used for buttons/hovers/focus rings throughout the
+     UI (.btn-primary, nav active underline, focus-visible, etc.) —
+     deepened one step so it stays legible on a light background. */
+  --k7:  #1FA565;
+  --k7b: #34C27D;
+}
+
+/* Hardcoded dark-mode value that isn't variable-driven */
+[data-theme="light"] .topbar {
+  background: rgba(255,255,255,0.88);
+}
+
+/* ---------- Tailwind hero-section overrides (index.html only) ----------
+   These ks* Tailwind colors are hardcoded hex in each page's inline
+   tailwind.config — they mirror the CSS variables above by value, so
+   we override the generated utility classes directly here instead of
+   editing every page's Tailwind config block. */
+[data-theme="light"] .bg-kssurface\/60   { background-color: rgba(255,255,255,0.7) !important; }
+[data-theme="light"] .border-ksborder    { border-color: #DCDCE6 !important; }
+[data-theme="light"] .border-ksviolet\/40{ border-color: rgba(124,92,224,0.4) !important; }
+[data-theme="light"] .text-ksmuted       { color: #5B5B68 !important; }
+[data-theme="light"] .text-kstext        { color: #1A1A22 !important; }
+[data-theme="light"] .text-ksviolet      { color: #7C5CE0 !important; }
+
+/* The homepage hero banner's gradient is an inline style (highest
+   specificity normally) — only a stylesheet rule WITH !important can
+   override an inline style that lacks one, which is what we rely on
+   here. Targets the #heroBanner id added to that div. */
+[data-theme="light"] #heroBanner {
+  background: linear-gradient(135deg, #f1eef9 0%, #e9e3f8 100%) !important;
+}
+
+/* Theme toggle button icon swap */
+[data-theme="light"] .kx-icon-moon { display: none !important; }
+[data-theme="light"] .kx-icon-sun  { display: inline-flex !important; }

@@ -60,6 +60,7 @@ $thumbGradients = [
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>(function(){try{if(localStorage.getItem('kx-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title><?= $song ? htmlspecialchars($song['title']) . ' — KeySynx' : 'Track not found — KeySynx' ?></title>
@@ -74,6 +75,8 @@ $thumbGradients = [
   }}};
 </script>
 <link rel="stylesheet" href="css/animations.css?v=1">
+<link rel="stylesheet" href="css/theme-light.css?v=1">
+<script src="js/theme.js?v=1"></script>
 </head>
 <body>
 
@@ -102,6 +105,8 @@ $thumbGradients = [
         <div class="detail-artist" style="display:flex; align-items:center; gap:8px;">
           <?php if ($artistArtwork): ?>
             <img src="<?= htmlspecialchars($artistArtwork) ?>" alt="" style="width:24px;height:24px;border-radius:50%;object-fit:cover;flex-shrink:0;">
+          <?php else: ?>
+            <div style="width:24px;height:24px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;background:hsl(<?= avatarHue($song['artist']) ?>,55%,42%);"><?= htmlspecialchars(mb_strtoupper(mb_substr($song['artist'], 0, 2))) ?></div>
           <?php endif; ?>
           <span><?= htmlspecialchars($song['artist']) ?><?= $song['album_title'] ? ' · ' . htmlspecialchars($song['album_title']) : '' ?><?= $song['release_year'] ? ' (' . (int) $song['release_year'] . ')' : '' ?></span>
         </div>

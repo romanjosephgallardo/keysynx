@@ -69,6 +69,7 @@ if ($profileUser) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>(function(){try{if(localStorage.getItem('kx-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title><?= $profileUser ? htmlspecialchars($profileUser['username']) . "'s profile — KeySynx" : 'Profile — KeySynx' ?></title>
@@ -83,6 +84,8 @@ if ($profileUser) {
   }}};
 </script>
 <link rel="stylesheet" href="css/animations.css?v=1">
+<link rel="stylesheet" href="css/theme-light.css?v=1">
+<script src="js/theme.js?v=1"></script>
 </head>
 <body>
 

@@ -142,7 +142,6 @@ document.getElementById('submitForm').addEventListener('submit', async (e) => {
     time_signature: document.getElementById('timeSignature').value || null,
     youtube_url: document.getElementById('youtubeUrl').value || null,
     section_keys: sectionKeys,
-    tags: document.getElementById('tags').value.split(',').map(t => t.trim()).filter(Boolean),
     footnote: document.getElementById('notes').value || null
   };
 

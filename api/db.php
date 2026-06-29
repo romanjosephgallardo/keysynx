@@ -13,6 +13,13 @@ define('DB_NAME', 'keysynx');
 function getDb(): mysqli {
     static $conn = null;
     if ($conn === null) {
+        // PHP 8.1+ makes mysqli throw exceptions by default on query errors.
+        // This codebase is written expecting the older "check the return
+        // value" style (if (!$stmt->execute())) everywhere — without this,
+        // ordinary, expected errors (like a duplicate username/email on
+        // registration) become uncaught fatal errors instead of a clean
+        // JSON error response.
+        mysqli_report(MYSQLI_REPORT_OFF);
         $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
         if ($conn->connect_error) {
             http_response_code(500);

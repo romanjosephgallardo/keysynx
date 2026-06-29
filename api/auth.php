@@ -39,6 +39,22 @@ if ($action === 'register' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $hash = password_hash($password, PASSWORD_DEFAULT);
     $initials = strtoupper(substr($username, 0, 2));
+
+    $stmt = $db->prepare('SELECT id FROM users WHERE username = ?');
+    $stmt->bind_param('s', $username);
+    $stmt->execute();
+    if ($stmt->get_result()->fetch_assoc()) {
+        jsonError('That username is already taken. Try a different one, or log in instead.');
+    }
+    $stmt = $db->prepare('SELECT id, email_verified FROM users WHERE email = ?');
+    $stmt->bind_param('s', $email);
+    $stmt->execute();
+    if ($existing = $stmt->get_result()->fetch_assoc()) {
+        jsonError($existing['email_verified']
+            ? 'This Gmail address already has an account. Log in instead.'
+            : 'This Gmail address already has a pending, unverified account. Check your Gmail for the code, or use "Resend code" after logging in.');
+    }
+
     $code = generateVerificationCode();
     $expires = date('Y-m-d H:i:s', time() + 900); // 15 minutes
 
@@ -46,7 +62,7 @@ if ($action === 'register' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bind_param('ssssss', $username, $email, $hash, $initials, $code, $expires);
 
     if (!$stmt->execute()) {
-        jsonError($db->errno === 1062 ? 'Username or email already taken.' : 'Could not create account.');
+        jsonError('Could not create account. Please try again.');
     }
 
     $emailSent = sendVerificationCode($email, $username, $code);

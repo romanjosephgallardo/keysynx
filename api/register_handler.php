@@ -29,6 +29,25 @@ if (!preg_match('/^[^@\s]+@gmail\.com$/i', $email)) {
 
 $hash = password_hash($password, PASSWORD_DEFAULT);
 $initials = mb_strtoupper(mb_substr($username, 0, 2));
+
+$stmt = $db->prepare('SELECT id FROM users WHERE username = ?');
+$stmt->bind_param('s', $username);
+$stmt->execute();
+if ($stmt->get_result()->fetch_assoc()) {
+    header('Location: ' . $redirect . $sep . 'auth_error=' . urlencode('That username is already taken. Try a different one, or log in instead.'));
+    exit;
+}
+$stmt = $db->prepare('SELECT id, email_verified FROM users WHERE email = ?');
+$stmt->bind_param('s', $email);
+$stmt->execute();
+if ($existing = $stmt->get_result()->fetch_assoc()) {
+    $msg = $existing['email_verified']
+        ? 'This Gmail address already has an account. Log in instead.'
+        : 'This Gmail address already has a pending, unverified account. Check your Gmail for the code, or use "Resend code".';
+    header('Location: ' . $redirect . $sep . 'auth_error=' . urlencode($msg));
+    exit;
+}
+
 $code = generateVerificationCode();
 $expires = date('Y-m-d H:i:s', time() + 900); // 15 minutes
 
@@ -40,7 +59,6 @@ if ($stmt->execute()) {
     $msg = $emailSent ? 'sent' : 'send_failed';
     header('Location: ' . $redirect . $sep . 'verify=1&vu=' . urlencode($username) . '&vmsg=' . $msg);
 } else {
-    $msg = ($db->errno === 1062) ? 'Username or email already taken.' : 'Could not create account.';
-    header('Location: ' . $redirect . $sep . 'auth_error=' . urlencode($msg));
+    header('Location: ' . $redirect . $sep . 'auth_error=' . urlencode('Could not create account. Please try again.'));
 }
 exit;

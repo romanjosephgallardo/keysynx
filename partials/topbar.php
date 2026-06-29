@@ -101,13 +101,16 @@ function navClass($page, $current) { return $page === $current ? 'active' : ''; 
               <button type="submit" class="btn btn-ghost btn-sm" style="width:100%; justify-content:center;">Resend code</button>
             </form>
           <?php else: ?>
-            <form method="post" action="api/login_handler.php" style="margin-bottom:14px;">
-              <input type="hidden" name="redirect" value="<?= htmlspecialchars($currentUrl) ?>">
-              <input type="text" name="username" placeholder="Username" class="search-input" style="width:100%; margin-bottom:8px;" required>
-              <input type="password" name="password" placeholder="Password" class="search-input" style="width:100%; margin-bottom:8px;" required>
-              <button type="submit" class="btn btn-primary btn-sm" style="width:100%; justify-content:center;">Log in</button>
-            </form>
-            <details>
+            <details name="kxAuthMode" open style="margin:0;">
+              <summary style="font-size:0.82rem; color:var(--text); font-weight:600; cursor:pointer; list-style:none; margin-bottom:10px;">Log in</summary>
+              <form method="post" action="api/login_handler.php">
+                <input type="hidden" name="redirect" value="<?= htmlspecialchars($currentUrl) ?>">
+                <input type="text" name="username" placeholder="Username" class="search-input" style="width:100%; margin-bottom:8px;" required>
+                <input type="password" name="password" placeholder="Password" class="search-input" style="width:100%; margin-bottom:8px;" required>
+                <button type="submit" class="btn btn-primary btn-sm" style="width:100%; justify-content:center;">Log in</button>
+              </form>
+            </details>
+            <details name="kxAuthMode" style="margin-top:10px;">
               <summary style="font-size:0.8rem; color:var(--accent-violet); cursor:pointer; list-style:none;">No account? Register</summary>
               <form method="post" action="api/register_handler.php" style="margin-top:10px;">
                 <input type="hidden" name="redirect" value="<?= htmlspecialchars($currentUrl) ?>">

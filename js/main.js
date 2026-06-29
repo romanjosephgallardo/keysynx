@@ -199,7 +199,7 @@ async function load(){
       const data = await res.json();
       lastTotalPages = data.total_pages || 1;
       renderRows(data.songs.map(normalizeApiSong));
-      renderPagination(data.total, data.page, data.per_page, data.total_pages);
+      renderPagination(dta.total, data.page, data.per_page, data.total_pages);
       return;
     } catch(e){
       backendAvailable = false;

@@ -72,7 +72,7 @@ function navClass($page, $current) { return $page === $current ? 'active' : ''; 
             </div>
           <?php endif; ?>
         </a>
-        <form method="post" action="api/logout_handler.php" style="display:inline; margin:0;">
+        <form method="post" action="api/logout_handler.php" style="display:inline; margin:0;" onsubmit="return confirm('Are you sure you want to log out?');">
           <input type="hidden" name="redirect" value="<?= htmlspecialchars($currentUrl) ?>">
           <button type="submit" class="btn btn-sm btn-ghost">Log out</button>
         </form>

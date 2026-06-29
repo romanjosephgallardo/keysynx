@@ -302,6 +302,6 @@ function renderAdminPagination($total, $page, $perPage, $totalPages, $label) {
   <?php endif; ?>
 </main>
 
-<footer>KeySynx · Final Project Prototype · Key &amp; BPM Analysis Platform</footer>
+<?php include __DIR__ . '/partials/footer.php'; ?>
 </body>
 </html>

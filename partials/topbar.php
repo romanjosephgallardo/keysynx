@@ -34,11 +34,19 @@ function navClass($page, $current) { return $page === $current ? 'active' : ''; 
 ?>
 <header class="topbar">
   <div class="shell topbar-inner">
-    <a href="index.html" class="logo"><span class="dot"></span> KeySynx</a>
-    <nav class="nav-links">
-      <a href="index.html" class="<?= navClass('browse', $activePage) ?>">Browse</a>
-      <a href="wheel.html" class="<?= navClass('wheel', $activePage) ?>">Wheel</a>
-      <a href="submit.html" class="<?= navClass('submit', $activePage) ?>">Submit</a>
+    <a href="index.html" class="logo" style="text-decoration:none; display:flex; align-items:center; gap:10px;">
+      <span class="dot" style="width:13px; height:13px; flex-shrink:0;"></span>
+      <span style="display:flex; flex-direction:column; line-height:1.1;">
+        <span style="font-size:1.2rem; font-weight:700; color:var(--text); font-family:'Space Grotesk',sans-serif;">KeySynx</span>
+        <span style="font-size:0.68rem; color:var(--text-dim); font-weight:500; letter-spacing:0.02em;">Keys and BPM Database</span>
+      </span>
+    </a>
+    <div style="margin-left:auto; display:flex; align-items:center; gap:24px;">
+    <nav class="nav-links" style="display:flex; align-items:center; gap:20px;">
+      <a href="index.html" class="<?= navClass('browse', $activePage) ?>" style="display:inline-flex; align-items:center; gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>Browse</a>
+      <a href="wheel.html" class="<?= navClass('wheel', $activePage) ?>" style="display:inline-flex; align-items:center; gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"></circle></svg>Harmonic Wheel</a>
+      <a href="submit.html" class="<?= navClass('submit', $activePage) ?>" style="display:inline-flex; align-items:center; gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>Submit</a>
+      <a href="about.php" class="<?= navClass('about', $activePage) ?>" style="display:inline-flex; align-items:center; gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="11" x2="12" y2="16"></line><circle cx="12" cy="7.5" r="1" fill="currentColor" stroke="none"></circle></svg>About</a>
       <?php if (hasModeratorAccess($currentUser)): ?>
         <a href="admin.php" class="admin-badge-link <?= navClass('admin', $activePage) ?>">
           <?= $activePage === 'admin' ? 'Admin Panel' : 'Admin' ?>
@@ -47,7 +55,7 @@ function navClass($page, $current) { return $page === $current ? 'active' : ''; 
     </nav>
 
     <?php if ($currentUser): ?>
-      <div style="margin-left:auto; display:flex; align-items:center; gap:10px;">
+      <div style="display:flex; align-items:center; gap:10px;">
         <a href="profile.php?user_id=<?= (int) $currentUser['id'] ?>"
            title="<?= htmlspecialchars($currentUser['username'] . ' · ' . $currentUser['reputation_tier']) ?>"
            style="width:32px;height:32px;border-radius:50%;display:block;overflow:hidden;text-decoration:none;">
@@ -65,7 +73,7 @@ function navClass($page, $current) { return $page === $current ? 'active' : ''; 
         </form>
       </div>
     <?php else: ?>
-      <details class="auth-popover" style="margin-left:auto; position:relative;" <?= $showVerify ? 'open' : '' ?>>
+      <details class="auth-popover" style="position:relative;" <?= $showVerify ? 'open' : '' ?>>
         <summary class="btn btn-sm" style="list-style:none; cursor:pointer;">Log in</summary>
         <div style="position:absolute; right:0; margin-top:8px; width:280px; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px; z-index:30; box-shadow:0 12px 30px rgba(0,0,0,0.4);">
           <?php if ($authError): ?>
@@ -125,5 +133,6 @@ function navClass($page, $current) { return $page === $current ? 'active' : ''; 
         </div>
       </details>
     <?php endif; ?>
+    </div>
   </div>
 </header>

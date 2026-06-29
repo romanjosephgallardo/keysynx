@@ -56,136 +56,64 @@
         <a href="submit.html" class="btn btn-primary" style="margin-left: auto"
           >+ Add Song</a
         >
-        <div
-          x-data="{ open:false, mode:'login', u:'', e:'', p:'' }"
-          class="relative"
-          style="margin-left: 12px"
-        >
+        <div x-data="{ open:false, mode:'login', u:'', e:'', p:'', code:'' }" class="relative" style="margin-left:12px;">
           <template x-if="$store.auth.loading">
-            <span style="font-size: 0.78rem; color: var(--text-dim)">···</span>
+            <span style="font-size:0.78rem; color:var(--text-dim);">···</span>
           </template>
           <template x-if="!$store.auth.loading && !$store.auth.user">
             <button @click="open = true" class="btn btn-sm">Log in</button>
           </template>
           <template x-if="!$store.auth.loading && $store.auth.user">
-            <div style="display: flex; align-items: center; gap: 10px">
-              <a
-                href="profile.php"
-                :title="$store.auth.user.username + ' · ' + $store.auth.user.reputation_tier"
-                style="
-                  width: 32px;
-                  height: 32px;
-                  border-radius: 50%;
-                  display: block;
-                  overflow: hidden;
-                  text-decoration: none;
-                "
-              >
+            <div style="display:flex; align-items:center; gap:10px;">
+              <a href="profile.php" :title="$store.auth.user.username + ' · ' + $store.auth.user.reputation_tier"
+                 style="width:32px;height:32px;border-radius:50%;display:block;overflow:hidden;text-decoration:none;">
                 <template x-if="$store.auth.user.avatar_path">
-                  <img
-                    :src="$store.auth.user.avatar_path"
-                    style="
-                      width: 100%;
-                      height: 100%;
-                      object-fit: cover;
-                      display: block;
-                    "
-                  />
+                  <img :src="$store.auth.user.avatar_path" style="width:100%;height:100%;object-fit:cover;display:block;">
                 </template>
                 <template x-if="!$store.auth.user.avatar_path">
-                  <div
-                    :style="'width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;background:hsl(' + ($store.auth.user.username.split('').reduce((h,c)=>h+c.charCodeAt(0),0)%360) + ',55%,42%)'"
-                    x-text="$store.auth.user.username.slice(0,2).toUpperCase()"
-                  ></div>
+                  <div :style="'width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;background:hsl(' + ($store.auth.user.username.split('').reduce((h,c)=>h+c.charCodeAt(0),0)%360) + ',55%,42%)'"
+                       x-text="$store.auth.user.username.slice(0,2).toUpperCase()"></div>
                 </template>
               </a>
-              <button
-                @click="$store.auth.logout()"
-                class="btn btn-sm btn-ghost"
-              >
-                Log out
-              </button>
+              <button @click="$store.auth.logout()" class="btn btn-sm btn-ghost">Log out</button>
             </div>
           </template>
 
-          <div
-            x-show="open"
-            @click.outside="open=false"
-            x-cloak
-            style="
-              position: absolute;
-              right: 0;
-              margin-top: 8px;
-              width: 280px;
-              background: var(--surface);
-              border: 1px solid var(--border);
-              border-radius: 14px;
-              padding: 16px;
-              z-index: 30;
-              box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
-            "
-          >
-            <div
-              style="
-                display: flex;
-                gap: 14px;
-                margin-bottom: 12px;
-                font-size: 0.88rem;
-              "
-            >
-              <button
-                @click="mode='login'"
-                :style="mode==='login' ? 'color:var(--text); font-weight:600;' : 'color:var(--text-muted);'"
-              >
-                Log in
-              </button>
-              <button
-                @click="mode='register'"
-                :style="mode==='register' ? 'color:var(--text); font-weight:600;' : 'color:var(--text-muted);'"
-              >
-                Register
-              </button>
-            </div>
-            <input
-              x-show="mode==='register'"
-              x-model="e"
-              type="email"
-              placeholder="Email"
-              class="search-input"
-              style="width: 100%; margin-bottom: 8px"
-            />
-            <input
-              x-model="u"
-              type="text"
-              placeholder="Username"
-              class="search-input"
-              style="width: 100%; margin-bottom: 8px"
-            />
-            <input
-              x-model="p"
-              type="password"
-              placeholder="Password"
-              class="search-input"
-              style="width: 100%; margin-bottom: 8px"
-            />
-            <p
-              x-show="$store.auth.error"
-              x-text="$store.auth.error"
-              style="
-                font-size: 0.75rem;
-                color: var(--rejected);
-                margin-bottom: 8px;
-              "
-            ></p>
-            <button
-              @click="(async () => { const ok = mode==='login' ? await $store.auth.login(u,p) : await $store.auth.register(u,e,p); if(ok) open = false; })()"
-              class="btn btn-primary btn-sm"
-              style="width: 100%; justify-content: center"
-            >
-              <span
-                x-text="mode==='login' ? 'Log in' : 'Create account'"
-              ></span>
-            </button>
+          <div x-show="open" @click.outside="open=false" x-cloak
+               style="position:absolute; right:0; margin-top:8px; width:280px; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px; z-index:30; box-shadow:0 12px 30px rgba(0,0,0,0.4);">
+
+            <template x-if="$store.auth.pendingVerification">
+              <div>
+                <p style="font-size:0.82rem; color:var(--text); font-weight:600; margin-bottom:4px;">Verify your email</p>
+                <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:10px;">Enter the 6-digit code sent to your Gmail.</p>
+                <input x-model="code" type="text" placeholder="6-digit code" inputmode="numeric" maxlength="6"
+                       class="search-input" style="width:100%; margin-bottom:8px; letter-spacing:3px; text-align:center; font-weight:700;">
+                <p x-show="$store.auth.error" x-text="$store.auth.error" style="font-size:0.75rem; color:var(--rejected); margin-bottom:8px;"></p>
+                <button
+                  @click="(async () => { const ok = await $store.auth.verify($store.auth.pendingVerification, code); if(ok) open = false; })()"
+                  class="btn btn-primary btn-sm" style="width:100%; justify-content:center; margin-bottom:8px;">Verify &amp; log in</button>
+                <button @click="$store.auth.resendCode($store.auth.pendingVerification)" class="btn btn-ghost btn-sm" style="width:100%; justify-content:center;">Resend code</button>
+              </div>
+            </template>
+
+            <template x-if="!$store.auth.pendingVerification">
+              <div>
+                <div style="display:flex; gap:14px; margin-bottom:12px; font-size:0.88rem;">
+                  <button @click="mode='login'" :style="mode==='login' ? 'color:var(--text); font-weight:600;' : 'color:var(--text-muted);'">Log in</button>
+                  <button @click="mode='register'" :style="mode==='register' ? 'color:var(--text); font-weight:600;' : 'color:var(--text-muted);'">Register</button>
+                </div>
+                <input x-show="mode==='register'" x-model="e" type="email" placeholder="Gmail address" class="search-input" style="width:100%; margin-bottom:8px;">
+                <input x-model="u" type="text" placeholder="Username" class="search-input" style="width:100%; margin-bottom:8px;">
+                <input x-model="p" type="password" placeholder="Password" class="search-input" style="width:100%; margin-bottom:8px;">
+                <p x-show="mode==='register'" style="font-size:0.72rem; color:var(--text-dim); margin-bottom:8px;">We'll email a verification code to this Gmail address.</p>
+                <p x-show="$store.auth.error" x-text="$store.auth.error" style="font-size:0.75rem; color:var(--rejected); margin-bottom:8px;"></p>
+                <button
+                  @click="(async () => { const ok = mode==='login' ? await $store.auth.login(u,p) : await $store.auth.register(u,e,p); if(ok) open = false; })()"
+                  class="btn btn-primary btn-sm" style="width:100%; justify-content:center;">
+                  <span x-text="mode==='login' ? 'Log in' : 'Create account'"></span>
+                </button>
+              </div>
+            </template>
           </div>
         </div>
       </div>

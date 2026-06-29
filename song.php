@@ -124,7 +124,7 @@ $thumbGradients = [
     <?php if ($song['footnote']): ?>
       <div class="section-block">
         <div class="section-label">Notes</div>
-        <div style="font-size:0.80rem; line-height:1.6; white-space:pre-wrap; color:var(--text); background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:12px 14px; font-style: italic"><?= htmlspecialchars($song['footnote']) ?></div>
+        <div style="font-size:0.95rem; line-height:1.6; white-space:pre-wrap; color:var(--text); background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:12px 14px;"><?= htmlspecialchars($song['footnote']) ?></div>
       </div>
     <?php endif; ?>
 

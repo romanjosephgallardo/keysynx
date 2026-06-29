@@ -21,6 +21,7 @@ document.addEventListener('alpine:init', () => {
     user: null,
     loading: true,
     error: '',
+    pendingVerification: null, // holds the username while a "type your code" screen should show
 
     async init(){
       try {
@@ -41,7 +42,15 @@ document.addEventListener('alpine:init', () => {
           body: JSON.stringify({ username, password })
         });
         const data = await res.json();
-        if(!res.ok){ this.error = data.error || 'Login failed.'; return false; }
+        if(!res.ok){
+          if(data.needs_verification){
+            this.pendingVerification = data.username || username;
+            this.error = '';
+            return false;
+          }
+          this.error = data.error || 'Login failed.';
+          return false;
+        }
         this.user = data.user;
         return true;
       } catch(e){ this.error = 'Could not reach the server. Is XAMPP running?'; return false; }
@@ -56,7 +65,39 @@ document.addEventListener('alpine:init', () => {
         });
         const data = await res.json();
         if(!res.ok){ this.error = data.error || 'Registration failed.'; return false; }
+        // Account created but NOT logged in yet — must verify the emailed
+        // code first. The UI should switch to the verify panel now.
+        this.pendingVerification = data.username || username;
+        if(!data.email_sent){ this.error = data.message; } // surfaces the DEBUG: ... detail temporarily
+        return false;
+      } catch(e){ this.error = 'Could not reach the server. Is XAMPP running?'; return false; }
+    },
+
+    async verify(username, code){
+      this.error = '';
+      try {
+        const res = await fetch('api/auth.php?action=verify', {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ username, code })
+        });
+        const data = await res.json();
+        if(!res.ok){ this.error = data.error || 'Verification failed.'; return false; }
         this.user = data.user;
+        this.pendingVerification = null;
+        return true;
+      } catch(e){ this.error = 'Could not reach the server. Is XAMPP running?'; return false; }
+    },
+
+    async resendCode(username){
+      this.error = '';
+      try {
+        const res = await fetch('api/auth.php?action=resend', {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ username })
+        });
+        const data = await res.json();
+        if(!res.ok){ this.error = data.error || 'Could not resend code.'; return false; }
+        if(!data.email_sent){ this.error = data.message; return false; } // surfaces DEBUG: ... detail temporarily
         return true;
       } catch(e){ this.error = 'Could not reach the server. Is XAMPP running?'; return false; }
     },
@@ -64,6 +105,7 @@ document.addEventListener('alpine:init', () => {
     async logout(){
       try { await fetch('api/auth.php?action=logout'); } catch(e){}
       this.user = null;
+      this.pendingVerification = null;
     }
   });
 });

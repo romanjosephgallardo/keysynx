@@ -20,12 +20,15 @@ if (!empty($_SESSION['user_id'])) {
     $stmt->bind_param('i', $_SESSION['user_id']);
     $stmt->execute();
     $currentUser = $stmt->get_result()->fetch_assoc();
-    if ($currentUser) $currentUser['reputation_tier'] = reputationTier((int) $currentUser['reputation_points']);
+    if ($currentUser) $currentUser['reputation_tier'] = reputationTier((float) $currentUser['reputation_points']);
 }
 
 $activePage = $activePage ?? '';
 $currentUrl = $_SERVER['REQUEST_URI'];
 $authError = $_GET['auth_error'] ?? '';
+$showVerify = ($_GET['verify'] ?? '') === '1' && !empty($_GET['vu']);
+$verifyUsername = $_GET['vu'] ?? '';
+$verifyMsg = $_GET['vmsg'] ?? '';
 
 function navClass($page, $current) { return $page === $current ? 'active' : ''; }
 ?>
@@ -62,28 +65,60 @@ function navClass($page, $current) { return $page === $current ? 'active' : ''; 
         </form>
       </div>
     <?php else: ?>
-      <details class="auth-popover" style="margin-left:auto; position:relative;">
+      <details class="auth-popover" style="margin-left:auto; position:relative;" <?= $showVerify ? 'open' : '' ?>>
         <summary class="btn btn-sm" style="list-style:none; cursor:pointer;">Log in</summary>
         <div style="position:absolute; right:0; margin-top:8px; width:280px; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px; z-index:30; box-shadow:0 12px 30px rgba(0,0,0,0.4);">
           <?php if ($authError): ?>
             <p style="font-size:0.78rem; color:var(--rejected); margin-bottom:10px;"><?= htmlspecialchars($authError) ?></p>
           <?php endif; ?>
-          <form method="post" action="api/login_handler.php" style="margin-bottom:14px;">
-            <input type="hidden" name="redirect" value="<?= htmlspecialchars($currentUrl) ?>">
-            <input type="text" name="username" placeholder="Username" class="search-input" style="width:100%; margin-bottom:8px;" required>
-            <input type="password" name="password" placeholder="Password" class="search-input" style="width:100%; margin-bottom:8px;" required>
-            <button type="submit" class="btn btn-primary btn-sm" style="width:100%; justify-content:center;">Log in</button>
-          </form>
-          <details>
-            <summary style="font-size:0.8rem; color:var(--accent-violet); cursor:pointer; list-style:none;">No account? Register</summary>
-            <form method="post" action="api/register_handler.php" style="margin-top:10px;">
+
+          <?php if ($showVerify): ?>
+            <!-- Verify-code panel: shown right after register, or when an
+                 unverified account tries to log in. Verifying the code
+                 IS the final login step here — no separate login needed. -->
+            <p style="font-size:0.82rem; color:var(--text); font-weight:600; margin-bottom:4px;">Verify your email</p>
+            <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:10px;">
+              <?php if ($verifyMsg === 'sent'): ?>
+                We sent a 6-digit code to <b><?= htmlspecialchars($verifyUsername) ?></b>'s Gmail.
+              <?php elseif ($verifyMsg === 'send_failed'): ?>
+                Account created, but the email couldn't be sent. Try "Resend code" below.
+              <?php elseif ($verifyMsg === 'needs_verify'): ?>
+                This account hasn't been verified yet. Enter the code from your Gmail, or resend it.
+              <?php else: ?>
+                Enter the 6-digit code sent to your Gmail.
+              <?php endif; ?>
+            </p>
+            <form method="post" action="api/verify_handler.php" style="margin-bottom:8px;">
+              <input type="hidden" name="username" value="<?= htmlspecialchars($verifyUsername) ?>">
+              <input type="hidden" name="redirect" value="<?= htmlspecialchars($currentUrl) ?>">
+              <input type="text" name="code" placeholder="6-digit code" inputmode="numeric" maxlength="6" pattern="\d{6}"
+                     class="search-input" style="width:100%; margin-bottom:8px; letter-spacing:3px; text-align:center; font-weight:700;" required autofocus>
+              <button type="submit" class="btn btn-primary btn-sm" style="width:100%; justify-content:center;">Verify &amp; log in</button>
+            </form>
+            <form method="post" action="api/resend_code_handler.php" style="margin:0;">
+              <input type="hidden" name="username" value="<?= htmlspecialchars($verifyUsername) ?>">
+              <input type="hidden" name="redirect" value="<?= htmlspecialchars($currentUrl) ?>">
+              <button type="submit" class="btn btn-ghost btn-sm" style="width:100%; justify-content:center;">Resend code</button>
+            </form>
+          <?php else: ?>
+            <form method="post" action="api/login_handler.php" style="margin-bottom:14px;">
               <input type="hidden" name="redirect" value="<?= htmlspecialchars($currentUrl) ?>">
               <input type="text" name="username" placeholder="Username" class="search-input" style="width:100%; margin-bottom:8px;" required>
-              <input type="email" name="email" placeholder="Email" class="search-input" style="width:100%; margin-bottom:8px;" required>
-              <input type="password" name="password" placeholder="Password (min 6 chars)" class="search-input" style="width:100%; margin-bottom:8px;" required>
-              <button type="submit" class="btn btn-primary btn-sm" style="width:100%; justify-content:center;">Create account</button>
+              <input type="password" name="password" placeholder="Password" class="search-input" style="width:100%; margin-bottom:8px;" required>
+              <button type="submit" class="btn btn-primary btn-sm" style="width:100%; justify-content:center;">Log in</button>
             </form>
-          </details>
+            <details>
+              <summary style="font-size:0.8rem; color:var(--accent-violet); cursor:pointer; list-style:none;">No account? Register</summary>
+              <form method="post" action="api/register_handler.php" style="margin-top:10px;">
+                <input type="hidden" name="redirect" value="<?= htmlspecialchars($currentUrl) ?>">
+                <input type="text" name="username" placeholder="Username" class="search-input" style="width:100%; margin-bottom:8px;" required>
+                <input type="email" name="email" placeholder="Gmail address" class="search-input" style="width:100%; margin-bottom:8px;" required>
+                <input type="password" name="password" placeholder="Password (min 6 chars)" class="search-input" style="width:100%; margin-bottom:8px;" required>
+                <div class="form-hint" style="margin-bottom:8px;">We'll email a verification code to this Gmail address.</div>
+                <button type="submit" class="btn btn-primary btn-sm" style="width:100%; justify-content:center;">Create account</button>
+              </form>
+            </details>
+          <?php endif; ?>
         </div>
       </details>
     <?php endif; ?>

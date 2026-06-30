@@ -1,10 +1,3 @@
-/* ============================================
-   KeySynx — Camelot Wheel & Harmonic Engine
-   Beyond-MVP feature:
-   1. Interactive Camelot Wheel Visualization
-   2. Harmonic Transition Recommendation Engine
-   ============================================ */
-
 // Standard Camelot Wheel mapping (Mixed In Key convention).
 // Modal keys (Mixolydian, Dorian, etc.) are intentionally NOT mapped —
 // the engine only scores tracks where a clean Camelot code exists.

@@ -1,10 +1,3 @@
-/* ============================================================
-   KeySynx — css/animations.css
-   Shared interactivity layer: fade-in entrance animations +
-   hover micro-interactions. Linked from every page so the same
-   polish applies consistently everywhere, instead of duplicating
-   <style> blocks inline on each page.
-   ============================================================ */
 
 /* ---------- Keyframes ---------- */
 @keyframes kxFadeUp  { from { opacity:0; transform: translateY(16px); } to { opacity:1; transform: translateY(0); } }

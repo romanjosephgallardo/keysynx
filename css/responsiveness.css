@@ -1,27 +1,3 @@
-/* ============================================================
-   KeySynx — css/responsiveness.css
-   Drop-in responsive layer. Load this AFTER style.css,
-   animations.css, and theme-light.css (it only adds overrides
-   inside @media queries, so it never fights specificity on
-   desktop — it just kicks in at smaller widths).
-
-   Link it on every page, e.g.:
-   <link rel="stylesheet" href="css/style.css?v=6">
-   <link rel="stylesheet" href="css/animations.css?v=1">
-   <link rel="stylesheet" href="css/theme-light.css?v=1">
-   <link rel="stylesheet" href="css/responsiveness.css?v=1">  <!-- last -->
-
-   Breakpoints used:
-     1024px → small laptop / large tablet
-      860px → tablet (matches existing .wheel-layout breakpoint)
-      720px → large phone / small tablet (matches existing style.css breakpoint)
-      480px → phone
-      380px → small/compact phone (mobile app webview default size)
-   ============================================================ */
-
-/* ---------- 0. Mobile-app shell basics ---------- */
-/* Respect device notches/home-indicator when this page is wrapped
-   in a Cordova/WebView shell. Safe no-op on regular browsers. */
 html{
   -webkit-text-size-adjust: 100%;
 }

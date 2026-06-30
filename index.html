@@ -1,13 +1,23 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <script>(function(){try{if(localStorage.getItem('kx-theme')==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script>
+    <script>
+      (function () {
+        try {
+          if (localStorage.getItem("kx-theme") === "light") {
+            document.documentElement.setAttribute("data-theme", "light");
+          }
+        } catch (e) {}
+      })();
+    </script>
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>KeySynx — Music Key &amp; BPM Database</title>
-    <link rel="stylesheet" href="css/style.css?v=6" />
 
-    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="css/style.css?v=6" />
+    <link rel="stylesheet" href="css/index.css?v=1" />
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -33,240 +43,303 @@
         },
       };
     </script>
+
     <link rel="stylesheet" href="css/animations.css?v=1" />
     <link rel="stylesheet" href="css/theme-light.css?v=1" />
     <link rel="stylesheet" href="css/responsiveness.css?v=1" />
-    <link rel="icon" type="image/png" href="src/favicon.png">
+    <link rel="icon" type="image/png" href="src/favicon.png" />
+
     <script src="js/theme.js?v=1"></script>
     <script src="js/auth.js?v=6"></script>
-    <script
-      defer
-      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
-    ></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   </head>
+
   <body>
     <header class="topbar">
       <div class="shell topbar-inner">
-        <a href="index.html" class="logo" style="text-decoration:none; display:flex; align-items:center; gap:10px;">
-          <span class="dot" style="width:13px; height:13px; flex-shrink:0;"></span>
-          <span style="display:flex; flex-direction:column; line-height:1.1;">
-            <span style="font-size:1.2rem; font-weight:700; color:var(--text); font-family:'Space Grotesk',sans-serif;">KeySynx</span>
-            <span style="font-size:0.68rem; color:var(--text-dim); font-weight:500; letter-spacing:0.02em;">Keys and BPM Database</span>
+        <a href="index.html" class="logo brand-logo">
+          <span class="dot brand-dot"></span>
+
+          <span class="brand-copy">
+            <span class="brand-name">KeySynx</span>
+            <span class="brand-tagline">Keys and BPM Database</span>
           </span>
         </a>
-        <div style="margin-left:auto; display:flex; align-items:center; gap:24px;">
-        <nav class="nav-links" x-data style="display:flex; align-items:center; gap:20px;">
-          <a href="index.html" class="active" style="display:inline-flex; align-items:center; gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>Browse</a>
-          <a href="wheel.html" style="display:inline-flex; align-items:center; gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"></circle></svg>Harmonic Wheel</a>
-          <a href="submit.html" style="display:inline-flex; align-items:center; gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>Submit</a>
-          <a href="about.php" style="display:inline-flex; align-items:center; gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="11" x2="12" y2="16"></line><circle cx="12" cy="7.5" r="1" fill="currentColor" stroke="none"></circle></svg>About</a>
-          <template
-            x-if="$store.auth.user && ($store.auth.user.role === 'admin' || $store.auth.user.reputation_points >= 100)"
-          >
-            <a href="admin.php" class="admin-badge-link">Admin Panel</a>
-          </template>
-        </nav>
-        <button type="button" class="kx-theme-toggle btn btn-sm btn-ghost" title="Toggle light/dark mode" style="padding:8px;">
-          <svg class="kx-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-          <svg class="kx-icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-        </button>
-        <a href="submit.html" class="btn btn-primary"
-          >+ Add Song</a
-        >
-        <div x-data="{ open:false, mode:'login', u:'', e:'', p:'', code:'' }" class="relative">
-          <template x-if="$store.auth.loading">
-            <span style="font-size:0.78rem; color:var(--text-dim);">···</span>
-          </template>
-          <template x-if="!$store.auth.loading && !$store.auth.user">
-            <button @click="open = true" class="btn btn-sm">Log in</button>
-          </template>
-          <template x-if="!$store.auth.loading && $store.auth.user">
-            <div style="display:flex; align-items:center; gap:10px;">
-              <a href="profile.php" :title="$store.auth.user.username + ' · ' + $store.auth.user.reputation_tier"
-                 style="width:32px;height:32px;border-radius:50%;display:block;overflow:hidden;text-decoration:none;">
-                <template x-if="$store.auth.user.avatar_path">
-                  <img :src="$store.auth.user.avatar_path" style="width:100%;height:100%;object-fit:cover;display:block;">
-                </template>
-                <template x-if="!$store.auth.user.avatar_path">
-                  <div :style="'width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;background:hsl(' + ($store.auth.user.username.split('').reduce((h,c)=>h+c.charCodeAt(0),0)%360) + ',55%,42%)'"
-                       x-text="$store.auth.user.username.slice(0,2).toUpperCase()"></div>
-                </template>
-              </a>
-              <button @click="if(confirm('Are you sure you want to log out?')) $store.auth.logout()" class="btn btn-sm btn-ghost">Log out</button>
-            </div>
-          </template>
 
-          <div x-show="open" @click.outside="open=false" x-cloak
-               style="position:absolute; right:0; margin-top:8px; width:280px; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px; z-index:30; box-shadow:0 12px 30px rgba(0,0,0,0.4);">
+        <div class="topbar-actions">
+          <nav class="nav-links main-nav" x-data>
+            <a href="index.html" class="active nav-link">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <circle cx="11" cy="11" r="7"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              Browse
+            </a>
 
-            <template x-if="$store.auth.pendingVerification">
-              <div>
-                <p style="font-size:0.82rem; color:var(--text); font-weight:600; margin-bottom:4px;">Verify your email</p>
-                <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:10px;">Enter the 6-digit code sent to your Gmail.</p>
-                <input x-model="code" type="text" placeholder="6-digit code" inputmode="numeric" maxlength="6"
-                       class="search-input" style="width:100%; margin-bottom:8px; letter-spacing:3px; text-align:center; font-weight:700;">
-                <p x-show="$store.auth.error" x-text="$store.auth.error" style="font-size:0.75rem; color:var(--rejected); margin-bottom:8px;"></p>
-                <button
-                  @click="(async () => { const ok = await $store.auth.verify($store.auth.pendingVerification, code); if(ok) open = false; })()"
-                  class="btn btn-primary btn-sm" style="width:100%; justify-content:center; margin-bottom:8px;">Verify &amp; log in</button>
-                <button @click="$store.auth.resendCode($store.auth.pendingVerification)" class="btn btn-ghost btn-sm" style="width:100%; justify-content:center;">Resend code</button>
-              </div>
+            <a href="wheel.html" class="nav-link">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="9"></circle>
+                <circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"></circle>
+              </svg>
+              Harmonic Wheel
+            </a>
+
+            <a href="submit.html" class="nav-link">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              Submit
+            </a>
+
+            <a href="about.php" class="nav-link">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"></circle>
+                <line x1="12" y1="11" x2="12" y2="16"></line>
+                <circle cx="12" cy="7.5" r="1" fill="currentColor" stroke="none"></circle>
+              </svg>
+              About
+            </a>
+
+            <template x-if="$store.auth.user && ($store.auth.user.role === 'admin' || $store.auth.user.reputation_points >= 100)">
+              <a href="admin.php" class="admin-badge-link">Admin Panel</a>
+            </template>
+          </nav>
+
+          <button type="button" class="kx-theme-toggle btn btn-sm btn-ghost theme-toggle-btn" title="Toggle light/dark mode">
+            <svg class="kx-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+
+            <svg class="kx-icon-sun icon-hidden" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+          </button>
+
+          <a href="submit.html" class="btn btn-primary">+ Add Song</a>
+
+          <div x-data="{ open:false, mode:'login', u:'', e:'', p:'', code:'' }" class="relative auth-menu">
+            <template x-if="$store.auth.loading">
+              <span class="auth-loading">···</span>
             </template>
 
-            <template x-if="!$store.auth.pendingVerification">
-              <div>
-                <div style="display:flex; gap:14px; margin-bottom:12px; font-size:0.88rem;">
-                  <button @click="mode='login'" :style="mode==='login' ? 'color:var(--text); font-weight:600;' : 'color:var(--text-muted);'">Log in</button>
-                  <button @click="mode='register'" :style="mode==='register' ? 'color:var(--text); font-weight:600;' : 'color:var(--text-muted);'">Register</button>
-                </div>
-                <input x-show="mode==='register'" x-model="e" type="email" placeholder="Email Address" class="search-input" style="width:100%; margin-bottom:8px;">
-                <input x-model="u" type="text" placeholder="Username" class="search-input" style="width:100%; margin-bottom:8px;">
-                <input x-model="p" type="password" placeholder="Password" class="search-input" style="width:100%; margin-bottom:8px;">
-                <p x-show="mode==='register'" style="font-size:0.72rem; color:var(--text-dim); margin-bottom:8px;">We'll email a verification code to this Gmail address.</p>
-                <p x-show="$store.auth.error" x-text="$store.auth.error" style="font-size:0.75rem; color:var(--rejected); margin-bottom:8px;"></p>
-                <button
-                  @click="(async () => { const ok = mode==='login' ? await $store.auth.login(u,p) : await $store.auth.register(u,e,p); if(ok) open = false; })()"
-                  class="btn btn-primary btn-sm" style="width:100%; justify-content:center;">
-                  <span x-text="mode==='login' ? 'Log in' : 'Create account'"></span>
+            <template x-if="!$store.auth.loading && !$store.auth.user">
+              <button @click="open = true" class="btn btn-sm">Log in</button>
+            </template>
+
+            <template x-if="!$store.auth.loading && $store.auth.user">
+              <div class="auth-user-actions">
+                <a href="profile.php" class="user-avatar" :title="$store.auth.user.username + ' · ' + $store.auth.user.reputation_tier">
+                  <template x-if="$store.auth.user.avatar_path">
+                    <img :src="$store.auth.user.avatar_path" class="avatar-img" alt="User avatar" />
+                  </template>
+
+                  <template x-if="!$store.auth.user.avatar_path">
+                    <div class="avatar-fallback" x-text="$store.auth.user.username.slice(0,2).toUpperCase()"></div>
+                  </template>
+                </a>
+
+                <button @click="if(confirm('Are you sure you want to log out?')) $store.auth.logout()" class="btn btn-sm btn-ghost">
+                  Log out
                 </button>
               </div>
             </template>
+
+            <div x-show="open" @click.outside="open=false" x-cloak class="auth-dropdown">
+              <template x-if="$store.auth.pendingVerification">
+                <div>
+                  <p class="auth-title">Verify your email</p>
+                  <p class="auth-subtitle">Enter the 6-digit code sent to your Gmail.</p>
+
+                  <input
+                    x-model="code"
+                    type="text"
+                    placeholder="6-digit code"
+                    inputmode="numeric"
+                    maxlength="6"
+                    class="search-input auth-code-input"
+                  />
+
+                  <p x-show="$store.auth.error" x-text="$store.auth.error" class="auth-error"></p>
+
+                  <button
+                    @click="(async () => { const ok = await $store.auth.verify($store.auth.pendingVerification, code); if(ok) open = false; })()"
+                    class="btn btn-primary btn-sm auth-full-btn auth-bottom-space"
+                  >
+                    Verify &amp; log in
+                  </button>
+
+                  <button
+                    @click="$store.auth.resendCode($store.auth.pendingVerification)"
+                    class="btn btn-ghost btn-sm auth-full-btn"
+                  >
+                    Resend code
+                  </button>
+                </div>
+              </template>
+
+              <template x-if="!$store.auth.pendingVerification">
+                <div>
+                  <div class="auth-tabs">
+                    <button
+                      @click="mode='login'"
+                      :class="mode === 'login' ? 'auth-tab active' : 'auth-tab'"
+                    >
+                      Log in
+                    </button>
+
+                    <button
+                      @click="mode='register'"
+                      :class="mode === 'register' ? 'auth-tab active' : 'auth-tab'"
+                    >
+                      Register
+                    </button>
+                  </div>
+
+                  <input
+                    x-show="mode==='register'"
+                    x-model="e"
+                    type="email"
+                    placeholder="Email Address"
+                    class="search-input auth-input"
+                  />
+
+                  <input
+                    x-model="u"
+                    type="text"
+                    placeholder="Username"
+                    class="search-input auth-input"
+                  />
+
+                  <input
+                    x-model="p"
+                    type="password"
+                    placeholder="Password"
+                    class="search-input auth-input"
+                  />
+
+                  <p x-show="mode==='register'" class="auth-help">
+                    We'll email a verification code to this Gmail address.
+                  </p>
+
+                  <p x-show="$store.auth.error" x-text="$store.auth.error" class="auth-error"></p>
+
+                  <button
+                    @click="(async () => { const ok = mode==='login' ? await $store.auth.login(u,p) : await $store.auth.register(u,e,p); if(ok) open = false; })()"
+                    class="btn btn-primary btn-sm auth-full-btn"
+                  >
+                    <span x-text="mode==='login' ? 'Log in' : 'Create account'"></span>
+                  </button>
+                </div>
+              </template>
+            </div>
           </div>
-        </div>
         </div>
       </div>
     </header>
 
     <main class="shell">
-      <!-- Hero / stats section (Tailwind) -->
-      <div
-        id="heroBanner"
-        class="relative overflow-hidden rounded-3xl border border-ksborder p-8 md:p-10 my-8"
-        style="background: linear-gradient(135deg, #15182b 0%, #1a1230 100%)"
-      >
+      <section id="heroBanner" class="hero-banner relative overflow-hidden rounded-3xl border border-ksborder p-8 md:p-10 my-8">
         <div class="grid md:grid-cols-[1fr_300px] gap-8 items-start">
           <div class="kx-animate kx-d1">
-            <span
-              class="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full border border-ksviolet/40 text-ksviolet"
-            >
+            <span class="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full border border-ksviolet/40 text-ksviolet">
               ✦ Community-Verified Music Intelligence
             </span>
-            <h1
-              class="font-display text-3xl md:text-5xl font-bold text-kstext mt-5 leading-tight"
-            >
-              Find transitions that<br />actually sound right.
+
+            <h1 class="font-display text-3xl md:text-5xl font-bold text-kstext mt-5 leading-tight">
+              Find transitions that<br />
+              actually sound right.
             </h1>
+
             <p class="text-ksmuted mt-4 max-w-md">
               KeySynx gives DJs, producers, and students a community-verified
               view of key, BPM, and harmonic compatibility — so you can search,
               mix, and study with confidence.
             </p>
+
             <div class="flex flex-wrap gap-2 mt-5">
-              <span
-                class="text-xs px-3 py-1.5 rounded-full border border-ksborder text-ksmuted kx-hover-pill"
-                >🎚️ BPM intelligence</span
-              >
-              <span
-                class="text-xs px-3 py-1.5 rounded-full border border-ksborder text-ksmuted kx-hover-pill"
-                >🎹 Camelot-aware keys</span
-              >
-              <span
-                class="text-xs px-3 py-1.5 rounded-full border border-ksborder text-ksmuted kx-hover-pill"
-                >⚡ Fast filtering</span
-              >
+              <span class="text-xs px-3 py-1.5 rounded-full border border-ksborder text-ksmuted kx-hover-pill">
+                🎚️ BPM intelligence
+              </span>
+
+              <span class="text-xs px-3 py-1.5 rounded-full border border-ksborder text-ksmuted kx-hover-pill">
+                🎹 Camelot-aware keys
+              </span>
+
+              <span class="text-xs px-3 py-1.5 rounded-full border border-ksborder text-ksmuted kx-hover-pill">
+                ⚡ Fast filtering
+              </span>
             </div>
+
             <div class="flex gap-3 mt-6">
-              <a href="wheel.html" class="btn btn-primary"
-                >✦ Start Matching →</a
-              >
-              <a href="#libraryAnchor" class="btn btn-ghost"
-                >📚 Explore Library</a
-              >
+              <a href="wheel.html" class="btn btn-primary">✦ Start Matching →</a>
+              <a href="#libraryAnchor" class="btn btn-ghost">📚 Explore Library</a>
             </div>
           </div>
 
           <div id="heroStats" class="flex flex-col gap-3">
             <div class="bg-kssurface/60 border border-ksborder rounded-2xl p-4 kx-hover-card kx-animate kx-d2">
-              <div class="text-xs text-ksmuted uppercase tracking-wide">
-                Library
-              </div>
-              <div
-                class="font-display text-2xl font-bold text-kstext mt-1"
-                id="statSongs"
-              >
-                ···
-              </div>
-              <div class="text-xs text-ksmuted mt-1">
-                Tracks ready for discovery
-              </div>
+              <div class="text-xs text-ksmuted uppercase tracking-wide">Library</div>
+              <div class="font-display text-2xl font-bold text-kstext mt-1" id="statSongs">···</div>
+              <div class="text-xs text-ksmuted mt-1">Tracks ready for discovery</div>
             </div>
+
             <div class="bg-kssurface/60 border border-ksborder rounded-2xl p-4 kx-hover-card kx-animate kx-d3">
-              <div class="text-xs text-ksmuted uppercase tracking-wide">
-                Contributors
-              </div>
-              <div
-                class="font-display text-2xl font-bold text-kstext mt-1"
-                id="statUsers"
-              >
-                ···
-              </div>
+              <div class="text-xs text-ksmuted uppercase tracking-wide">Contributors</div>
+              <div class="font-display text-2xl font-bold text-kstext mt-1" id="statUsers">···</div>
               <div class="text-xs text-ksmuted mt-1">Community members</div>
             </div>
+
             <div class="bg-kssurface/60 border border-ksborder rounded-2xl p-4 kx-hover-card kx-animate kx-d4">
-              <div class="text-xs text-ksmuted uppercase tracking-wide">
-                Coverage
-              </div>
-              <div
-                class="font-display text-2xl font-bold text-kstext mt-1"
-                id="statArtists"
-              >
-                ···
-              </div>
+              <div class="text-xs text-ksmuted uppercase tracking-wide">Coverage</div>
+              <div class="font-display text-2xl font-bold text-kstext mt-1" id="statArtists">···</div>
               <div class="text-xs text-ksmuted mt-1">Artists indexed</div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div class="page-head kx-animate kx-d2" id="libraryAnchor">
+      <section class="page-head kx-animate kx-d2" id="libraryAnchor">
         <div class="eyebrow">Browse the database</div>
         <h1 class="page-title">Search by title, artist, key, or BPM</h1>
         <p class="page-sub">
           Community-analyzed key, BPM, and section breakdowns for harmonic
           mixing and study.
         </p>
-      </div>
+      </section>
 
-      <div class="filterbar">
+      <section class="filterbar">
         <input
           type="text"
           id="searchInput"
-          class="search-input"
+          class="search-input library-search-input"
           placeholder="Search title or artist..."
-          style="flex: 1; min-width: 220px"
         />
+
         <select id="keyFilter">
           <option value="">All Keys</option>
         </select>
-        <input
-          type="number"
-          id="bpmMin"
-          placeholder="Min BPM"
-          style="width: 100px"
-        />
-        <input
-          type="number"
-          id="bpmMax"
-          placeholder="Max BPM"
-          style="width: 100px"
-        />
-        <label class="checkpill">
-          <input type="checkbox" id="verifiedOnly" /> Verified only
-        </label>
-        <button class="btn btn-ghost btn-sm" id="resetFilters">Reset</button>
-      </div>
 
-      <div class="lib-table-wrap">
+        <input type="number" id="bpmMin" class="bpm-input" placeholder="Min BPM" />
+        <input type="number" id="bpmMax" class="bpm-input" placeholder="Max BPM" />
+
+        <label class="checkpill">
+          <input type="checkbox" id="verifiedOnly" />
+          Verified only
+        </label>
+
+        <button class="btn btn-ghost btn-sm" id="resetFilters">Reset</button>
+      </section>
+
+      <section class="lib-table-wrap">
         <table class="lib-table">
           <thead>
             <tr>
@@ -288,105 +361,195 @@
               </th>
             </tr>
           </thead>
+
           <tbody id="libraryBody">
             <!-- rows injected by main.js -->
           </tbody>
         </table>
-      </div>
+      </section>
 
-      <div class="pagination-bar">
+      <section class="pagination-bar">
         <div class="pagination-info" id="paginationInfo">Showing 0 results</div>
+
         <div class="pagination-controls">
           <span class="pp-label">Per page:</span>
+
           <select id="perPageSelect">
             <option value="25">25</option>
             <option value="50">50</option>
             <option value="100">100</option>
           </select>
+
           <button class="page-btn" id="firstPageBtn">&laquo;</button>
           <button class="page-btn" id="prevPageBtn">&lsaquo;</button>
           <div id="pageNumbers" class="page-numbers"></div>
           <button class="page-btn" id="nextPageBtn">&rsaquo;</button>
           <button class="page-btn" id="lastPageBtn">&raquo;</button>
         </div>
-      </div>
+      </section>
     </main>
 
-<footer style="border-top:1px solid var(--border); margin-top:60px; padding:48px 0 24px;">
-  <div class="shell">
-    <div class="grid md:grid-cols-[1.3fr_1fr_1fr_1fr] gap-8 pb-10">
-      <div style="text-align:center;">
-        <a href="index.html" class="logo" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:center;"><span class="dot"></span> KeySynx</a>
-        <p style="color:var(--text-dim); font-size:0.85rem; margin-top:10px; max-width:260px; margin-left:auto; margin-right:auto;">
-          Community-verified music key &amp; BPM analysis for DJs, producers, and music students.
+    <footer class="site-footer">
+      <div class="shell">
+        <div class="footer-grid grid md:grid-cols-[1.3fr_1fr_1fr_1fr] gap-8 pb-10">
+          <div class="footer-brand-block">
+            <a href="index.html" class="logo footer-logo">
+              <span class="dot"></span>
+              KeySynx
+            </a>
+
+            <p class="footer-description">
+              Community-verified music key &amp; BPM analysis for DJs,
+              producers, and music students.
+            </p>
+          </div>
+
+          <div>
+            <div class="footer-heading">Platform</div>
+
+            <div class="footer-links">
+              <a href="index.html">Browse</a>
+              <a href="wheel.html">Harmonic Wheel</a>
+              <a href="submit.html">Submit</a>
+            </div>
+          </div>
+
+          <div>
+            <div class="footer-heading">Resources</div>
+
+            <div class="footer-links">
+              <a href="about.php" class="footer-icon-link">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="9"></circle>
+                  <line x1="12" y1="11" x2="12" y2="16"></line>
+                  <circle cx="12" cy="7.5" r="1" fill="currentColor" stroke="none"></circle>
+                </svg>
+                About
+              </a>
+
+              <a href="https://github.com/romanjosephgallardo/keysynx" target="_blank" rel="noopener" class="footer-icon-link">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="8 6 2 12 8 18"></polyline>
+                  <polyline points="16 6 22 12 16 18"></polyline>
+                </svg>
+                GitHub
+              </a>
+
+              <button type="button" onclick="document.getElementById('kxPrivacyModal').showModal()" class="footer-button-link">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2 L20 6 V12 C20 17 16.5 20.5 12 22 C7.5 20.5 4 17 4 12 V6 Z"></path>
+                </svg>
+                Privacy Policy
+              </button>
+
+              <button type="button" onclick="document.getElementById('kxTermsModal').showModal()" class="footer-button-link">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 2 H14 L18 6 V22 H6 Z"></path>
+                  <line x1="9" y1="13" x2="15" y2="13"></line>
+                  <line x1="9" y1="17" x2="15" y2="17"></line>
+                </svg>
+                Terms of Service
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <div class="footer-heading">Project</div>
+
+            <div class="footer-project-info">
+              <span>Web &amp; Mobile Systems</span>
+              <span>Faculty-in-charge: Engr. Arlene B. Canlas</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          © 2026 KeySynx · Built by Abendaño, Albaira, Gallardo &amp; Lomod · Final Project Prototype
+        </div>
+      </div>
+    </footer>
+
+    <dialog id="kxPrivacyModal" class="kx-modal">
+      <div class="modal-header">
+        <h2>Privacy Policy</h2>
+        <button type="button" onclick="document.getElementById('kxPrivacyModal').close()" class="modal-close-btn">×</button>
+      </div>
+
+      <div class="modal-body">
+        <p>
+          KeySynx is an academic capstone project built for a Web and Mobile
+          Systems class — not a commercial product. This policy explains what
+          we collect and why, in plain terms.
+        </p>
+
+        <p>
+          <b>What we collect:</b> your username, Gmail address used only to send
+          your one-time verification code, a securely hashed password, any song
+          analyses, votes, and comments you submit, and an optional profile photo.
+        </p>
+
+        <p>
+          <b>Why we collect it:</b> to operate your account, run the community
+          validation and reputation system, and let you log in securely.
+        </p>
+
+        <p>
+          <b>Sharing:</b> we don't sell or share your data with third parties,
+          and we don't use your email for marketing. Your Gmail address is only
+          used by our verification system.
+        </p>
+
+        <p>
+          <b>Storage:</b> data is stored in our MySQL database for as long as
+          this project/demo is active.
+        </p>
+
+        <p>
+          Questions about this policy can be directed to any member of the
+          KeySynx project team.
         </p>
       </div>
-      <div>
-        <div style="font-size:0.72rem; font-weight:700; letter-spacing:0.06em; color:var(--text-dim); text-transform:uppercase; margin-bottom:12px;">Platform</div>
-        <div style="display:flex; flex-direction:column; gap:8px; font-size:0.85rem;">
-          <a href="index.html" style="color:var(--text-muted); text-decoration:none;">Browse</a>
-          <a href="wheel.html" style="color:var(--text-muted); text-decoration:none;">Harmonic Wheel</a>
-          <a href="submit.html" style="color:var(--text-muted); text-decoration:none;">Submit</a>
-        </div>
-      </div>
-      <div>
-        <div style="font-size:0.72rem; font-weight:700; letter-spacing:0.06em; color:var(--text-dim); text-transform:uppercase; margin-bottom:12px;">Resources</div>
-        <div style="display:flex; flex-direction:column; gap:8px; font-size:0.85rem;">
-          <a href="about.php" style="color:var(--text-muted); text-decoration:none; display:inline-flex; align-items:center; gap:6px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="11" x2="12" y2="16"></line><circle cx="12" cy="7.5" r="1" fill="currentColor" stroke="none"></circle></svg>About</a>
-          <a href="https://github.com/romanjosephgallardo/keysynx" target="_blank" rel="noopener" style="color:var(--text-muted); text-decoration:none; display:inline-flex; align-items:center; gap:6px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 6 2 12 8 18"></polyline><polyline points="16 6 22 12 16 18"></polyline></svg>GitHub</a>
-          <button type="button" onclick="document.getElementById('kxPrivacyModal').showModal()" style="background:none; border:none; padding:0; color:var(--text-muted); display:inline-flex; align-items:center; gap:6px; font-size:0.85rem; cursor:pointer; text-align:left;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 L20 6 V12 C20 17 16.5 20.5 12 22 C7.5 20.5 4 17 4 12 V6 Z"></path></svg>Privacy Policy</button>
-          <button type="button" onclick="document.getElementById('kxTermsModal').showModal()" style="background:none; border:none; padding:0; color:var(--text-muted); display:inline-flex; align-items:center; gap:6px; font-size:0.85rem; cursor:pointer; text-align:left;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 H14 L18 6 V22 H6 Z"></path><line x1="9" y1="13" x2="15" y2="13"></line><line x1="9" y1="17" x2="15" y2="17"></line></svg>Terms of Service</button>
-        </div>
-      </div>
-      <div>
-        <div style="font-size:0.72rem; font-weight:700; letter-spacing:0.06em; color:var(--text-dim); text-transform:uppercase; margin-bottom:12px;">Project</div>
-        <div style="display:flex; flex-direction:column; gap:8px; font-size:0.85rem; color:var(--text-muted);">
-          <span>Web &amp; Mobile Systems</span>
-          <span>Faculty-in-charge: Engr. Arlene B. Canlas</span>
-        </div>
-      </div>
-    </div>
-    <div style="border-top:1px solid var(--border); padding-top:20px; color:var(--text-dim); font-size:0.78rem;">
-      © 2026 KeySynx · Built by Abendaño, Albaira, Gallardo &amp; Lomod · Final Project Prototype
-    </div>
-  </div>
-</footer>
+    </dialog>
 
-<dialog id="kxPrivacyModal" style="max-width:520px; width:90vw; background:var(--surface); color:var(--text); border:1px solid var(--border); border-radius:14px; padding:24px; box-shadow:0 20px 50px rgba(0,0,0,0.5);">
-  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
-    <h2 style="font-size:1.1rem; font-weight:700; margin:0;">Privacy Policy</h2>
-    <button type="button" onclick="document.getElementById('kxPrivacyModal').close()" style="background:none; border:none; color:var(--text-dim); font-size:1.2rem; cursor:pointer; line-height:1;">×</button>
-  </div>
-  <div style="font-size:0.86rem; color:var(--text-muted); line-height:1.6; max-height:60vh; overflow-y:auto;">
-    <p style="margin-bottom:12px;">KeySynx is an academic capstone project built for a Web and Mobile Systems class — not a commercial product. This policy explains what we collect and why, in plain terms.</p>
-    <p style="margin-bottom:8px;"><b style="color:var(--text);">What we collect:</b> your username, Gmail address (used only to send your one-time verification code), a securely hashed password (we never store your actual password), any song analyses, votes, and comments you submit, and an optional profile photo.</p>
-    <p style="margin-bottom:8px;"><b style="color:var(--text);">Why we collect it:</b> to operate your account, run the community validation and reputation system, and let you log in securely.</p>
-    <p style="margin-bottom:8px;"><b style="color:var(--text);">Sharing:</b> we don't sell or share your data with third parties, and we don't use your email for marketing. Your Gmail address is only used by our verification system.</p>
-    <p style="margin-bottom:8px;"><b style="color:var(--text);">Storage:</b> data is stored in our MySQL database for as long as this project/demo is active.</p>
-    <p>Questions about this policy can be directed to any member of the KeySynx project team.</p>
-  </div>
-</dialog>
+    <dialog id="kxTermsModal" class="kx-modal">
+      <div class="modal-header">
+        <h2>Terms of Service</h2>
+        <button type="button" onclick="document.getElementById('kxTermsModal').close()" class="modal-close-btn">×</button>
+      </div>
 
-<dialog id="kxTermsModal" style="max-width:520px; width:90vw; background:var(--surface); color:var(--text); border:1px solid var(--border); border-radius:14px; padding:24px; box-shadow:0 20px 50px rgba(0,0,0,0.5);">
-  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
-    <h2 style="font-size:1.1rem; font-weight:700; margin:0;">Terms of Service</h2>
-    <button type="button" onclick="document.getElementById('kxTermsModal').close()" style="background:none; border:none; color:var(--text-dim); font-size:1.2rem; cursor:pointer; line-height:1;">×</button>
-  </div>
-  <div style="font-size:0.86rem; color:var(--text-muted); line-height:1.6; max-height:60vh; overflow-y:auto;">
-    <p style="margin-bottom:12px;">KeySynx is built as a final project for a Web and Mobile Systems class. It's provided as-is, for academic and demonstration purposes — not as a guaranteed, always-available commercial service.</p>
-    <p style="margin-bottom:8px;"><b style="color:var(--text);">Your account:</b> keep your password private; you're responsible for activity under your account.</p>
-    <p style="margin-bottom:8px;"><b style="color:var(--text);">Your contributions:</b> by submitting a song analysis, vote, or comment, you allow KeySynx to display it on the platform. Please keep submissions accurate and feedback respectful — no abuse, harassment, or spam.</p>
-    <p style="margin-bottom:8px;"><b style="color:var(--text);">No audio storage:</b> KeySynx never stores or hosts copyrighted audio files — only metadata (title, artist, key, BPM, structure) and, optionally, a link to the official YouTube video.</p>
-    <p style="margin-bottom:8px;"><b style="color:var(--text);">Moderation:</b> administrators may review, edit, or remove submissions and comments to maintain the integrity of the database.</p>
-    <p>Continued use of KeySynx means you agree to these terms.</p>
-  </div>
-</dialog>
+      <div class="modal-body">
+        <p>
+          KeySynx is built as a final project for a Web and Mobile Systems
+          class. It's provided as-is, for academic and demonstration purposes —
+          not as a guaranteed, always-available commercial service.
+        </p>
 
-<style>
-dialog#kxPrivacyModal::backdrop, dialog#kxTermsModal::backdrop {
-  background: rgba(0,0,0,0.6);
-}
-</style>
+        <p>
+          <b>Your account:</b> keep your password private; you're responsible
+          for activity under your account.
+        </p>
+
+        <p>
+          <b>Your contributions:</b> by submitting a song analysis, vote, or
+          comment, you allow KeySynx to display it on the platform. Please keep
+          submissions accurate and feedback respectful — no abuse, harassment,
+          or spam.
+        </p>
+
+        <p>
+          <b>No audio storage:</b> KeySynx never stores or hosts copyrighted
+          audio files — only metadata title, artist, key, BPM, structure and,
+          optionally, a link to the official YouTube video.
+        </p>
+
+        <p>
+          <b>Moderation:</b> administrators may review, edit, or remove
+          submissions and comments to maintain the integrity of the database.
+        </p>
+
+        <p>Continued use of KeySynx means you agree to these terms.</p>
+      </div>
+    </dialog>
 
     <script src="js/data.js?v=6"></script>
     <script src="js/camelot.js?v=6"></script>
